@@ -1,77 +1,105 @@
-// pos_guard.js — simple idle refocus for POS search input
+// pos_guard.js — idle refocus for item search (robust across POS variants)
 (() => {
-  // Your exact selector (kept as-is)
-  const SELECTOR = "#page-point-of-sale > div.container.page-body > div.page-wrapper > div > div.row.layout-main > div > div.layout-main-section > div.point-of-sale-app > section.items-selector > div.filter-section > div.search-field > div > div > div.control-input-wrapper > div.control-input > input";
-
   const IDLE_TIME = 3000; // ms of inactivity before focusing back
   let idleTimer = null;
-  let wired = false;
+  let wiredEl = null;
 
-  // Wait for an element to exist, then resolve
-  function waitForElement(selector, timeoutMs = 15000) {
-    return new Promise((resolve, reject) => {
-      const start = performance.now();
+  const onPOS = () => {
+    const p = location.pathname;
+    return p.includes("/app/point-of-sale") || p.includes("/app/pos");
+  };
 
-      function tryFind() {
-        const el = document.querySelector(selector);
-        if (el) return resolve(el);
+  const isVisible = (el) => {
+    if (!el) return false;
+    const rect = el.getBoundingClientRect();
+    return !!(rect.width || rect.height) && window.getComputedStyle(el).visibility !== "hidden";
+  };
 
-        if (performance.now() - start > timeoutMs) {
-          return reject(new Error("timeout waiting for " + selector));
-        }
-        requestAnimationFrame(tryFind);
-      }
-      tryFind();
-    });
+  function findPOSContainer() {
+    return (
+      document.querySelector(".point-of-sale-app") ||
+      document.querySelector("#page-point-of-sale") ||
+      document.querySelector('[data-page-route="point-of-sale"]') ||
+      document
+    );
+  }
+
+  function candidatesWithin(root) {
+    // Prefer inputs inside typical POS areas
+    const specific = [
+      'div.search-field input.input-with-feedback.form-control[placeholder]',
+      'section.items-selector input.input-with-feedback.form-control[placeholder]'
+    ];
+    for (const sel of specific) {
+      const els = Array.from(root.querySelectorAll(sel));
+      if (els.length) return els;
+    }
+    // Generic fallbacks in container
+    return Array.from(root.querySelectorAll('input.input-with-feedback.form-control[placeholder]'));
+  }
+
+  function looksLikeSearch(el) {
+    const ph = (el.getAttribute("placeholder") || "").toLowerCase();
+    // Match common English strings; add more if you localize later
+    return (
+      ph.includes("search") ||
+      ph.includes("barcode") ||
+      ph.includes("item code") ||
+      ph.includes("serial number")
+    );
+  }
+
+  function pickBestInput() {
+    const container = findPOSContainer();
+    const all = candidatesWithin(container)
+      .filter(isVisible)
+      .filter(looksLikeSearch);
+
+    if (all.length === 1) return all[0];
+
+    // If multiple, prefer ones under .search-field first
+    const preferred = all.find(el => el.closest(".search-field")) || all[0];
+    return preferred || null;
   }
 
   function resetIdle(input) {
     clearTimeout(idleTimer);
     idleTimer = setTimeout(() => {
-      if (document.activeElement !== input) {
+      if (document.activeElement !== input && isVisible(input)) {
         input.focus({ preventScroll: true });
       }
     }, IDLE_TIME);
   }
 
-  function wireOnce(input) {
-    if (!input || wired) return;
-    // Listen high in the capture phase so any interaction resets the timer
-    ["keydown", "mousedown", "touchstart", "input", "pointerdown"].forEach(evt =>
+  function wire(input) {
+    if (!input || wiredEl === input) return;
+    wiredEl = input;
+
+    // Any activity resets the idle timer
+    ["keydown", "mousedown", "touchstart", "pointerdown", "input"].forEach(evt =>
       document.addEventListener(evt, () => resetIdle(input), true)
     );
     resetIdle(input);
-    wired = true;
-    console.log("[POS] auto-focus guard attached to:", input);
+    console.log("[POS] idle-refocus wired →", input);
   }
 
-  // (Re)wire whenever POS DOM changes (the POS app re-renders a lot)
-  const mo = new MutationObserver(async () => {
-    try {
-      const input = document.querySelector(SELECTOR);
-      if (input) {
-        wireOnce(input);
-      }
-    } catch (_) {}
-  });
-
-  async function boot() {
-    try {
-      const input = await waitForElement(SELECTOR, 20000);
-      wireOnce(input);
-      mo.observe(document.body, { childList: true, subtree: true });
-    } catch (err) {
-      console.warn("[POS] search input not found:", err.message);
-    }
+  function tryWire() {
+    if (!onPOS()) return;
+    const input = pickBestInput();
+    if (input) wire(input);
+    else console.debug("[POS] search input not found yet; will retry…");
   }
 
-  // Defer until DOM ready; also re-run on route changes
-  const start = () => {
-    // Ensure we’re on the POS page
-    const onPOS = location.pathname.includes("/app/point-of-sale");
-    if (!onPOS) return;
-    boot();
-  };
+  // Re-run when DOM changes (POS re-renders often)
+  const mo = new MutationObserver(() => tryWire());
+
+  function boot() {
+    if (!onPOS()) return;
+    tryWire();
+    mo.observe(document.body, { childList: true, subtree: true });
+  }
+
+  const start = () => boot();
 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", start);
@@ -79,10 +107,10 @@
     start();
   }
 
+  // Rewire on route changes within Desk SPA
   if (window.frappe?.router?.on) {
     frappe.router.on("change", () => {
-      // reset state between navigations
-      wired = false;
+      wiredEl = null;
       clearTimeout(idleTimer);
       mo.disconnect();
       start();
