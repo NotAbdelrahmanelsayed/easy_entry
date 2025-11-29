@@ -1,0 +1,63 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-11-01 19:09:55.200818",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "prefix",
+  "barcode",
+  "column_break_bwml",
+  "numbers"
+ ],
+ "fields": [
+  {
+   "fieldname": "prefix",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Prefix",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_bwml",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "numbers",
+   "fieldtype": "Int",
+   "label": "Numbers Count"
+  },
+  {
+   "fieldname": "barcode",
+   "fieldtype": "Data",
+   "label": "barcode",
+   "read_only": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2025-11-01 19:25:08.076522",
+ "modified_by": "Administrator",
+ "module": "Easy Entry",
+ "name": "Barcode Generator",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

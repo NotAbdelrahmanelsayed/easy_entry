@@ -2,15 +2,17 @@
 import frappe
 from frappe.utils import cstr
 
-DRY_RUN = False         # ← set to False to apply
+DRY_RUN = False  # ← set to False to apply
 MAX_LEN = 140
+
 
 def normalize_name(text: str) -> str:
     """Basic cleanup for docname safety: trim, collapse spaces, replace slashes."""
     t = cstr(text or "").strip()
-    t = " ".join(t.split())          # collapse multiple spaces
-    t = t.replace("/", "-")          # avoid path-like chars in name
-    return t[:MAX_LEN]               # enforce Frappe docname limit
+    t = " ".join(t.split())  # collapse multiple spaces
+    t = t.replace("/", "-")  # avoid path-like chars in name
+    return t[:MAX_LEN]  # enforce Frappe docname limit
+
 
 def unique_target(base: str) -> str:
     """Ensure the target name is unique; append -2, -3, ... if needed."""
@@ -25,16 +27,17 @@ def unique_target(base: str) -> str:
             return candidate
     raise Exception(f"Could not make a unique name for: {base}")
 
+
 def plan_changes():
     rows = frappe.get_all("Item", fields=["name", "item_code", "item_name"])
     actions = []
     skipped_empty = 0
-    skipped_same  = 0
+    skipped_same = 0
 
     for r in rows:
         current_name = cstr(r.name or "")
-        code         = cstr(r.item_code or "")
-        arabic_name  = cstr(r.item_name or "")
+        code = cstr(r.item_code or "")
+        arabic_name = cstr(r.item_name or "")
 
         # must have a non-empty item_name to convert
         if not arabic_name.strip():
@@ -51,14 +54,17 @@ def plan_changes():
         # find unique target
         target = unique_target(target_base)
 
-        actions.append({
-            "old": current_name,
-            "new": target,
-            "new_item_code": target,     # we’ll set item_code to match
-            "item_name": arabic_name
-        })
+        actions.append(
+            {
+                "old": current_name,
+                "new": target,
+                "new_item_code": target,  # we’ll set item_code to match
+                "item_name": arabic_name,
+            }
+        )
 
     return actions, skipped_empty, skipped_same
+
 
 def apply(actions):
     renamed = 0
@@ -78,6 +84,7 @@ def apply(actions):
     frappe.db.commit()
     print(f"Done. Renamed/updated {renamed} items.")
 
+
 def run():
     actions, skipped_empty, skipped_same = plan_changes()
 
@@ -87,12 +94,15 @@ def run():
 
     # preview a few
     for i, a in enumerate(actions[:10], 1):
-        print(f"{i:02d}. '{a['old']}' → '{a['new']}'  (item_code → '{a['new_item_code']}')  [item_name='{a['item_name']}']")
+        print(
+            f"{i:02d}. '{a['old']}' → '{a['new']}'  (item_code → '{a['new_item_code']}')  [item_name='{a['item_name']}']"
+        )
 
     if DRY_RUN:
         print("\nDRY_RUN=True → No changes applied.")
         return
 
     apply(actions)
+
 
 run()

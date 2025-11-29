@@ -1,7 +1,9 @@
 app_name = "easy_entry"
 app_title = "Easy Entry"
 app_publisher = "Abdelrahman"
-app_description = "Add Items, Prices, Stock and Purchase invoices with ease in a single DocType"
+app_description = (
+    "Add Items, Prices, Stock and Purchase invoices with ease in a single DocType"
+)
 app_email = "bedoelsayed785@gmail.com"
 app_license = "mit"
 
@@ -241,4 +243,3 @@ page_js = {"point-of-sale": "public/js/pos_guard.js"}
 # default_log_clearing_doctypes = {
 # 	"Logging DocType Name": 30  # days to retain logs
 # }
-
