@@ -126,14 +126,4 @@
 	} else {
 		start();
 	}
-
-	// Rewire on route changes within Desk SPA
-	if (window.frappe?.router?.on) {
-		frappe.router.on("change", () => {
-			wiredEl = null;
-			clearTimeout(idleTimer);
-			mo.disconnect();
-			start();
-		});
-	}
 })();
