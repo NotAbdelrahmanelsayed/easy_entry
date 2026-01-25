@@ -11,6 +11,7 @@
 			p.includes("/desk/pos") ||
 			p.includes("/app/point-of-sale") ||
 			p.includes("/app/pos") ||
+			p.includes("/pos") ||
 			p.includes("pos")
 		);
 	};
@@ -94,7 +95,7 @@
 
 		// Any activity resets the idle timer
 		["keydown", "mousedown", "touchstart", "pointerdown", "input"].forEach((evt) =>
-			document.addEventListener(evt, () => resetIdle(input), true)
+			document.addEventListener(evt, () => resetIdle(input), true),
 		);
 		resetIdle(input);
 		console.log("[POS] idle-refocus wired →", input);
