@@ -33,7 +33,7 @@ def increase_code():
 
 
 @frappe.whitelist()
-def generate_barcode_to_item(doc, method=None):
+def generate_barcode_to_item(doc=None, method=None, doc_name=None):
     """Return the next available unique barcode like PREFIX + zero-padded number.
     Uses a Redis-based lock to avoid duplicates under concurrency.
     """
@@ -42,6 +42,9 @@ def generate_barcode_to_item(doc, method=None):
     while frappe.db.exists({"doctype": "Item Barcode", "barcode": next_barcode}):
         increase_code()
         next_barcode = get_barcode()
+
+    if doc_name:
+        doc = frappe.get_doc("Item", doc_name)
 
     doc.append("barcodes", {"barcode": next_barcode})
     doc.save(ignore_permissions=True)
