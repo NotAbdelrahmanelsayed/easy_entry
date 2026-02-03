@@ -1,7 +1,8 @@
 # Copyright (c) 2025, Abdelrahman and contributors
 # For license information, please see license.txt
 
-# import frappe
+import frappe
+from frappe.utils import cint
 from frappe.model.document import Document
 
 
@@ -10,53 +11,38 @@ class BarcodeGenerator(Document):
 
 
 # my_app/my_app/doctype/barcode_generator/barcode_generator.py
-import frappe
-from frappe.utils import cint
+
+
+def get_barcode():
+    barcode_doc = frappe.get_single("Barcode Generator")
+    prefix = (barcode_doc.prefix or "").strip()
+    if not prefix:
+        frappe.throw("Prefix is required.")
+    digits = cint(barcode_doc.numbers)
+    code_number = cint(barcode_doc.code_number or 1)
+    barcode = f"{code_number :0{digits}d}"
+    barcode = f"{prefix}{barcode}"
+    return barcode
+
+
+def increase_code():
+    barcode_number = frappe.get_single_value("Barcode Generator", "code_number")
+    frappe.db.set_single_value(
+        "Barcode Generator", "code_number", cint(barcode_number) + 1
+    )
 
 
 @frappe.whitelist()
-def generate(prefix: str, digits: int):
+def generate_barcode_to_item(doc, method=None):
     """Return the next available unique barcode like PREFIX + zero-padded number.
     Uses a Redis-based lock to avoid duplicates under concurrency.
     """
-    prefix = (prefix or "").strip()
-    if not prefix:
-        frappe.throw("Prefix is required.")
-    digits = cint(digits) or 6
 
-    # distributed lock per prefix – prevents two requests from issuing the same code
-    lock_name = f"barcode-seq:{prefix}"
-    cache = frappe.cache()  # RedisWrapper
-    lock = cache.lock(lock_name, timeout=10)
+    next_barcode = get_barcode()
+    while frappe.db.exists({"doctype": "Item Barcode", "barcode": next_barcode}):
+        increase_code()
+        next_barcode = get_barcode()
 
-    try:
-        lock.acquire(blocking=True, timeout=10)
-
-        # Find the max numeric tail that starts with prefix
-        # SUBSTRING(barcode, %s+1): cut the prefix; CAST to integer; take MAX
-        max_num = (
-            frappe.db.sql(
-                """
-            SELECT MAX(CAST(SUBSTRING(barcode, %s + 1) AS UNSIGNED))
-            FROM `tabItem Barcode`
-            WHERE barcode LIKE %s
-            """,
-                (len(prefix), f"{prefix}%"),
-            )[0][0]
-            or 0
-        )
-
-        # Loop in case the exact next value already exists (rare, but safe)
-        while True:
-            max_num += 1
-            code = f"{prefix}{str(max_num).zfill(digits)}"
-            # `Item Barcode` is the child table of Item
-            if not frappe.db.exists("Item Barcode", {"barcode": code}):
-                return code
-            # else continue and try the next number
-
-    finally:
-        try:
-            lock.release()
-        except Exception:
-            pass
+    doc.append("barcodes", {"barcode": next_barcode})
+    doc.save(ignore_permissions=True)
+    increase_code()

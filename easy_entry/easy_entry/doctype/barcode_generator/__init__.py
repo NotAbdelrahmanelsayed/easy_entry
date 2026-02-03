@@ -1,0 +1,1 @@
+from .barcode_generator import generate_barcode_to_item

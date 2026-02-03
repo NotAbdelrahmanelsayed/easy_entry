@@ -6,7 +6,7 @@
  "engine": "InnoDB",
  "field_order": [
   "prefix",
-  "barcode",
+  "code_number",
   "column_break_bwml",
   "numbers"
  ],
@@ -28,9 +28,9 @@
    "label": "Numbers Count"
   },
   {
-   "fieldname": "barcode",
+   "fieldname": "code_number",
    "fieldtype": "Data",
-   "label": "barcode",
+   "label": "Code Number",
    "read_only": 1
   }
  ],
@@ -38,7 +38,7 @@
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2025-11-01 19:25:08.076522",
+ "modified": "2026-02-03 23:58:03.546990",
  "modified_by": "Administrator",
  "module": "Easy Entry",
  "name": "Barcode Generator",

@@ -141,13 +141,11 @@ page_js = {"point-of-sale": "public/js/pos_guard.js"}
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-# 	"*": {
-# 		"on_update": "method",
-# 		"on_cancel": "method",
-# 		"on_trash": "method"
-# 	}
-# }
+doc_events = {
+    "Item": {
+        "after_insert": "easy_entry.easy_entry.doctype.barcode_generator.barcode_generator.generate_barcode_to_item"
+    }
+}
 
 # Scheduled Tasks
 # ---------------
