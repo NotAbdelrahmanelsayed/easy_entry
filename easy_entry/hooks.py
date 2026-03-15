@@ -1,9 +1,7 @@
 app_name = "easy_entry"
 app_title = "Easy Entry"
 app_publisher = "Abdelrahman"
-app_description = (
-    "Add Items, Prices, Stock and Purchase invoices with ease in a single DocType"
-)
+app_description = "Add Items, Prices, Stock and Purchase invoices with ease in a single DocType"
 app_email = "bedoelsayed785@gmail.com"
 app_license = "mit"
 
@@ -48,8 +46,8 @@ page_js = {"point-of-sale": "public/js/pos_guard.js"}
 
 # include js in doctype views
 doctype_js = {
-    "Item"          : "public/js/barcode_generator.js",
-    "Stock Settings": "public/js/reorder_levels.js",
+	"Item": "public/js/barcode_generator.js",
+	"Stock Settings": "public/js/reorder_levels.js",
 }
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
@@ -145,9 +143,9 @@ doctype_js = {
 # Hook on document methods and events
 
 doc_events = {
-    "Item": {
-        "after_insert": "easy_entry.easy_entry.doctype.barcode_generator.barcode_generator.generate_barcode_to_item"
-    }
+	"Item": {
+		"after_insert": "easy_entry.easy_entry.doctype.barcode_generator.barcode_generator.generate_barcode_to_item"
+	}
 }
 
 # Scheduled Tasks
