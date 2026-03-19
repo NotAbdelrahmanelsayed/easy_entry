@@ -1,0 +1,114 @@
+{
+ "app": "easy_entry",
+ "charts": [],
+ "content": "[{\"id\":\"ea_header_1\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Masters</b></span>\",\"col\":12}},{\"id\":\"ea_card_1\",\"type\":\"card\",\"data\":{\"card_name\":\"Products\",\"col\":4}},{\"id\":\"ea_header_2\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Reports</b></span>\",\"col\":12}},{\"id\":\"ea_card_2\",\"type\":\"card\",\"data\":{\"card_name\":\"Easy Entry Reports\",\"col\":4}}]",
+ "creation": "2026-03-15 00:00:00.000000",
+ "custom_blocks": [],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "lightning",
+ "idx": 0,
+ "is_hidden": 0,
+ "label": "Easy Entry",
+ "links": [
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Products",
+   "link_count": 0,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Product",
+   "link_count": 0,
+   "link_to": "Product",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Barcode Generator",
+   "link_count": 0,
+   "link_to": "Barcode Generator",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Easy Entry Reports",
+   "link_count": 0,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Customer Account Statement",
+   "link_count": 0,
+   "link_to": "Customer Account Statement",
+   "link_type": "Report",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Items Missing Prices",
+   "link_count": 0,
+   "link_to": "Items Missing Prices",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  }
+ ],
+ "modified": "2026-03-15 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Easy Entry",
+ "name": "Easy Entry",
+ "number_cards": [],
+ "owner": "Administrator",
+ "parent_page": "",
+ "public": 1,
+ "restrict_to_domain": "",
+ "roles": [],
+ "sequence_id": 99,
+ "shortcuts": [
+  {
+   "color": "Blue",
+   "doc_view": "",
+   "format": "",
+   "label": "Customer Account Statement",
+   "link_to": "Customer Account Statement",
+   "type": "Report"
+  },
+  {
+   "color": "Green",
+   "doc_view": "",
+   "format": "",
+   "label": "Product",
+   "link_to": "Product",
+   "type": "DocType"
+  },
+  {
+   "color": "Orange",
+   "doc_view": "",
+   "format": "",
+   "label": "Items Missing Prices",
+   "link_to": "Items Missing Prices",
+   "type": "Report"
+  }
+ ]
+}
