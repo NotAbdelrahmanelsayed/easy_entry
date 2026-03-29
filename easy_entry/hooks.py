@@ -151,23 +151,9 @@ doc_events = {
 # Scheduled Tasks
 # ---------------
 
-# scheduler_events = {
-# 	"all": [
-# 		"easy_entry.tasks.all"
-# 	],
-# 	"daily": [
-# 		"easy_entry.tasks.daily"
-# 	],
-# 	"hourly": [
-# 		"easy_entry.tasks.hourly"
-# 	],
-# 	"weekly": [
-# 		"easy_entry.tasks.weekly"
-# 	],
-# 	"monthly": [
-# 		"easy_entry.tasks.monthly"
-# 	],
-# }
+scheduler_events = {"daily": ["easy_entry.tasks.daily_owner_report.send_daily_owner_report"]}
+
+fixtures = [{"dt": "Role", "filters": [["role_name", "in", ["Store Owner"]]]}]
 
 # Testing
 # -------
