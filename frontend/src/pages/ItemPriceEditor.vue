@@ -7,7 +7,7 @@
 			<div class="flex items-center gap-4">
 				<button
 					class="text-gray-500 hover:text-gray-700 flex items-center gap-1 text-sm"
-					@click="router.push({ name: 'POSSale' })"
+					@click="router.push({ name: 'ItemManager' })"
 				>
 					<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 						<path

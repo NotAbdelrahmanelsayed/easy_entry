@@ -1,0 +1,138 @@
+{
+  "version": 1,
+  "bugs": [
+    {
+      "id": "bug-001",
+      "timestamp": "2026-05-18",
+      "error_message": "OpeningEntryAccountError: Difference Account must be a Asset/Liability type account, since this Stock Reconciliation is an Opening Entry",
+      "file": "easy_entry/api/item_manager.py",
+      "root_cause": "set_item_qty set sr.difference_account, but the Stock Reconciliation field is named expense_account (label 'Difference Account'). The account was therefore never applied and validation failed on opening-stock items.",
+      "fix": "Set sr.expense_account (not sr.difference_account) to the company's 'Temporary Opening' account (an Asset account, valid for both opening and non-opening reconciliations).",
+      "tags": [
+        "stock-reconciliation",
+        "erpnext",
+        "fieldname",
+        "item-manager"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-18"
+    },
+    {
+      "id": "bug-002",
+      "timestamp": "2026-05-18T15:12:18.619Z",
+      "error_message": "CSS fix: name",
+      "file": "frontend/src/pages/ItemPriceEditor.vue",
+      "root_cause": "name: 'POSSale' → 'ItemManager'",
+      "fix": "Changed name: 'POSSale' → 'ItemManager'",
+      "tags": [
+        "auto-detected",
+        "style-fix",
+        "vue"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-18T15:12:18.619Z"
+    },
+    {
+      "id": "bug-003",
+      "timestamp": "2026-05-18T15:29:58.517Z",
+      "error_message": "Significant refactor of ",
+      "file": "frontend/src/pages/ItemManager.vue",
+      "root_cause": "8 lines replaced/restructured",
+      "fix": "Rewrote 14→19 lines (8 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "vue"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-18T15:29:58.517Z"
+    },
+    {
+      "id": "bug-004",
+      "timestamp": "2026-05-18T15:36:50.084Z",
+      "error_message": "Incorrect value in code",
+      "file": "CLAUDE.md",
+      "root_cause": "Had `frontend/src/`",
+      "fix": "Changed to `frontend/`",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-18T15:36:50.084Z"
+    },
+    {
+      "id": "bug-005",
+      "timestamp": "2026-05-18T15:37:34.373Z",
+      "error_message": "Significant refactor of ",
+      "file": "CLAUDE.md",
+      "root_cause": "5 lines replaced/restructured",
+      "fix": "Rewrote 6→12 lines (5 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-18T15:37:34.374Z"
+    },
+    {
+      "id": "bug-003",
+      "timestamp": "2026-05-19",
+      "error_message": "Item Manager SPA shows 'Failed to load items' with a Retry button",
+      "file": "frontend/src/pages/ItemManager.vue",
+      "root_cause": "The /item-manager www page is public (not auth-gated) so a logged-out visitor can open it, but every whitelisted API call (get_items) then returns PermissionError. The SPA rendered a dead-end error state instead of routing to login.",
+      "fix": "Added isAuthError() + redirectToLogin() helpers; items resource onError redirects to /login?redirect-to=<path> on a PermissionError/AuthenticationError, and the error state shows a 'Log in' button for auth errors.",
+      "tags": [
+        "auth",
+        "permission-error",
+        "item-manager",
+        "spa",
+        "ux"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-19"
+    },
+    {
+      "id": "bug-006",
+      "timestamp": "2026-05-19T07:00:00",
+      "error_message": "Item Manager SPA shows \"Failed to load items\" for logged-in users",
+      "file": "easy_entry/www/item_manager.py",
+      "root_cause": "No www page controller existed, so window.csrf_token was never injected; frappe-ui frappeRequest sent no X-Frappe-CSRF-Token header and POST to get_items failed with CSRFTokenError (HTTP 400) for desk-logged-in users who have a saved csrf_token.",
+      "fix": "Added www controller item_manager.py (basename scrubbed: hyphen->underscore) with get_context that sets context.boot.csrf_token via frappe.sessions.get_csrf_token(), and redirects Guest sessions to /login.",
+      "tags": [
+        "csrf",
+        "www",
+        "spa",
+        "item-manager",
+        "frappe-ui"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-19"
+    },
+    {
+      "id": "bug-008",
+      "timestamp": "2026-05-19T06:59:40.706Z",
+      "error_message": "Significant refactor of ",
+      "file": "easy_entry/api/item_manager.py",
+      "root_cause": "6 lines replaced/restructured",
+      "fix": "Rewrote 13→27 lines (6 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-19T06:59:40.706Z"
+    }
+  ]
+}

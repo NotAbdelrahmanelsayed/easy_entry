@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en" class="h-full">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Item Manager</title>
+		<script type="module" crossorigin src="/assets/easy_entry/frontend/assets/index-C_pDJ6Pm.js"></script>
+		<link rel="stylesheet" crossorigin href="/assets/easy_entry/frontend/assets/index-CNI5hGOQ.css">
+	</head>
+	<body class="h-full">
+		<div id="app" class="h-full"></div>
+	
+          <script>
+              {% for key in boot %}
+              window["{{ key }}"] = {{ boot[key] | tojson }};
+              {% endfor %}
+          </script>
+          </body>
+          
+</html>

@@ -29,6 +29,11 @@ app_license = "mit"
 app_include_js = ["public/js/pos_guard.js"]
 website_include_js = ["public/js/pos_guard.js"]
 
+# Item Manager SPA — let vue-router own every sub-path under /item-manager.
+website_route_rules = [
+	{"from_route": "/item-manager/<path:app_path>", "to_route": "item-manager"},
+]
+
 # include js, css files in header of web template
 # web_include_css = "/assets/easy_entry/css/easy_entry.css"
 # web_include_js = "/assets/easy_entry/js/easy_entry.js"
