@@ -88,10 +88,9 @@ doctype_js = {
 # ----------
 
 # add methods and filters to jinja environment
-# jinja = {
-# 	"methods": "easy_entry.utils.jinja_methods",
-# 	"filters": "easy_entry.utils.jinja_filters"
-# }
+jinja = {
+	"methods": ["easy_entry.utils.barcode.code128_svg"],
+}
 
 # Installation
 # ------------
