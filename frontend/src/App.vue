@@ -1,6 +1,8 @@
 <template>
 	<div class="h-full">
-		<router-view />
+		<AppShell>
+			<router-view />
+		</AppShell>
 
 		<!-- Toast host -->
 		<div class="fixed bottom-4 right-4 z-50 flex flex-col gap-2">
@@ -25,6 +27,7 @@
 </template>
 
 <script setup>
+import AppShell from "@/components/AppShell.vue";
 import { useToast } from "@/composables/useToast";
 
 const { toasts, removeToast } = useToast();

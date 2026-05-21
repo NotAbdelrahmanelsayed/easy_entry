@@ -29,9 +29,9 @@ app_license = "mit"
 app_include_js = ["public/js/pos_guard.js"]
 website_include_js = ["public/js/pos_guard.js"]
 
-# Item Manager SPA — let vue-router own every sub-path under /item-manager.
+# Easy Entry SPA — let vue-router own every sub-path under /easy.
 website_route_rules = [
-	{"from_route": "/item-manager/<path:app_path>", "to_route": "item-manager"},
+	{"from_route": "/easy/<path:app_path>", "to_route": "easy"},
 ]
 
 # include js, css files in header of web template
@@ -53,6 +53,10 @@ page_js = {"point-of-sale": "public/js/pos_guard.js"}
 doctype_js = {
 	"Item": "public/js/barcode_generator.js",
 	"Stock Settings": "public/js/reorder_levels.js",
+	"Stock Reconciliation": "public/js/label_printer.js",
+	"Purchase Invoice": "public/js/label_printer.js",
+	"Sales Invoice": "public/js/label_printer.js",
+	"Stock Entry": "public/js/label_printer.js",
 }
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
@@ -158,7 +162,10 @@ doc_events = {
 
 scheduler_events = {"daily": ["easy_entry.tasks.daily_owner_report.send_daily_owner_report"]}
 
-fixtures = [{"dt": "Role", "filters": [["role_name", "in", ["Store Owner"]]]}]
+fixtures = [
+	{"dt": "Role", "filters": [["role_name", "in", ["Store Owner"]]]},
+	{"dt": "Custom Field", "filters": [["name", "like", "%-ee_%"]]},
+]
 
 # Testing
 # -------

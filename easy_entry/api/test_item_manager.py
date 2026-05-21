@@ -276,6 +276,13 @@ class TestItemManager(IntegrationTestCase):
 		self.assertEqual(sr.docstatus, 0)  # draft, not submitted
 		self.assertEqual(sr.items[0].qty, 42)
 
+	def test_set_item_qty_submitted(self):
+		result = item_manager.set_item_qty(self.item_a, 17, submit=1)
+		sr = frappe.get_doc("Stock Reconciliation", result["stock_reconciliation"])
+		self.assertEqual(sr.docstatus, 1)  # submitted
+		self.assertEqual(result["docstatus"], 1)
+		self.assertEqual(sr.items[0].qty, 17)
+
 	def test_set_item_qty_rejects_negative(self):
 		with self.assertRaises(frappe.ValidationError):
 			item_manager.set_item_qty(self.item_a, -1)

@@ -1,5 +1,5 @@
 <template>
-	<div class="min-h-screen bg-gray-50 flex flex-col">
+	<div class="flex-1 min-h-0 bg-gray-50 flex flex-col">
 		<!-- Header -->
 		<header
 			class="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between flex-wrap gap-3"
@@ -21,6 +21,29 @@
 					@click="saveAll"
 				>
 					{{ savingAll ? __("Saving...") : __("Save All") }}
+				</button>
+				<button
+					class="px-3 py-2 rounded-lg text-sm font-medium border border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-blue-400 hover:text-blue-600 active:scale-95 transition flex items-center gap-1.5 disabled:opacity-50"
+					:disabled="items.loading"
+					:title="__('Refresh items')"
+					data-testid="refresh-btn"
+					@click="refreshItems"
+				>
+					<svg
+						class="w-4 h-4"
+						:class="{ 'animate-spin': items.loading }"
+						fill="none"
+						stroke="currentColor"
+						viewBox="0 0 24 24"
+					>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+						/>
+					</svg>
+					{{ items.loading ? __("Refreshing...") : __("Refresh") }}
 				</button>
 				<button
 					class="px-3 py-2 rounded-lg text-sm font-medium border border-gray-300 text-gray-700 hover:bg-gray-50 flex items-center gap-1"
@@ -58,6 +81,7 @@
 					/>
 				</svg>
 				<input
+					ref="searchInputEl"
 					v-model="searchQuery"
 					type="text"
 					:placeholder="__('Search by code or name...')"
@@ -66,6 +90,10 @@
 					@input="onSearchInput"
 				/>
 			</div>
+
+			<span class="text-xs text-gray-400 whitespace-nowrap hidden sm:inline">
+				{{ __("Shortcuts: F4 search · F5 refresh · Ctrl+S save all") }}
+			</span>
 
 			<select
 				v-model="itemGroupFilter"
@@ -439,21 +467,26 @@
 					data-testid="rename-input"
 					@keydown.enter="confirmRename"
 				/>
-				<div class="flex justify-end gap-2 mt-5">
-					<button
-						class="px-3 py-2 rounded-lg text-sm border border-gray-300 hover:bg-gray-50"
-						@click="renameModal.row = null"
-					>
-						{{ __("Cancel") }}
-					</button>
-					<button
-						class="px-3 py-2 rounded-lg text-sm bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50"
-						:disabled="renameModal.busy || !renameModal.newCode.trim()"
-						data-testid="rename-confirm"
-						@click="confirmRename"
-					>
-						{{ renameModal.busy ? __("Renaming...") : __("Rename") }}
-					</button>
+				<div class="flex items-center justify-between gap-2 mt-5">
+					<span class="text-xs text-gray-400">
+						{{ __("Enter or Ctrl+S to save · Esc to cancel") }}
+					</span>
+					<div class="flex gap-2">
+						<button
+							class="px-3 py-2 rounded-lg text-sm border border-gray-300 hover:bg-gray-50"
+							@click="renameModal.row = null"
+						>
+							{{ __("Cancel") }}
+						</button>
+						<button
+							class="px-3 py-2 rounded-lg text-sm bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50"
+							:disabled="renameModal.busy || !renameModal.newCode.trim()"
+							data-testid="rename-confirm"
+							@click="confirmRename"
+						>
+							{{ renameModal.busy ? __("Renaming...") : __("Rename") }}
+						</button>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -481,31 +514,72 @@
 					step="1"
 					class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
 					data-testid="qty-input"
+					@keydown.enter="confirmQty"
 				/>
+
+				<!-- Submit toggle: OFF keeps the safe draft-for-review default. -->
+				<label class="flex items-start gap-2 mt-4 cursor-pointer">
+					<input
+						v-model="qtyModal.submit"
+						type="checkbox"
+						class="mt-0.5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+						data-testid="qty-submit-toggle"
+					/>
+					<span class="text-xs text-gray-600">
+						<span class="font-medium text-gray-800">{{ __("Submit immediately") }}</span>
+						<br />
+						{{
+							qtyModal.submit
+								? __("Posts the stock change now — no desk review.")
+								: __("Leave unchecked to create a draft for review (recommended).")
+						}}
+					</span>
+				</label>
+
 				<div
-					class="mt-4 text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2"
+					class="mt-4 text-xs rounded-lg px-3 py-2 border"
+					:class="
+						qtyModal.submit
+							? 'text-red-700 bg-red-50 border-red-200'
+							: 'text-amber-700 bg-amber-50 border-amber-200'
+					"
 				>
 					{{
-						__(
-							"This creates a DRAFT Stock Reconciliation. Stock changes only after someone reviews and submits it in the desk.",
-						)
+						qtyModal.submit
+							? __(
+								"This SUBMITS a Stock Reconciliation — the stock ledger updates right away.",
+							)
+							: __(
+								"This creates a DRAFT Stock Reconciliation. Stock changes only after someone reviews and submits it in the desk.",
+							)
 					}}
 				</div>
-				<div class="flex justify-end gap-2 mt-5">
-					<button
-						class="px-3 py-2 rounded-lg text-sm border border-gray-300 hover:bg-gray-50"
-						@click="qtyModal.row = null"
-					>
-						{{ __("Cancel") }}
-					</button>
-					<button
-						class="px-3 py-2 rounded-lg text-sm bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50"
-						:disabled="qtyModal.busy"
-						data-testid="qty-confirm"
-						@click="confirmQty"
-					>
-						{{ qtyModal.busy ? __("Creating...") : __("Create draft") }}
-					</button>
+				<div class="flex items-center justify-between gap-2 mt-5">
+					<span class="text-xs text-gray-400">
+						{{ __("Enter or Ctrl+S to save · Esc to cancel") }}
+					</span>
+					<div class="flex gap-2">
+						<button
+							class="px-3 py-2 rounded-lg text-sm border border-gray-300 hover:bg-gray-50"
+							@click="qtyModal.row = null"
+						>
+							{{ __("Cancel") }}
+						</button>
+						<button
+							class="px-3 py-2 rounded-lg text-sm bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50"
+							:disabled="qtyModal.busy"
+							data-testid="qty-confirm"
+							@click="confirmQty"
+						>
+							{{
+								qtyModal.busy
+									? __("Saving...")
+									: qtyModal.submit
+										? __("Submit now")
+										: __("Create draft")
+							}}
+						</button>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -514,8 +588,9 @@
 
 <script setup>
 import { call, createResource } from "frappe-ui";
-import { computed, reactive, ref } from "vue";
+import { computed, onMounted, onUnmounted, reactive, ref } from "vue";
 import { useToast } from "@/composables/useToast";
+import { useModalShortcuts } from "@/composables/useModalShortcuts";
 
 const { showSuccess, showError, showInfo } = useToast();
 
@@ -528,6 +603,7 @@ const supplierFilter = ref("");
 const stockFilter = ref("");
 const priceFilter = ref("");
 const currentPage = ref(0);
+const searchInputEl = ref(null);
 let searchTimer = null;
 
 const offset = computed(() => currentPage.value * pageSize);
@@ -643,6 +719,20 @@ function goToPage(page) {
 	items.reload();
 }
 
+// Refresh the current page from the server. Reloading rewrites the dirty
+// baseline, so warn before discarding any unsaved row edits.
+function refreshItems() {
+	if (dirtyRows.value.length) {
+		const ok = window.confirm(
+			__("You have {0} unsaved change(s). Discard them and refresh?", [
+				dirtyRows.value.length,
+			]),
+		);
+		if (!ok) return;
+	}
+	items.reload();
+}
+
 // --- Saving --------------------------------------------------------------
 
 async function saveRow(row) {
@@ -743,11 +833,12 @@ async function confirmRename() {
 
 // --- Quantity ------------------------------------------------------------
 
-const qtyModal = reactive({ row: null, qty: 0, busy: false });
+const qtyModal = reactive({ row: null, qty: 0, submit: false, busy: false });
 
 function openQty(row) {
 	qtyModal.row = row;
 	qtyModal.qty = Number(row.qty || 0);
+	qtyModal.submit = false; // draft is always the default starting point
 	qtyModal.busy = false;
 }
 
@@ -759,18 +850,83 @@ async function confirmQty() {
 		const res = await call(`${API}.set_item_qty`, {
 			item_code: row.item_code,
 			qty: qtyModal.qty,
+			submit: qtyModal.submit ? 1 : 0,
 		});
-		showInfo(
-			__("Draft Stock Reconciliation {0} created — review it in the desk.", [
-				res.stock_reconciliation,
-			]),
-		);
+		// docstatus 1 means the SR was submitted; 0 means it stayed a draft.
+		if (res.docstatus === 1) {
+			showSuccess(
+				__("Stock Reconciliation {0} submitted — stock updated.", [
+					res.stock_reconciliation,
+				]),
+			);
+		} else {
+			showInfo(
+				__("Draft Stock Reconciliation {0} created — review it in the desk.", [
+					res.stock_reconciliation,
+				]),
+			);
+		}
 		qtyModal.row = null;
 	} catch (e) {
 		showError(errorMessage(e) || __("Could not set quantity"));
 		qtyModal.busy = false;
 	}
 }
+
+// Esc + Ctrl+S inside each popup. Enter is handled on the inputs themselves.
+useModalShortcuts(() => !!renameModal.row, {
+	onSave: confirmRename,
+	onCancel: () => (renameModal.row = null),
+});
+useModalShortcuts(() => !!qtyModal.row, {
+	onSave: confirmQty,
+	onCancel: () => (qtyModal.row = null),
+});
+
+// --- Page-level shortcuts ------------------------------------------------
+
+function isTyping(target) {
+	if (!target) return false;
+	const tag = target.tagName;
+	return tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT" || target.isContentEditable;
+}
+
+function handlePageKeydown(event) {
+	// A popup owns the keyboard while open — let useModalShortcuts handle it.
+	if (renameModal.row || qtyModal.row) return;
+
+	// "/" jumps to the search box, unless the user is already typing.
+	if (event.key === "/" && !isTyping(event.target)) {
+		event.preventDefault();
+		searchInputEl.value?.focus();
+		return;
+	}
+
+	// F4 focuses the search box — works even while typing in another field,
+	// since a function key can't be a literal text character.
+	if (event.key === "F4") {
+		event.preventDefault();
+		searchInputEl.value?.focus();
+		return;
+	}
+
+	// F5 refreshes the current page. preventDefault stops the browser's own
+	// hard reload so the SPA reloads its data in place instead.
+	if (event.key === "F5") {
+		event.preventDefault();
+		if (!items.loading) refreshItems();
+		return;
+	}
+
+	// Ctrl+S saves every dirty row at once.
+	if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "s") {
+		event.preventDefault();
+		if (dirtyRows.value.length && !savingAll.value) saveAll();
+	}
+}
+
+onMounted(() => window.addEventListener("keydown", handlePageKeydown));
+onUnmounted(() => window.removeEventListener("keydown", handlePageKeydown));
 
 // --- Export --------------------------------------------------------------
 

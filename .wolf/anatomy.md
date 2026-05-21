@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-05-19T07:05:41.111Z
-> Files: 90 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-05-21T07:38:08.787Z
+> Files: 118 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../../tmp/ee-shot/
 
@@ -11,15 +11,29 @@
 - `shot.mjs` — API routes: POST (1 endpoints) (~364 tok)
 - `verify-filters.mjs` — API routes: POST (1 endpoints) (~367 tok)
 
+## ../../../../../tmp/ee-verify/
+
+- `verify.mjs` — Declares EXE (~488 tok)
+
 ## ../../../.claude/plans/
 
+- `add-to-the-project-s-encapsulated-engelbart.md` — Item Manager keyboard shortcuts + memory rule (~779 tok)
+- `can-you-see-this-giggly-hanrahan.md` — Per-Row Item Label Print Button (~1489 tok)
+- `delegated-plotting-chipmunk.md` — Plan: Add a Refresh button to Item Manager (~483 tok)
 - `failed-to-load-items-warm-puddle.md` — Fix: "Failed to load items" on /item-manager/ for logged-in users (~1009 tok)
+- `good-work-so-far-noble-lightning.md` — Easy Entry — Dashboard Hub + Design System (~1384 tok)
+- `item-price-editor-is-unified-pixel.md` — Remove the Item Price Editor feature (~717 tok)
+- `plan-for-better-experience-wild-orbit.md` — Plan — Better UX & Keyboard Shortcuts for Easy Entry SPA (~2216 tok)
 - `there-is-a-report-bright-castle.md` — Plan: Item Manager SPA — first page of the easy_entry second interface (~1889 tok)
+- `we-need-to-create-tingly-scott.md` — Stock Count — mobile-first stock reconciliation for Easy Entry (~2119 tok)
 
 ## ../../../.claude/projects/-home-frappe-frappe-bench-16-apps-easy-entry/memory/
 
 - `item-manager-spa.md` (~299 tok)
-- `MEMORY.md` — Memory Index (~97 tok)
+- `local-dev-credentials.md` (~94 tok)
+- `local-dev-site.md` (~165 tok)
+- `MEMORY.md` — Memory Index (~183 tok)
+- `shortcut-on-new-features.md` (~236 tok)
 - `stock-reconciliation-expense-account.md` (~177 tok)
 - `ui-work-screenshot-verify.md` (~225 tok)
 
@@ -29,7 +43,7 @@
 - `.eslintrc` (~671 tok)
 - `.gitignore` — Git ignore rules (~17 tok)
 - `.pre-commit-config.yaml` (~506 tok)
-- `CLAUDE.md` — OpenWolf (~2058 tok)
+- `CLAUDE.md` — OpenWolf (~2073 tok)
 - `license.txt` (~268 tok)
 - `pyproject.toml` — Python project configuration (~437 tok)
 - `README.md` — Project documentation (~172 tok)
@@ -49,7 +63,7 @@
 ## easy_entry/
 
 - `__init__.py` (~63 tok)
-- `hooks.py` — Declares views (~1787 tok)
+- `hooks.py` — Declares views (~1857 tok)
 - `modules.txt` (~3 tok)
 - `patches.txt` (~84 tok)
 - `rename_itemcode_with_names.py` — bench console (~760 tok)
@@ -57,9 +71,11 @@
 ## easy_entry/api/
 
 - `__init__.py` (~0 tok)
-- `item_manager.py` — Whitelisted endpoints for the Item Manager SPA. (~3037 tok)
-- `item_prices.py` — get_price_lists, get_item_prices, update_item_price (~467 tok)
-- `test_item_manager.py` — Integration tests for the Item Manager API. (~2946 tok)
+- `_stock.py` — Shared stock helpers for the Easy Entry APIs. (~708 tok)
+- `item_manager.py` — Whitelisted endpoints for the Item Manager SPA. (~2884 tok)
+- `stock_count.py` — Whitelisted endpoints for the Stock Count SPA feature. (~1691 tok)
+- `test_item_manager.py` — Integration tests for the Item Manager API. (~3036 tok)
+- `test_stock_count.py` — Integration tests for the Stock Count API. (~2755 tok)
 
 ## easy_entry/config/
 
@@ -82,6 +98,16 @@
 - `barcode_generator.json` (~331 tok)
 - `barcode_generator.py` — For license information, please see license.txt (~398 tok)
 - `test_barcode_generator.py` — See license.txt (~53 tok)
+
+## easy_entry/easy_entry/doctype/ee_stock_count/
+
+- `ee_stock_count.json` (~690 tok)
+- `ee_stock_count.py` — EE Stock Count -- a resumable, mobile-first stock-counting session. (~933 tok)
+
+## easy_entry/easy_entry/doctype/ee_stock_count_line/
+
+- `ee_stock_count_line.json` (~416 tok)
+- `ee_stock_count_line.py` — For license information, please see license.txt (~98 tok)
 
 ## easy_entry/easy_entry/doctype/product/
 
@@ -124,6 +150,7 @@
 
 ## easy_entry/fixtures/
 
+- `custom_field.json` (~473 tok)
 - `role.json` (~26 tok)
 
 ## easy_entry/overrides/
@@ -143,6 +170,7 @@
 ## easy_entry/public/js/
 
 - `barcode_generator.js` (~82 tok)
+- `label_printer.js` — Per-row and bulk item label printing for Stock Reconciliation, (~1896 tok)
 - `pos_guard.js` — pos_guard.js — idle refocus for item search (robust across POS variants) (~1019 tok)
 - `pos_shortcuts.js` (~32 tok)
 - `reorder_levels.js` — Declares s (~928 tok)
@@ -171,29 +199,41 @@
 
 ## easy_entry/www/
 
+- `easy.py` — get_context (~159 tok)
 - `item_manager.py` — www controller: injects csrf_token into boot, redirects Guest to /login (~150 tok)
 
 ## frontend/
 
-- `index.html` — Item Manager (~88 tok)
-- `package.json` — Node.js package manifest (~143 tok)
+- `design.md` — Easy Entry — Frontend Design System (~1190 tok)
+- `index.html` — Easy Entry (~87 tok)
+- `package.json` — Node.js package manifest (~152 tok)
 - `postcss.config.js` (~22 tok)
 - `tailwind.config.js` — /*.{vue,js,ts,jsx,tsx}", (~94 tok)
-- `vite.config.js` — Builds to ../easy_entry/public/frontend and writes the SPA host page to (~214 tok)
+- `vite.config.js` — Builds to ../easy_entry/public/frontend and writes the SPA host page to (~210 tok)
 
 ## frontend/src/
 
-- `App.vue` — Vue: setup (~267 tok)
+- `App.vue` — Vue: setup (~288 tok)
+- `features.js` — Feature registry — the single source of truth for the Easy Entry dashboard. (~338 tok)
 - `index.css` — Styles: 4 rules (~35 tok)
 - `main.js` — Route all frappe-ui resources through Frappe's request layer (handles CSRF). (~145 tok)
-- `router.js` — Declares routes (~133 tok)
+- `router.js` — Declares routes (~196 tok)
 - `translation.js` — Minimal translation shim. Frappe's desk exposes a full `__()`; the SPA only (~146 tok)
+
+## frontend/src/components/
+
+- `AppShell.vue` — Vue: Dashboard, setup (~697 tok)
+- `BarcodeScanner.vue` — Vue: setup (~595 tok)
+- `ShortcutsModal.vue` — Vue: setup (~577 tok)
 
 ## frontend/src/composables/
 
+- `useModalShortcuts.js` — Keyboard behaviour shared by every Easy Entry popup. (~312 tok)
 - `useToast.js` — A tiny self-contained toast store. Shared module state means every caller of (~222 tok)
 
 ## frontend/src/pages/
 
-- `ItemManager.vue` — Vue component (~6738 tok)
-- `ItemPriceEditor.vue` — Vue: ItemManager, setup (~3075 tok)
+- `Dashboard.vue` — Vue: setup (~356 tok)
+- `ItemManager.vue` — Vue component (~8082 tok)
+- `StockCount.vue` — Vue: StockCountSession, setup (~1573 tok)
+- `StockCountSession.vue` — Vue: StockCount, setup (~4980 tok)

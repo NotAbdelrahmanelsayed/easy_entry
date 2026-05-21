@@ -4,7 +4,7 @@ import vue from "@vitejs/plugin-vue";
 import frappeui from "frappe-ui/vite";
 
 // Builds to ../easy_entry/public/frontend and writes the SPA host page to
-// ../easy_entry/www/item-manager.html (with the CSRF token injected by jinjaBootData).
+// ../easy_entry/www/easy.html (with the CSRF token injected by jinjaBootData).
 export default defineConfig({
 	plugins: [
 		frappeui({
@@ -12,7 +12,7 @@ export default defineConfig({
 			lucideIcons: true,
 			jinjaBootData: true,
 			buildConfig: {
-				indexHtmlPath: "../easy_entry/www/item-manager.html",
+				indexHtmlPath: "../easy_entry/www/easy.html",
 				emptyOutDir: true,
 			},
 		}),

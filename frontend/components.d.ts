@@ -8,7 +8,10 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    AppShell: typeof import('./src/components/AppShell.vue')['default']
+    BarcodeScanner: typeof import('./src/components/BarcodeScanner.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    ShortcutsModal: typeof import('./src/components/ShortcutsModal.vue')['default']
   }
 }

@@ -15,7 +15,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 The app has two layers:
 - **Python backend** — Frappe app under `easy_entry/` (standard double-directory layout: `easy_entry/easy_entry/`)
-- **Vue SPA frontend** — a Vue 3 + Vite + frappe-ui app under `frontend/`, built and served at the `/item-manager` www route. First page is the **Item Manager**.
+- **Vue SPA frontend** — a Vue 3 + Vite + frappe-ui app under `frontend/`, built and served at the `/easy` www route. Landing page is the **Dashboard**, which links to feature pages (Item Manager, Item Price Editor).
 
 ## Backend Commands
 
@@ -33,7 +33,7 @@ bench build --app easy_entry
 ## Frontend SPA Commands
 
 ```bash
-# Build the Item Manager SPA (Vue 3 + Vite). Writes easy_entry/www/item-manager.html
+# Build the Easy Entry SPA (Vue 3 + Vite). Writes easy_entry/www/easy.html
 # and assets into easy_entry/public/frontend/. Run after any frontend/ change:
 cd frontend && npm install && npm run build
 
@@ -47,11 +47,6 @@ cd frontend && npm run dev
 `easy_entry/easy_entry/doctype/product/product.py` — the core shortcut. On `validate`, it creates an ERPNext `Item`, sets buying/selling `Item Price` records, and creates a `Stock Reconciliation` to set initial quantity. Also generates an auto-incremented barcode (`P0001`, `P0002`, …) via the `BarcodeGenerator` singleton.
 
 ### API endpoints (`easy_entry/api/`)
-`item_prices.py` — three `@frappe.whitelist()` functions for the Item Price Editor SPA:
-- `get_price_lists()` — returns all enabled Price Lists
-- `get_item_prices(search, price_list, limit, offset)` — paginated, searchable Item Price rows joined with Item image
-- `update_item_price(name, price_list_rate)` — saves a single Item Price record
-
 `item_manager.py` — six `@frappe.whitelist()` functions for the Item Manager SPA:
 - `get_items(search, item_group, limit, offset)` — paginated items joined with buying/selling `Item Price`, summed on-hand qty from `tabBin`, and the first `Item Supplier` row
 - `update_item(item_code, fields)` — updates `item_name` and/or `supplier` (first `supplier_items` row)
@@ -73,7 +68,7 @@ All are Script Reports (Python + JS):
 - `app_include_js` / `page_js["point-of-sale"]` → `pos_guard.js` — injected into the ERPNext desk and the legacy POS page.
 - `doctype_js["Stock Settings"]` → `reorder_levels.js` — adds a button to the Stock Settings form that triggers `reorder_levels.set_missing_reorder_levels()`.
 - `scheduler_events["daily"]` → `tasks/daily_owner_report.send_daily_owner_report` — emails Store Owner users a sold-items summary.
-- `website_route_rules` → `/item-manager/<path:app_path>` maps to the `item-manager` www page, so vue-router owns every sub-path of the SPA.
+- `website_route_rules` → `/easy/<path:app_path>` maps to the `easy` www page, so vue-router owns every sub-path of the SPA.
 
 ### Public JS (`easy_entry/public/js/`)
 - `pos_guard.js` — idle-refocus helper injected into both the Frappe desk and the `pos_next` SPA (via manual injection in `pos_next/www/pos.html`). Must be re-injected after every `bench build` or `bench update` on pos_next.
@@ -87,17 +82,20 @@ All are Script Reports (Python + JS):
 - `overrides/reorder_item.py` — overrides ERPNext's auto-reorder email to send Arabic HTML template.
 
 ### Frontend SPA (`frontend/`)
-A standalone Vue 3 + Vite + frappe-ui app, served at the `/item-manager` www route.
-- **Build infra** — `package.json`, `vite.config.js` (uses the `frappe-ui/vite` plugin: builds to `easy_entry/public/frontend/` and writes `easy_entry/www/item-manager.html` with the CSRF token injected), `tailwind.config.js`, `postcss.config.js`, `index.html`.
+A standalone Vue 3 + Vite + frappe-ui app, served at the `/easy` www route.
+- **Build infra** — `package.json`, `vite.config.js` (uses the `frappe-ui/vite` plugin: builds to `easy_entry/public/frontend/` and writes `easy_entry/www/easy.html` with the CSRF token injected), `tailwind.config.js`, `postcss.config.js`, `index.html`.
+- `frontend/design.md` — the frontend design system: stack constraints, design tokens, layout patterns, and how to register a new feature page. Read it before adding feature pages.
 - `frontend/src/main.js` — bootstraps `FrappeUI`, the router, and the translation plugin; routes resources through `frappeRequest`.
-- `frontend/src/App.vue` — root component; also hosts the toast queue.
-- `frontend/src/router.js` — `createWebHistory("/item-manager")`; routes: `/` → `ItemManager.vue`, `/price-editor` → `ItemPriceEditor.vue`.
+- `frontend/src/App.vue` — root component; wraps `<router-view>` in `AppShell` and hosts the toast queue.
+- `frontend/src/router.js` — `createWebHistory("/easy")`; routes: `/` → `Dashboard.vue`, `/item-manager` → `ItemManager.vue`.
+- `frontend/src/features.js` — feature registry (`key`, `title`, `description`, `icon`, `route`); single source for the dashboard cards.
+- `frontend/src/components/AppShell.vue` — global app bar (brand + back-to-dashboard link on non-home routes) wrapping every page.
+- `frontend/src/pages/Dashboard.vue` — landing page; renders a card grid from `features.js`.
 - `frontend/src/translation.js` — minimal `__()` shim (printf-style `{0}` substitution).
 - `frontend/src/composables/useToast.js` — shared toast store (`showSuccess`/`showError`/`showInfo`), rendered once by `App.vue`.
 - `frontend/src/pages/ItemManager.vue` — the **Item Manager**: searchable, paginated item table with inline editing of name, buying/selling price, and supplier (dirty-cell highlighting, per-row + Save All), a rename modal (`rename_item`), a quantity modal that creates a draft Stock Reconciliation, and XLSX export. Calls `easy_entry.api.item_manager.*`.
-- `frontend/src/pages/ItemPriceEditor.vue` — Item Price Editor: searchable paginated table with inline price editing. Calls `easy_entry.api.item_prices.*`.
 
-**Rebuild required:** after any change under `frontend/`, run `cd frontend && npm run build` — the built `www/item-manager.html` and `public/frontend/` assets are what the `/item-manager` route serves.
+**Rebuild required:** after any change under `frontend/`, run `cd frontend && npm run build` — the built `www/easy.html` and `public/frontend/` assets are what the `/easy` route serves.
 
 ## Key Domain Rules
 

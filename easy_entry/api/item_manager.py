@@ -1,7 +1,7 @@
 """Whitelisted endpoints for the Item Manager SPA.
 
-Mirrors the conventions of ``easy_entry/api/item_prices.py``:
-explicit ``frappe.db.commit()`` after writes and ``limit`` capped at 200.
+Convention: explicit ``frappe.db.commit()`` after writes and ``limit``
+capped at 200.
 """
 
 import json
@@ -10,6 +10,8 @@ import frappe
 from frappe import _
 from frappe.utils import cint, flt, nowdate, nowtime
 from frappe.utils.xlsxutils import make_xlsx
+
+from easy_entry.api import _stock
 
 BUYING_PRICE_LIST = "Standard Buying"
 SELLING_PRICE_LIST = "Standard Selling"
@@ -246,11 +248,13 @@ def update_item_price(item_code, price_list, rate):
 
 
 @frappe.whitelist()
-def set_item_qty(item_code, qty, warehouse=None):
-	"""Create a DRAFT Stock Reconciliation that sets an item's on-hand qty.
+def set_item_qty(item_code, qty, warehouse=None, submit=False):
+	"""Create a Stock Reconciliation that sets an item's on-hand qty.
 
-	The document is intentionally left unsubmitted -- a human reviews and
-	submits it from the desk, since submission posts stock ledger entries.
+	By default the document is left as a DRAFT -- a human reviews and submits
+	it from the desk, since submission posts stock ledger entries. When
+	``submit`` is truthy the SR is submitted immediately (still subject to the
+	user's submit permission).
 	"""
 	qty = flt(qty)
 	if qty < 0:
@@ -258,32 +262,13 @@ def set_item_qty(item_code, qty, warehouse=None):
 	if not frappe.db.exists("Item", item_code):
 		frappe.throw(_("Item {0} does not exist.").format(item_code))
 
-	if not warehouse:
-		warehouse = frappe.db.get_single_value("Stock Settings", "default_warehouse")
-	if not warehouse:
-		frappe.throw(_("No warehouse provided and no default warehouse set in Stock Settings."))
+	warehouse = _stock.resolve_warehouse(warehouse)
 
-	# Valuation rate: existing Bin value, else buying price, else item valuation.
-	valuation_rate = frappe.db.get_value(
-		"Bin", {"item_code": item_code, "warehouse": warehouse}, "valuation_rate"
-	)
-	if not valuation_rate:
-		valuation_rate = frappe.db.get_value(
-			"Item Price",
-			{"item_code": item_code, "price_list": BUYING_PRICE_LIST},
-			"price_list_rate",
-		)
-	if not valuation_rate:
-		valuation_rate = frappe.db.get_value("Item", item_code, "valuation_rate")
-
-	# An Asset/Liability account is required when the reconciliation is an
-	# opening entry (a brand-new item with no prior stock ledger entry).
+	# Valuation rate and difference account are shared with the Stock Count
+	# feature -- see easy_entry.api._stock for the resolution rules.
+	valuation_rate = _stock.resolve_valuation_rate(item_code, warehouse)
 	company = frappe.db.get_value("Warehouse", warehouse, "company")
-	difference_account = frappe.db.get_value(
-		"Account",
-		{"company": company, "account_name": "Temporary Opening", "is_group": 0},
-		"name",
-	) or frappe.db.get_value("Company", company, "stock_adjustment_account")
+	difference_account = _stock.resolve_difference_account(company)
 
 	sr = frappe.new_doc("Stock Reconciliation")
 	sr.company = company
@@ -301,6 +286,8 @@ def set_item_qty(item_code, qty, warehouse=None):
 		},
 	)
 	sr.insert(ignore_permissions=False)
+	if cint(submit):
+		sr.submit()  # raises if the user lacks submit permission
 	frappe.db.commit()
 	return {"ok": True, "stock_reconciliation": sr.name, "docstatus": sr.docstatus}
 

@@ -2,20 +2,31 @@ import { createRouter, createWebHistory } from "vue-router";
 
 const routes = [
 	{
-		name: "ItemManager",
+		name: "Dashboard",
 		path: "/",
+		component: () => import("@/pages/Dashboard.vue"),
+	},
+	{
+		name: "ItemManager",
+		path: "/item-manager",
 		component: () => import("@/pages/ItemManager.vue"),
 	},
 	{
-		name: "ItemPriceEditor",
-		path: "/price-editor",
-		component: () => import("@/pages/ItemPriceEditor.vue"),
+		name: "StockCount",
+		path: "/stock-count",
+		component: () => import("@/pages/StockCount.vue"),
+	},
+	{
+		name: "StockCountSession",
+		path: "/stock-count/:session",
+		component: () => import("@/pages/StockCountSession.vue"),
+		props: true,
 	},
 ];
 
 const router = createRouter({
-	// The SPA is mounted at the /item-manager www route.
-	history: createWebHistory("/item-manager"),
+	// The SPA is mounted at the /easy www route.
+	history: createWebHistory("/easy"),
 	routes,
 });
 

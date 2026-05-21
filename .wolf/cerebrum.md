@@ -7,9 +7,12 @@
 ## User Preferences
 
 <!-- How the user likes things done. Code style, tools, patterns, communication. -->
+- When adding any feature, also add a keyboard shortcut if it would improve UX — do this proactively as part of the feature, without being asked.
 
 ## Key Learnings
 
+- **Per-row child-table actions** in easy_entry use a Custom Button field (`fieldtype: Button`, `in_list_view: 1`, `columns: 1`, `print_hide: 1`) handled via `frappe.ui.form.on("<Child Doctype>", "fieldname", fn)`. The handler receives `(frm, cdt, cdn)` and reads the row with `locals[cdt][cdn]`. Custom fields ship via `easy_entry/fixtures/custom_field.json`; the fixtures list in hooks.py uses `{"dt": "Custom Field", "filters": [["name", "like", "%-ee_%"]]}`.
+- **Configurable settings** for the app are stored on existing ERPNext singletons (e.g., Stock Settings) via Custom Field fixtures — no new Singleton DocType needed. Reads use `frappe.db.get_single_value("Stock Settings", "fieldname")`.
 - **Project:** easy_entry
 - **Description:** Add Items, Prices, Stock and Purchase invoices with ease in a single DocType
 - The app is NOT installed on a dedicated site; local testing uses the `capital` site (has ERPNext). Dev web server runs on port 8002 — `http://capital:8002`.
@@ -22,10 +25,13 @@
 <!-- Mistakes made and corrected. Each entry prevents the same mistake recurring. -->
 <!-- Format: [YYYY-MM-DD] Description of what went wrong and what to do instead. -->
 - [2026-05-18] Stock Reconciliation difference account: set `sr.expense_account`, NOT `sr.difference_account` (that field does not exist).
+- [2026-05-21] `frappe.ui.form.on(childDoctype, "buttonField", fn)` does NOT fire when the button is clicked in the **inline grid** (static row). It only fires when the row is open as a popup. For always-clickable per-row buttons use jQuery delegation on `grid.wrapper.on("click.ns", "[data-fieldname='fieldname']", fn)` instead — this fires at DOM level regardless of Frappe form state.
 - [2026-05-18] In a `.vue` file, always close `<script setup>` with `</script>` — a missing close fails the Vite build with a misleading "Element is missing end tag".
 
 ## Decision Log
 
 - [2026-05-18] Item Manager qty edits create a DRAFT Stock Reconciliation (unsubmitted) so a human reviews before stock ledger entries are posted. Supplier is read/written as the first `supplier_items` (Item Supplier) row — no schema change. Export is XLSX-only via `frappe.utils.xlsxutils.make_xlsx`.
+- [2026-05-19] Removed the Item Price Editor SPA page + `item_prices.py` API entirely — redundant with Item Manager's inline buying/selling price editing. The feature was fully isolated (no hooks, no tests, no cross-references), so removal was a clean delete.
+- [2026-05-19] Stock Count feature uses a dedicated `EE Stock Count` / `EE Stock Count Line` DocType pair as the session store — NOT a draft Stock Reconciliation as the session. ERPNext's `Stock Reconciliation.validate()` unconditionally calls `remove_items_with_no_change()`, which prunes no-difference lines and raises `EmptyStockReconciliationItemsError` on an empty SR — that would silently drop counted-but-unchanged lines mid-session. The SR is built only at `finish_session`, from lines where `counted_qty != system_qty`; `build_reconciliation` catches `EmptyStockReconciliationItemsError` and returns `None`. Traceability via the `EE Stock Count.stock_reconciliation` link. The originally-planned `Stock Reconciliation` custom-field fixture was dropped.
 
 <!-- Significant technical decisions with rationale. Why X was chosen over Y. -->
