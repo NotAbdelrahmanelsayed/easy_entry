@@ -1,0 +1,65 @@
+[
+  {
+    "doctype": "Custom Field",
+    "name": "Stock Settings-ee_label_print_format",
+    "dt": "Stock Settings",
+    "fieldname": "ee_label_print_format",
+    "fieldtype": "Link",
+    "options": "Print Format",
+    "label": "Default Item Label Print Format",
+    "insert_after": "auto_indent",
+    "module": "Easy Entry"
+  },
+  {
+    "doctype": "Custom Field",
+    "name": "Stock Reconciliation Item-ee_print_label",
+    "dt": "Stock Reconciliation Item",
+    "fieldname": "ee_print_label",
+    "fieldtype": "Button",
+    "label": "🖨️",
+    "in_list_view": 1,
+    "columns": 1,
+    "print_hide": 1,
+    "insert_after": "current_qty",
+    "module": "Easy Entry"
+  },
+  {
+    "doctype": "Custom Field",
+    "name": "Purchase Invoice Item-ee_print_label",
+    "dt": "Purchase Invoice Item",
+    "fieldname": "ee_print_label",
+    "fieldtype": "Button",
+    "label": "🖨️",
+    "in_list_view": 1,
+    "columns": 1,
+    "print_hide": 1,
+    "insert_after": "item_name",
+    "module": "Easy Entry"
+  },
+  {
+    "doctype": "Custom Field",
+    "name": "Sales Invoice Item-ee_print_label",
+    "dt": "Sales Invoice Item",
+    "fieldname": "ee_print_label",
+    "fieldtype": "Button",
+    "label": "🖨️",
+    "in_list_view": 1,
+    "columns": 1,
+    "print_hide": 1,
+    "insert_after": "item_name",
+    "module": "Easy Entry"
+  },
+  {
+    "doctype": "Custom Field",
+    "name": "Stock Entry Detail-ee_print_label",
+    "dt": "Stock Entry Detail",
+    "fieldname": "ee_print_label",
+    "fieldtype": "Button",
+    "label": "🖨️",
+    "in_list_view": 1,
+    "columns": 1,
+    "print_hide": 1,
+    "insert_after": "item_name",
+    "module": "Easy Entry"
+  }
+]
