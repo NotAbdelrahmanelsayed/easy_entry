@@ -135,27 +135,41 @@ function bindGridPrintClick(frm, fieldname, childDt) {
 }
 
 // ── Popup mode (row open as dialog) ──────────────────────────────────────────
+//
+// frappe.ui.form.on fires for EVERY keyboard navigation event that passes
+// through the button column (Tab/Enter moves between columns and activates
+// each one).  Guard: only proceed when the row is actually open as a popup
+// dialog (grid.open_grid_row is set).  Inline-grid clicks are fully handled
+// by the click.ee_print handler in bindGridPrintClick above.
+
+function isPopupOpen(frm) {
+	return !!(frm.fields_dict.items?.grid?.open_grid_row);
+}
 
 frappe.ui.form.on("Stock Reconciliation Item", {
 	ee_print_label: async (frm, cdt, cdn) => {
+		if (!isPopupOpen(frm)) return;
 		openPrintview(locals[cdt][cdn].item_code, await getLabelFormat());
 	},
 });
 
 frappe.ui.form.on("Purchase Invoice Item", {
 	ee_print_label: async (frm, cdt, cdn) => {
+		if (!isPopupOpen(frm)) return;
 		openPrintview(locals[cdt][cdn].item_code, await getLabelFormat());
 	},
 });
 
 frappe.ui.form.on("Sales Invoice Item", {
 	ee_print_label: async (frm, cdt, cdn) => {
+		if (!isPopupOpen(frm)) return;
 		openPrintview(locals[cdt][cdn].item_code, await getLabelFormat());
 	},
 });
 
 frappe.ui.form.on("Stock Entry Detail", {
 	ee_print_label: async (frm, cdt, cdn) => {
+		if (!isPopupOpen(frm)) return;
 		openPrintview(locals[cdt][cdn].item_code, await getLabelFormat());
 	},
 });
