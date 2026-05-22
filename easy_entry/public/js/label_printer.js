@@ -11,7 +11,15 @@ async function getLabelFormat() {
 	return _format;
 }
 
+// Guard: (itemCode, timestamp) — prevents multiple handlers from opening
+// duplicate tabs for the same click event within a 400 ms window.
+const _printGuard = new Map();
+
 function openPrintview(itemCode, format) {
+	const now = Date.now();
+	if (now - (_printGuard.get(itemCode) || 0) < 400) return;
+	_printGuard.set(itemCode, now);
+
 	const params = new URLSearchParams({
 		doctype: "Item",
 		name: itemCode,
