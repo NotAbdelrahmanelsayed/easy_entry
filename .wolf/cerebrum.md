@@ -19,6 +19,9 @@
 - The Item Manager SPA lives in `frontend/` (Vue 3 + Vite + frappe-ui). Build with `cd frontend && npm run build`; it writes `easy_entry/www/item-manager.html` and assets to `public/frontend/`. Served at `/item-manager`.
 - Stock Reconciliation's "Difference Account" field is named `expense_account` (not `difference_account`). For opening-stock items it must be an Asset/Liability account — use the company's "Temporary Opening" account.
 - The Barcode Generator singleton needs `prefix` configured, otherwise every new Item insert fails with "Prefix is required" (the `Item.after_insert` hook calls it).
+- **Print Format `css` field** is injected as a separate `<style>` block after the inline HTML `<style>`. For label formats, leave `css: ""` and put ALL styles inside the `html` field only. The old `50 * 25` had `direction:rtl` in `css` which broke English items and `font-size:13px` that overrode the intended 8pt.
+- **SVG `height: 100%` inside a flex item collapses to 0 in old WebKit** (wkhtmltopdf). The barcode was completely invisible in the old format for this reason. Always use explicit `height: NNmm` on `.barcode svg`.
+- **wkhtmltoimage ≠ wkhtmltopdf** for label testing: `wkhtmltoimage` ignores `pdfkit-page-height` meta tags and renders natural content height. Screenshots show extra whitespace below the barcode. The real PDF (wkhtmltopdf) correctly clips to the declared page height. Verify label designs in Frappe's actual printview.
 
 ## Do-Not-Repeat
 
@@ -27,6 +30,8 @@
 - [2026-05-18] Stock Reconciliation difference account: set `sr.expense_account`, NOT `sr.difference_account` (that field does not exist).
 - [2026-05-21] `frappe.ui.form.on(childDoctype, "buttonField", fn)` does NOT fire when the button is clicked in the **inline grid** (static row). It only fires when the row is open as a popup. For always-clickable per-row buttons use jQuery delegation on `grid.wrapper.on("click.ns", "[data-fieldname='fieldname']", fn)` instead — this fires at DOM level regardless of Frappe form state.
 - [2026-05-18] In a `.vue` file, always close `<script setup>` with `</script>` — a missing close fails the Vite build with a misleading "Element is missing end tag".
+- [2026-05-22] Print Format `css` field: NEVER put styles in `css` for label formats — it overrides inline styles with wrong `direction:rtl` and font-size. Set `css: ""` and style inside `html`.
+- [2026-05-22] SVG `height: 100%` in flex container: collapses to 0 in wkhtmltopdf's old WebKit — use explicit `height: 11mm` on `.barcode svg`, never `100%`.
 
 ## Decision Log
 

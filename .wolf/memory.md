@@ -368,3 +368,18 @@ Verified end-to-end via headless Chromium screenshots; fixed the Save-column das
 | 10:31 | Created easy_entry/public/js/label_printer.js | — | ~1464 |
 | 10:34 | Created easy_entry/public/js/label_printer.js | — | ~1509 |
 | 10:38 | Created easy_entry/public/js/label_printer.js | — | ~1896 |
+| 19:52 | patched trigger_print_script in __init__.py + code128_svg Jinja global + updated 50*25 print format | __init__.py, hooks.py, utils/barcode.py, DB | committed 0fb49e1 | ~2800 |
+
+## Session 2026-05-22 — Print Format Redesign
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 15:54 | Diagnosed `50 * 25` format — barcode invisible (SVG height:100% collapses), css field conflicts direction:rtl | print_format.json | Root cause found | ~800 |
+| 15:54 | Rewrote `50 * 25` HTML: cleared css field, 9pt font, explicit height:11mm on SVG, name-wrap vertical centering | print_format.json | Barcode now renders | ~400 |
+| 15:54 | Created `38 * 25` format: 38mm width, 8.5pt font, 36mm barcode | print_format.json | New format working | ~400 |
+| 15:54 | Loaded both formats into site via frappe console db_set | erp.abderlahman-erp.store | Updated+Inserted | ~200 |
+| 15:54 | Updated CLAUDE.md with Print Formats section (6 gotchas) | CLAUDE.md | Documented | ~300 |
+| 15:54 | Updated .wolf/cerebrum.md Key Learnings and Do-Not-Repeat with css field + SVG height findings | cerebrum.md | Learned | ~200 |
+| 15:54 | Updated .wolf/anatomy.md with print_format.json entry | anatomy.md | Documented | ~100 |
+
+Session summary: Fixed `50 * 25` label (barcode was completely invisible due to SVG height:100% in flex container) and created new `38 * 25` label. Cleared the conflicting `css` field in both. Key lesson: old WebKit (wkhtmltopdf) doesn't resolve `height:100%` on SVG inside a flex item.

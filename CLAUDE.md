@@ -97,6 +97,38 @@ A standalone Vue 3 + Vite + frappe-ui app, served at the `/easy` www route.
 
 **Rebuild required:** after any change under `frontend/`, run `cd frontend && npm run build` — the built `www/easy.html` and `public/frontend/` assets are what the `/easy` route serves.
 
+## Print Formats (Item Labels)
+
+Fixture: `easy_entry/fixtures/print_format.json` — two label sizes for the `Item` DocType.
+
+| Format name | Page size | Font | Barcode |
+|-------------|-----------|------|---------|
+| `50 * 25`   | 50mm × 25mm | 9pt bold, 3-line clamp | `code128_svg(raw, width_mm=48, height_mm=11)` |
+| `38 * 25`   | 38mm × 25mm | 8.5pt bold, 3-line clamp | `code128_svg(raw, width_mm=36, height_mm=11)` |
+
+Both use a flex-column layout: name on top (flex: 1 1 auto, vertically centered), barcode on the bottom (flex: 0 0 11mm).
+
+### Critical gotchas for label print formats
+
+1. **Never use the `css` field for label formats.** Frappe injects the `css` field as a separate `<style>` block AFTER the inline `<style>` inside `html`. The same selector in both cascades unpredictably — in testing, `direction: rtl` in the css field forced RTL for English items, and `font-size: 13px` overrode the desired 8pt. Keep ALL styles inside the `html` field's `<style>` block and set `css: ""`.
+
+2. **SVG `height: 100%` inside a flex item collapses to 0 in old WebKit (wkhtmltopdf).** The barcode becomes completely invisible. Always set an explicit `height: NNmm` on `.barcode svg` — never `height: 100%`. This was the root cause of the "barcode not visible at all" bug in the original `50 * 25` format.
+
+3. **Barcode SVG height must equal the flex container height.** Use `flex: 0 0 11mm` on `.barcode` and `height: 11mm` on `.barcode svg`. Mismatching (e.g. SVG 14mm inside a 12mm container) causes rendering gaps.
+
+4. **Test label HTML with `wkhtmltopdf`, not `wkhtmltoimage`.** The two renderers handle `height` constraints differently — `wkhtmltoimage` ignores `pdfkit-page-height` and renders the natural content height, so screenshots may show whitespace below the barcode that won't appear in the real PDF print. Verify final appearance in Frappe's printview (`/printview?doctype=Item&name=…&format=50+*+25&trigger_print=0&no_letterhead=1`).
+
+5. **Screenshot command for iterating label designs:**
+   ```bash
+   # Render to PNG at label-exact dimensions (50×25mm @ ~288dpi)
+   # 50mm × 96/25.4 × 3 ≈ 567px wide; 25mm × 96/25.4 × 3 ≈ 284px tall
+   wkhtmltoimage --width 567 --crop-h 284 --quality 95 --zoom 3 \
+     /tmp/test_label.html /tmp/out.png
+   # For 38×25: --width 431 --crop-h 284
+   ```
+
+6. **The `code128_svg` Jinja global** (`easy_entry/utils/barcode.py`) generates inline SVG. Call as `{{ code128_svg(raw, width_mm=48, height_mm=11) }}`. Width should match the container's inner width (label width − 2mm side padding).
+
 ## Key Domain Rules
 
 - **Barcode format**: `P` prefix + zero-padded integer (e.g. `P0042`). Controlled by the `BarcodeGenerator` singleton doctype. The `Product` doctype uses its own incremental generator (`BARCODE_PREFIX = "P"`, `BARCODE_PAD = 4`) in `product.py`.

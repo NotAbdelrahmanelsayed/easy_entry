@@ -151,6 +151,7 @@
 ## easy_entry/fixtures/
 
 - `custom_field.json` (~473 tok)
+- `print_format.json` — Two item label fixtures: `50 * 25` (50×25mm, 9pt) and `38 * 25` (38×25mm, 8.5pt). Both use flex-column layout with explicit `height: 11mm` on `.barcode svg`. The `css` field is intentionally empty — see CLAUDE.md § Print Formats for the css-field pitfall. (~390 tok)
 - `role.json` (~26 tok)
 
 ## easy_entry/overrides/
@@ -237,3 +238,5 @@
 - `ItemManager.vue` — Vue component (~8082 tok)
 - `StockCount.vue` — Vue: StockCountSession, setup (~1573 tok)
 - `StockCountSession.vue` — Vue: StockCount, setup (~4980 tok)
+- `easy_entry/utils/__init__.py` — empty package init (~1 tok)
+- `easy_entry/utils/barcode.py` — pure-Python Code128B SVG generator; Jinja global `code128_svg(value, width_mm, height_mm)` (~120 tok)
