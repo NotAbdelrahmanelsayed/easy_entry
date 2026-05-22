@@ -164,6 +164,7 @@ scheduler_events = {"daily": ["easy_entry.tasks.daily_owner_report.send_daily_ow
 fixtures = [
 	{"dt": "Role", "filters": [["role_name", "in", ["Store Owner"]]]},
 	{"dt": "Custom Field", "filters": [["name", "like", "%-ee_%"]]},
+	{"dt": "Print Format", "filters": [["name", "in", ["50 * 25"]]]},
 ]
 
 # Testing
