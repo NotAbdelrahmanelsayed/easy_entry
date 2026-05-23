@@ -32,6 +32,8 @@
 - [2026-05-18] In a `.vue` file, always close `<script setup>` with `</script>` — a missing close fails the Vite build with a misleading "Element is missing end tag".
 - [2026-05-22] Print Format `css` field: NEVER put styles in `css` for label formats — it overrides inline styles with wrong `direction:rtl` and font-size. Set `css: ""` and style inside `html`.
 - [2026-05-22] SVG `height: 100%` in flex container: collapses to 0 in wkhtmltopdf's old WebKit — use explicit `height: 11mm` on `.barcode svg`, never `100%`.
+- [2026-05-22] When a patch depends on a custom field column that may not exist yet (fixtures run after patches in bench migrate), add the column explicitly: check with `frappe.db.has_column("Supplier", "fieldname")` and add with `frappe.db.sql("ALTER TABLE ... ADD COLUMN ...")`. Neither `frappe.db.column_exists` nor `frappe.db.add_column` exist in this Frappe version.
+- [2026-05-22] Custom field fixture entries MUST include a `name` field (e.g., `"name": "Supplier-ee_supplier_code"`); omitting it causes `KeyError: 'name'` during `sync_fixtures`.
 
 ## Decision Log
 

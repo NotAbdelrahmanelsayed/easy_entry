@@ -153,7 +153,10 @@ jinja = {
 doc_events = {
 	"Item": {
 		"after_insert": "easy_entry.easy_entry.doctype.barcode_generator.barcode_generator.generate_barcode_to_item"
-	}
+	},
+	"Supplier": {
+		"after_insert": "easy_entry.utils.supplier_code.assign_supplier_code"
+	},
 }
 
 # Scheduled Tasks

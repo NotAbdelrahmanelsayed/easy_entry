@@ -11,11 +11,23 @@ async function getLabelFormat() {
 	return _format;
 }
 
+// Cache supplier codes to avoid redundant DB calls within a session
+const _supplierCodeCache = new Map();
+
+async function getSupplierCode(supplierName) {
+	if (!supplierName) return null;
+	if (_supplierCodeCache.has(supplierName)) return _supplierCodeCache.get(supplierName);
+	const result = await frappe.db.get_value("Supplier", supplierName, "ee_supplier_code");
+	const code = result?.message?.ee_supplier_code || null;
+	_supplierCodeCache.set(supplierName, code);
+	return code;
+}
+
 // Guard: (itemCode, timestamp) — prevents multiple handlers from opening
 // duplicate tabs for the same click event within a 400 ms window.
 const _printGuard = new Map();
 
-function openPrintview(itemCode, format) {
+function openPrintview(itemCode, format, supplierCode) {
 	const now = Date.now();
 	if (now - (_printGuard.get(itemCode) || 0) < 400) return;
 	_printGuard.set(itemCode, now);
@@ -28,10 +40,11 @@ function openPrintview(itemCode, format) {
 		no_letterhead: "1",
 		pdf_generator: "wkhtmltopdf",
 	});
+	if (supplierCode) params.set("supplier_code", supplierCode);
 	window.open(`/printview?${params.toString()}`, "_blank");
 }
 
-function showBulkDialog(frm, format) {
+async function showBulkDialog(frm, format, supplierCode) {
 	const items = (frm.doc.items || []).filter((r) => r.item_code);
 	if (!items.length) {
 		frappe.msgprint(__("No items to print."));
@@ -47,6 +60,7 @@ function showBulkDialog(frm, format) {
 				no_letterhead: "1",
 				pdf_generator: "wkhtmltopdf",
 			});
+			if (supplierCode) params.set("supplier_code", supplierCode);
 			return `<li><a href="/printview?${params.toString()}" target="_blank">${frappe.utils.escape_html(r.item_code)} — ${frappe.utils.escape_html(r.item_name || "")}</a></li>`;
 		})
 		.join("");
@@ -57,11 +71,14 @@ function showBulkDialog(frm, format) {
 	});
 }
 
-function addBulkButton(frm) {
+function addBulkButton(frm, getSupplierCodeFn) {
 	if (!(frm.doc.items && frm.doc.items.length)) return;
 	frm.add_custom_button(
 		__("Item Label Print"),
-		async () => showBulkDialog(frm, await getLabelFormat()),
+		async () => {
+			const supCode = getSupplierCodeFn ? await getSupplierCodeFn(frm) : null;
+			showBulkDialog(frm, await getLabelFormat(), supCode);
+		},
 		__("Print")
 	);
 }
@@ -82,7 +99,7 @@ function addBulkButton(frm) {
 //    .grid-row[data-name] as the selector excludes the header from injection
 //    and ensures we always find a valid row when reading item_code.
 
-function bindGridPrintClick(frm, fieldname, childDt) {
+function bindGridPrintClick(frm, fieldname, childDt, getSupplierCodeFn) {
 	const grid = frm.fields_dict[fieldname]?.grid;
 	if (!grid || grid._ee_print_bound) return;
 	grid._ee_print_bound = true;
@@ -105,7 +122,10 @@ function bindGridPrintClick(frm, fieldname, childDt) {
 					e.preventDefault();
 					const rowName = $(this).closest(".grid-row[data-name]").attr("data-name");
 					const row = rowName && (locals[childDt] || {})[rowName];
-					if (row?.item_code) openPrintview(row.item_code, await getLabelFormat());
+					if (row?.item_code) {
+						const supCode = getSupplierCodeFn ? await getSupplierCodeFn(frm) : null;
+						openPrintview(row.item_code, await getLabelFormat(), supCode);
+					}
 				});
 			});
 	}
@@ -129,7 +149,8 @@ function bindGridPrintClick(frm, fieldname, childDt) {
 		const row = rowName && (locals[childDt] || {})[rowName];
 		if (row?.item_code) {
 			e.preventDefault();
-			openPrintview(row.item_code, await getLabelFormat());
+			const supCode = getSupplierCodeFn ? await getSupplierCodeFn(frm) : null;
+			openPrintview(row.item_code, await getLabelFormat(), supCode);
 		}
 	});
 }
@@ -149,40 +170,43 @@ function isPopupOpen(frm) {
 frappe.ui.form.on("Stock Reconciliation Item", {
 	ee_print_label: async (frm, cdt, cdn) => {
 		if (!isPopupOpen(frm)) return;
-		openPrintview(locals[cdt][cdn].item_code, await getLabelFormat());
+		openPrintview(locals[cdt][cdn].item_code, await getLabelFormat(), null);
 	},
 });
 
 frappe.ui.form.on("Purchase Invoice Item", {
 	ee_print_label: async (frm, cdt, cdn) => {
 		if (!isPopupOpen(frm)) return;
-		openPrintview(locals[cdt][cdn].item_code, await getLabelFormat());
+		const supCode = await getSupplierCode(frm.doc.supplier);
+		openPrintview(locals[cdt][cdn].item_code, await getLabelFormat(), supCode);
 	},
 });
 
 frappe.ui.form.on("Sales Invoice Item", {
 	ee_print_label: async (frm, cdt, cdn) => {
 		if (!isPopupOpen(frm)) return;
-		openPrintview(locals[cdt][cdn].item_code, await getLabelFormat());
+		openPrintview(locals[cdt][cdn].item_code, await getLabelFormat(), null);
 	},
 });
 
 frappe.ui.form.on("Stock Entry Detail", {
 	ee_print_label: async (frm, cdt, cdn) => {
 		if (!isPopupOpen(frm)) return;
-		openPrintview(locals[cdt][cdn].item_code, await getLabelFormat());
+		openPrintview(locals[cdt][cdn].item_code, await getLabelFormat(), null);
 	},
 });
 
 // ── Parent form refresh ───────────────────────────────────────────────────────
 
+const _piSupplierCode = (frm) => getSupplierCode(frm.doc.supplier);
+
 frappe.ui.form.on("Stock Reconciliation", {
 	refresh(frm) {
-		bindGridPrintClick(frm, "items", "Stock Reconciliation Item");
-		addBulkButton(frm);
+		bindGridPrintClick(frm, "items", "Stock Reconciliation Item", null);
+		addBulkButton(frm, null);
 		frappe.ui.keys.add_shortcut({
 			shortcut: "ctrl+shift+p",
-			action: async () => showBulkDialog(frm, await getLabelFormat()),
+			action: async () => showBulkDialog(frm, await getLabelFormat(), null),
 			description: __("Item Label Print (bulk)"),
 			ignore_inputs: false,
 			page: frm.page,
@@ -192,11 +216,11 @@ frappe.ui.form.on("Stock Reconciliation", {
 
 frappe.ui.form.on("Purchase Invoice", {
 	refresh(frm) {
-		bindGridPrintClick(frm, "items", "Purchase Invoice Item");
-		addBulkButton(frm);
+		bindGridPrintClick(frm, "items", "Purchase Invoice Item", _piSupplierCode);
+		addBulkButton(frm, _piSupplierCode);
 		frappe.ui.keys.add_shortcut({
 			shortcut: "ctrl+shift+p",
-			action: async () => showBulkDialog(frm, await getLabelFormat()),
+			action: async () => showBulkDialog(frm, await getLabelFormat(), await _piSupplierCode(frm)),
 			description: __("Item Label Print (bulk)"),
 			ignore_inputs: false,
 			page: frm.page,
@@ -206,11 +230,11 @@ frappe.ui.form.on("Purchase Invoice", {
 
 frappe.ui.form.on("Sales Invoice", {
 	refresh(frm) {
-		bindGridPrintClick(frm, "items", "Sales Invoice Item");
-		addBulkButton(frm);
+		bindGridPrintClick(frm, "items", "Sales Invoice Item", null);
+		addBulkButton(frm, null);
 		frappe.ui.keys.add_shortcut({
 			shortcut: "ctrl+shift+p",
-			action: async () => showBulkDialog(frm, await getLabelFormat()),
+			action: async () => showBulkDialog(frm, await getLabelFormat(), null),
 			description: __("Item Label Print (bulk)"),
 			ignore_inputs: false,
 			page: frm.page,
@@ -220,11 +244,11 @@ frappe.ui.form.on("Sales Invoice", {
 
 frappe.ui.form.on("Stock Entry", {
 	refresh(frm) {
-		bindGridPrintClick(frm, "items", "Stock Entry Detail");
-		addBulkButton(frm);
+		bindGridPrintClick(frm, "items", "Stock Entry Detail", null);
+		addBulkButton(frm, null);
 		frappe.ui.keys.add_shortcut({
 			shortcut: "ctrl+shift+p",
-			action: async () => showBulkDialog(frm, await getLabelFormat()),
+			action: async () => showBulkDialog(frm, await getLabelFormat(), null),
 			description: __("Item Label Print (bulk)"),
 			ignore_inputs: false,
 			page: frm.page,

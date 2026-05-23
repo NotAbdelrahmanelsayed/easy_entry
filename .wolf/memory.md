@@ -383,3 +383,16 @@ Verified end-to-end via headless Chromium screenshots; fixed the Save-column das
 | 15:54 | Updated .wolf/anatomy.md with print_format.json entry | anatomy.md | Documented | ~100 |
 
 Session summary: Fixed `50 * 25` label (barcode was completely invisible due to SVG height:100% in flex container) and created new `38 * 25` label. Cleared the conflicting `css` field in both. Key lesson: old WebKit (wkhtmltopdf) doesn't resolve `height:100%` on SVG inside a flex item.
+
+## Session: 2026-05-22
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| — | Created utils/supplier_code.py (generate + assign + backfill) | utils/supplier_code.py | Done | ~300 |
+| — | Added Supplier after_insert hook in hooks.py | hooks.py | Done | ~100 |
+| — | Added ee_supplier_code custom field to fixtures/custom_field.json | fixtures/custom_field.json | Done | ~200 |
+| — | Added supplier code display to PI print format HTML | easy_entry_purchase_invoice.json | Done | ~150 |
+| — | Created patches/v1/backfill_supplier_codes.py + registered in patches.txt | patches/v1/backfill_supplier_codes.py, patches.txt | Done | ~100 |
+| — | Ran bench migrate — all existing suppliers backfilled with unique codes | DB | Done | ~50 |
+
+Session summary: Implemented ee_supplier_code feature. Each supplier gets a unique 6-char alphanumeric code on create (after_insert hook). All existing suppliers backfilled via patch. Code shown in "Bill From" section of Easy Entry Purchase Invoice print format.
