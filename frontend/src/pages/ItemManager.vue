@@ -2,15 +2,15 @@
 	<div class="flex-1 min-h-0 bg-gray-50 flex flex-col">
 		<!-- Header -->
 		<header
-			class="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between flex-wrap gap-3"
+			class="bg-white border-b border-gray-200 px-4 py-3 sm:px-6 sm:py-4 flex items-center justify-between flex-wrap gap-2 sm:gap-3"
 		>
 			<div>
 				<h1 class="text-lg font-semibold text-gray-900">{{ __("Item Manager") }}</h1>
-				<p class="text-xs text-gray-500">
+				<p class="text-xs text-gray-500 hidden sm:block">
 					{{ __("Edit every item's name, prices, stock and supplier in one place.") }}
 				</p>
 			</div>
-			<div class="flex items-center gap-3">
+			<div class="flex items-center gap-2 sm:gap-3">
 				<span v-if="dirtyRows.length" class="text-sm text-amber-600 font-medium">
 					{{ __("{0} unsaved", [dirtyRows.length]) }}
 				</span>
@@ -43,7 +43,7 @@
 							d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
 						/>
 					</svg>
-					{{ items.loading ? __("Refreshing...") : __("Refresh") }}
+					<span class="hidden sm:inline">{{ items.loading ? __("Refreshing...") : __("Refresh") }}</span>
 				</button>
 				<button
 					class="px-3 py-2 rounded-lg text-sm font-medium border border-gray-300 text-gray-700 hover:bg-gray-50 flex items-center gap-1"
@@ -57,114 +57,232 @@
 							d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3"
 						/>
 					</svg>
-					{{ __("Export sheet") }}
+					<span class="hidden sm:inline">{{ __("Export sheet") }}</span>
 				</button>
 			</div>
 		</header>
 
 		<!-- Toolbar -->
-		<div
-			class="bg-white border-b border-gray-200 px-6 py-3 flex items-center gap-3 flex-wrap"
-		>
-			<div class="relative flex-1 min-w-[200px] max-w-sm">
-				<svg
-					class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
-					fill="none"
-					stroke="currentColor"
-					viewBox="0 0 24 24"
-				>
-					<path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						stroke-width="2"
-						d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0"
+		<div class="bg-white border-b border-gray-200 px-4 sm:px-6 py-3 flex flex-col gap-2">
+			<!-- Search row (always visible) -->
+			<div class="flex items-center gap-2">
+				<div class="relative flex-1 min-w-0 sm:max-w-sm">
+					<!-- barcode mode: blue scanner icon; normal: magnifier -->
+					<svg
+						v-if="!barcodeMode"
+						class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
+						fill="none"
+						stroke="currentColor"
+						viewBox="0 0 24 24"
+					>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0"
+						/>
+					</svg>
+					<svg
+						v-else
+						class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-blue-500"
+						fill="none"
+						stroke="currentColor"
+						viewBox="0 0 24 24"
+					>
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9V7a2 2 0 012-2h2M17 5h2a2 2 0 012 2v2M21 15v2a2 2 0 01-2 2h-2M7 19H5a2 2 0 01-2-2v-2M7 12h10" />
+					</svg>
+					<input
+						ref="searchInputEl"
+						v-model="searchQuery"
+						type="text"
+						:placeholder="barcodeMode ? __('Scan barcode or type item code...') : __('Search by code or name...')"
+						class="w-full pl-9 pr-4 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:border-transparent"
+						:class="barcodeMode ? 'border-blue-400 focus:ring-blue-500' : 'border-gray-300 focus:ring-blue-500'"
+						data-testid="search-input"
+						@input="barcodeMode ? null : onSearchInput()"
+						@keydown.enter.prevent="barcodeMode ? onBarcodeScan() : null"
 					/>
-				</svg>
-				<input
-					ref="searchInputEl"
-					v-model="searchQuery"
-					type="text"
-					:placeholder="__('Search by code or name...')"
-					class="w-full pl-9 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-					data-testid="search-input"
-					@input="onSearchInput"
-				/>
+				</div>
+
+				<!-- Barcode mode toggle -->
+				<label
+					class="flex items-center gap-1.5 flex-shrink-0 cursor-pointer select-none"
+					:title="__('Barcode mode: scan a barcode to open qty modal')"
+				>
+					<input
+						v-model="barcodeMode"
+						type="checkbox"
+						class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+						data-testid="barcode-mode-toggle"
+					/>
+					<svg class="w-4 h-4" :class="barcodeMode ? 'text-blue-600' : 'text-gray-400'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9V7a2 2 0 012-2h2M17 5h2a2 2 0 012 2v2M21 15v2a2 2 0 01-2 2h-2M7 19H5a2 2 0 01-2-2v-2M7 12h10" />
+					</svg>
+					<span class="text-xs" :class="barcodeMode ? 'text-blue-600 font-medium' : 'text-gray-500'">
+						{{ __("Barcode") }}
+					</span>
+				</label>
+
+				<!-- Mobile: filter toggle button -->
+				<button
+					class="sm:hidden flex items-center gap-1.5 px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 hover:bg-gray-50 flex-shrink-0 relative"
+					@click="showFilters = !showFilters"
+				>
+					<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L13 13.414V19a1 1 0 01-.553.894l-4 2A1 1 0 017 21v-7.586L3.293 6.707A1 1 0 013 6V4z" />
+					</svg>
+					{{ __("Filters") }}
+					<span
+						v-if="activeFilterCount"
+						class="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-blue-600 text-white text-[10px] flex items-center justify-center font-medium"
+					>{{ activeFilterCount }}</span>
+				</button>
+
+				<!-- Desktop: items count -->
+				<span class="hidden sm:inline text-sm text-gray-500 whitespace-nowrap ml-auto">
+					{{ __("{0} items", [items.data?.total ?? 0]) }}
+				</span>
 			</div>
 
-			<span class="text-xs text-gray-400 whitespace-nowrap hidden sm:inline">
-				{{ __("Shortcuts: F4 search · F5 refresh · Ctrl+S save all") }}
-			</span>
+			<!-- Desktop filter row -->
+			<div class="hidden sm:flex items-center gap-3 flex-wrap">
+				<span class="text-xs text-gray-400 whitespace-nowrap">
+					{{ __("Shortcuts: F4 search · F5 refresh · Ctrl+S save all") }}
+				</span>
 
-			<select
-				v-model="itemGroupFilter"
-				class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-				data-testid="group-filter"
-				@change="reloadFirstPage"
-			>
-				<option value="">{{ __("All item groups") }}</option>
-				<option v-for="g in itemGroups.data || []" :key="g.name" :value="g.name">
-					{{ g.name }}
-				</option>
-			</select>
+				<select
+					v-model="itemGroupFilter"
+					class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+					data-testid="group-filter"
+					@change="reloadFirstPage"
+				>
+					<option value="">{{ __("All item groups") }}</option>
+					<option v-for="g in itemGroups.data || []" :key="g.name" :value="g.name">
+						{{ g.name }}
+					</option>
+				</select>
 
-			<!-- Supplier filter: a native datalist makes the input type-to-search
-			     without pulling in an extra component. -->
-			<input
-				v-model="supplierFilter"
-				list="supplier-options"
-				type="text"
-				:placeholder="__('All suppliers')"
-				class="border border-gray-300 rounded-lg px-3 py-2 text-sm min-w-[160px] focus:outline-none focus:ring-2 focus:ring-blue-500"
-				data-testid="supplier-filter"
-				@change="reloadFirstPage"
-			/>
-			<datalist id="supplier-options">
-				<option v-for="s in suppliers.data || []" :key="s.name" :value="s.name" />
-			</datalist>
+				<!-- Supplier filter: a native datalist makes the input type-to-search
+				     without pulling in an extra component. -->
+				<input
+					v-model="supplierFilter"
+					list="supplier-options"
+					type="text"
+					:placeholder="__('All suppliers')"
+					class="border border-gray-300 rounded-lg px-3 py-2 text-sm min-w-[160px] focus:outline-none focus:ring-2 focus:ring-blue-500"
+					data-testid="supplier-filter"
+					@change="reloadFirstPage"
+				/>
 
-			<select
-				v-model="stockFilter"
-				class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-				data-testid="stock-filter"
-				@change="reloadFirstPage"
-			>
-				<option value="">{{ __("All stock") }}</option>
-				<option value="in_stock">{{ __("In stock") }}</option>
-				<option value="out_of_stock">{{ __("Out of stock") }}</option>
-				<option value="negative">{{ __("Negative stock") }}</option>
-			</select>
+				<select
+					v-model="stockFilter"
+					class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+					data-testid="stock-filter"
+					@change="reloadFirstPage"
+				>
+					<option value="">{{ __("All stock") }}</option>
+					<option value="in_stock">{{ __("In stock") }}</option>
+					<option value="out_of_stock">{{ __("Out of stock") }}</option>
+					<option value="negative">{{ __("Negative stock") }}</option>
+				</select>
 
-			<select
-				v-model="priceFilter"
-				class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-				data-testid="price-filter"
-				@change="reloadFirstPage"
-			>
-				<option value="">{{ __("All prices") }}</option>
-				<option value="missing_buying">{{ __("Missing buying price") }}</option>
-				<option value="missing_selling">{{ __("Missing selling price") }}</option>
-				<option value="missing_any">{{ __("Missing any price") }}</option>
-				<option value="has_both">{{ __("Has both prices") }}</option>
-			</select>
+				<select
+					v-model="priceFilter"
+					class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+					data-testid="price-filter"
+					@change="reloadFirstPage"
+				>
+					<option value="">{{ __("All prices") }}</option>
+					<option value="missing_buying">{{ __("Missing buying price") }}</option>
+					<option value="missing_selling">{{ __("Missing selling price") }}</option>
+					<option value="missing_any">{{ __("Missing any price") }}</option>
+					<option value="has_both">{{ __("Has both prices") }}</option>
+				</select>
 
-			<button
-				v-if="hasActiveFilters"
-				class="text-sm text-blue-600 hover:underline whitespace-nowrap"
-				data-testid="clear-filters"
-				@click="clearFilters"
-			>
-				{{ __("Clear filters") }}
-			</button>
+				<button
+					v-if="hasActiveFilters"
+					class="text-sm text-blue-600 hover:underline whitespace-nowrap"
+					data-testid="clear-filters"
+					@click="clearFilters"
+				>
+					{{ __("Clear filters") }}
+				</button>
 
-			<span class="text-sm text-gray-500 whitespace-nowrap ml-auto">
-				{{ __("{0} items", [items.data?.total ?? 0]) }}
-			</span>
+				<span class="text-sm text-gray-500 whitespace-nowrap ml-auto">
+					{{ __("{0} items", [items.data?.total ?? 0]) }}
+				</span>
+			</div>
+
+			<!-- Mobile filter panel (collapsible) -->
+			<div v-if="showFilters" class="sm:hidden grid grid-cols-2 gap-2 pt-1">
+				<select
+					v-model="itemGroupFilter"
+					class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+					data-testid="group-filter-mobile"
+					@change="reloadFirstPage"
+				>
+					<option value="">{{ __("All item groups") }}</option>
+					<option v-for="g in itemGroups.data || []" :key="g.name" :value="g.name">
+						{{ g.name }}
+					</option>
+				</select>
+
+				<input
+					v-model="supplierFilter"
+					list="supplier-options"
+					type="text"
+					:placeholder="__('All suppliers')"
+					class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+					data-testid="supplier-filter-mobile"
+					@change="reloadFirstPage"
+				/>
+
+				<select
+					v-model="stockFilter"
+					class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+					data-testid="stock-filter-mobile"
+					@change="reloadFirstPage"
+				>
+					<option value="">{{ __("All stock") }}</option>
+					<option value="in_stock">{{ __("In stock") }}</option>
+					<option value="out_of_stock">{{ __("Out of stock") }}</option>
+					<option value="negative">{{ __("Negative stock") }}</option>
+				</select>
+
+				<select
+					v-model="priceFilter"
+					class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+					data-testid="price-filter-mobile"
+					@change="reloadFirstPage"
+				>
+					<option value="">{{ __("All prices") }}</option>
+					<option value="missing_buying">{{ __("Missing buying price") }}</option>
+					<option value="missing_selling">{{ __("Missing selling price") }}</option>
+					<option value="missing_any">{{ __("Missing any price") }}</option>
+					<option value="has_both">{{ __("Has both prices") }}</option>
+				</select>
+
+				<div class="col-span-2 flex items-center justify-between">
+					<span class="text-sm text-gray-500">{{ __("{0} items", [items.data?.total ?? 0]) }}</span>
+					<button
+						v-if="hasActiveFilters"
+						class="text-sm text-blue-600 hover:underline"
+						data-testid="clear-filters-mobile"
+						@click="clearFilters"
+					>
+						{{ __("Clear filters") }}
+					</button>
+				</div>
+			</div>
 		</div>
+		<datalist id="supplier-options">
+			<option v-for="s in suppliers.data || []" :key="s.name" :value="s.name" />
+		</datalist>
 
-		<!-- Table -->
+		<!-- Table / Cards -->
 		<div class="flex-1 overflow-auto">
-			<!-- Loading skeleton -->
-			<table v-if="items.loading" class="w-full text-sm">
+			<!-- Loading skeleton — desktop -->
+			<table v-if="items.loading" class="hidden sm:table w-full text-sm">
 				<tbody>
 					<tr v-for="n in pageSize" :key="n" class="border-b border-gray-100">
 						<td v-for="c in 7" :key="c" class="px-6 py-4">
@@ -173,6 +291,26 @@
 					</tr>
 				</tbody>
 			</table>
+			<!-- Loading skeleton — mobile -->
+			<div v-if="items.loading" class="sm:hidden divide-y divide-gray-100 bg-white">
+				<div v-for="n in 5" :key="n" class="p-4 space-y-3">
+					<div class="flex items-center gap-3">
+						<div class="w-10 h-10 rounded bg-gray-100 animate-pulse flex-shrink-0"></div>
+						<div class="flex-1 space-y-2">
+							<div class="h-4 bg-gray-100 rounded animate-pulse w-3/4"></div>
+							<div class="h-3 bg-gray-100 rounded animate-pulse w-1/3"></div>
+						</div>
+					</div>
+					<div class="grid grid-cols-2 gap-3">
+						<div class="h-9 bg-gray-100 rounded animate-pulse"></div>
+						<div class="h-9 bg-gray-100 rounded animate-pulse"></div>
+					</div>
+					<div class="grid grid-cols-2 gap-3">
+						<div class="h-9 bg-gray-100 rounded animate-pulse"></div>
+						<div class="h-9 bg-gray-100 rounded animate-pulse"></div>
+					</div>
+				</div>
+			</div>
 
 			<!-- Error state -->
 			<div
@@ -224,161 +362,59 @@
 				</p>
 			</div>
 
-			<!-- Data table -->
-			<table v-else class="w-full text-sm" data-testid="item-table">
-				<thead class="bg-gray-50 border-b border-gray-200 sticky top-0 z-10">
-					<tr class="text-left text-gray-500 uppercase tracking-wider text-xs">
-						<th class="px-4 py-3 w-12">#</th>
-						<th class="px-4 py-3">{{ __("Item") }}</th>
-						<th class="px-4 py-3 w-32 text-right">{{ __("Buying") }}</th>
-						<th class="px-4 py-3 w-32 text-right">{{ __("Selling") }}</th>
-						<th class="px-4 py-3 w-28 text-right">{{ __("On hand") }}</th>
-						<th class="px-4 py-3 w-48">{{ __("Supplier") }}</th>
-						<th class="px-4 py-3 w-28 text-center">{{ __("Save") }}</th>
-					</tr>
-				</thead>
-				<tbody class="divide-y divide-gray-100 bg-white">
-					<tr
-						v-for="(row, idx) in rows"
-						:key="row.item_code"
-						class="hover:bg-gray-50 transition-colors"
-						:class="{ 'bg-amber-50': isRowDirty(row) }"
-						:data-testid="`item-row-${idx}`"
-					>
-						<td class="px-4 py-3 text-gray-400">{{ offset + idx + 1 }}</td>
-
-						<!-- Item: image + code + name -->
-						<td class="px-4 py-3">
-							<div class="flex items-center gap-3">
-								<img
-									v-if="row.image"
-									:src="row.image"
-									:alt="row.item_name"
-									class="w-9 h-9 rounded object-cover flex-shrink-0 border border-gray-200"
-								/>
-								<div
-									v-else
-									class="w-9 h-9 rounded bg-gray-100 flex items-center justify-center flex-shrink-0"
-								>
-									<svg
-										class="w-4 h-4 text-gray-400"
-										fill="none"
-										stroke="currentColor"
-										viewBox="0 0 24 24"
-									>
-										<path
-											stroke-linecap="round"
-											stroke-linejoin="round"
-											stroke-width="2"
-											d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
-										/>
-									</svg>
-								</div>
-								<div class="min-w-0 flex-1">
-									<input
-										v-model="row.item_name"
-										type="text"
-										:placeholder="__('Item name')"
-										class="w-full font-medium text-gray-900 bg-transparent border border-transparent rounded px-1.5 py-1 hover:border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
-										:class="{ 'border-amber-400 bg-amber-50': isFieldDirty(row, 'item_name') }"
-										:data-testid="`name-input-${idx}`"
-									/>
-									<button
-										class="text-xs text-gray-400 hover:text-blue-600 flex items-center gap-1 px-1.5"
-										:data-testid="`rename-btn-${idx}`"
-										@click="openRename(row)"
-									>
-										{{ row.item_code }}
-										<svg
-											class="w-3 h-3"
-											fill="none"
-											stroke="currentColor"
-											viewBox="0 0 24 24"
-										>
-											<path
-												stroke-linecap="round"
-												stroke-linejoin="round"
-												stroke-width="2"
-												d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-											/>
-										</svg>
-									</button>
-								</div>
-							</div>
-						</td>
-
-						<!-- Buying price -->
-						<td class="px-4 py-3">
+			<!-- Mobile card list -->
+			<div
+				v-else-if="rows.length"
+				class="sm:hidden divide-y divide-gray-100 bg-white"
+				data-testid="item-cards"
+			>
+				<div
+					v-for="(row, idx) in rows"
+					:key="row.item_code"
+					class="p-4"
+					:class="{ 'bg-amber-50': isRowDirty(row) }"
+					:data-testid="`item-card-${idx}`"
+				>
+					<!-- Row 1: image + name + save -->
+					<div class="flex items-start gap-3">
+						<img
+							v-if="row.image"
+							:src="row.image"
+							:alt="row.item_name"
+							class="w-10 h-10 rounded object-cover flex-shrink-0 border border-gray-200 mt-0.5"
+						/>
+						<div
+							v-else
+							class="w-10 h-10 rounded bg-gray-100 flex items-center justify-center flex-shrink-0 mt-0.5"
+						>
+							<svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+							</svg>
+						</div>
+						<div class="min-w-0 flex-1">
 							<input
-								v-model="row.buying_price"
-								type="number"
-								min="0"
-								step="0.01"
-								:placeholder="__('—')"
-								class="w-24 text-right border border-gray-300 rounded-md px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
-								:class="{ 'border-amber-400 bg-amber-50': isFieldDirty(row, 'buying_price') }"
-								:data-testid="`buying-input-${idx}`"
+								v-model="row.item_name"
+								type="text"
+								:placeholder="__('Item name')"
+								class="w-full font-medium text-gray-900 bg-transparent border border-transparent rounded px-1.5 py-1 hover:border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white text-base"
+								:class="{ 'border-amber-400 bg-amber-50': isFieldDirty(row, 'item_name') }"
+								:data-testid="`name-input-${idx}`"
 							/>
-						</td>
-
-						<!-- Selling price -->
-						<td class="px-4 py-3">
-							<input
-								v-model="row.selling_price"
-								type="number"
-								min="0"
-								step="0.01"
-								:placeholder="__('—')"
-								class="w-24 text-right border border-gray-300 rounded-md px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
-								:class="{ 'border-amber-400 bg-amber-50': isFieldDirty(row, 'selling_price') }"
-								:data-testid="`selling-input-${idx}`"
-							/>
-						</td>
-
-						<!-- Quantity -->
-						<td class="px-4 py-3 text-right">
 							<button
-								class="inline-flex items-center gap-1.5 px-2 py-1 rounded-md border border-gray-200 hover:border-blue-400 hover:bg-blue-50 text-gray-700"
-								:data-testid="`qty-btn-${idx}`"
-								@click="openQty(row)"
+								class="text-xs text-gray-400 hover:text-blue-600 flex items-center gap-1 px-1.5 mt-0.5"
+								:data-testid="`rename-btn-${idx}`"
+								@click="openRename(row)"
 							>
-								<span class="font-medium tabular-nums">{{ formatQty(row.qty) }}</span>
-								<svg
-									class="w-3.5 h-3.5 text-gray-400"
-									fill="none"
-									stroke="currentColor"
-									viewBox="0 0 24 24"
-								>
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										stroke-width="2"
-										d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-									/>
+								{{ row.item_code }}
+								<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
 								</svg>
 							</button>
-						</td>
-
-						<!-- Supplier -->
-						<td class="px-4 py-3">
-							<select
-								v-model="row.supplier"
-								class="w-full border border-gray-300 rounded-md px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
-								:class="{ 'border-amber-400 bg-amber-50': isFieldDirty(row, 'supplier') }"
-								:data-testid="`supplier-select-${idx}`"
-							>
-								<option :value="null">{{ __("— none —") }}</option>
-								<option v-for="s in suppliers.data || []" :key="s.name" :value="s.name">
-									{{ s.name }}
-								</option>
-							</select>
-						</td>
-
-						<!-- Save -->
-						<td class="px-4 py-3 text-center">
+						</div>
+						<div class="flex-shrink-0 mt-0.5">
 							<button
 								v-if="isRowDirty(row)"
-								class="text-xs px-2.5 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
+								class="px-3 py-1.5 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 disabled:opacity-50"
 								:disabled="saving[row.item_code]"
 								:data-testid="`save-btn-${idx}`"
 								@click="saveRow(row)"
@@ -387,33 +423,291 @@
 							</button>
 							<span
 								v-else-if="savedFlash[row.item_code]"
-								class="inline-flex items-center gap-1 text-xs text-green-600 font-medium"
+								class="inline-flex items-center gap-1 text-sm text-green-600 font-medium px-1"
 							>
-								<svg
-									class="w-3.5 h-3.5"
-									fill="none"
-									stroke="currentColor"
-									viewBox="0 0 24 24"
-								>
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										stroke-width="2.5"
-										d="M5 13l4 4L19 7"
-									/>
+								<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
 								</svg>
-								{{ __("Saved") }}
 							</span>
-						</td>
-					</tr>
-				</tbody>
-			</table>
+						</div>
+					</div>
+
+					<!-- Item group -->
+					<div class="mt-3">
+						<label class="text-xs text-gray-500 mb-1 block">{{ __("Item Group") }}</label>
+						<select
+							v-model="row.item_group"
+							class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+							:class="{ 'border-amber-400 bg-amber-50': isFieldDirty(row, 'item_group') }"
+							:data-testid="`group-input-mobile-${idx}`"
+						>
+							<option v-for="g in itemGroups.data || []" :key="g.name" :value="g.name">{{ g.name }}</option>
+						</select>
+					</div>
+
+					<!-- Row 2: buying + selling prices -->
+					<div class="mt-3 grid grid-cols-2 gap-3">
+						<div>
+							<label class="text-xs text-gray-500 mb-1 block">{{ __("Buying price") }}</label>
+							<input
+								v-model="row.buying_price"
+								type="number"
+								min="0"
+								step="0.01"
+								:placeholder="__('—')"
+								class="w-full text-right border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+								:class="{ 'border-amber-400 bg-amber-50': isFieldDirty(row, 'buying_price') }"
+								:data-testid="`buying-input-${idx}`"
+							/>
+						</div>
+						<div>
+							<label class="text-xs text-gray-500 mb-1 block">{{ __("Selling price") }}</label>
+							<input
+								v-model="row.selling_price"
+								type="number"
+								min="0"
+								step="0.01"
+								:placeholder="__('—')"
+								class="w-full text-right border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+								:class="{ 'border-amber-400 bg-amber-50': isFieldDirty(row, 'selling_price') }"
+								:data-testid="`selling-input-${idx}`"
+							/>
+						</div>
+					</div>
+
+					<!-- Row 3: supplier + qty -->
+					<div class="mt-3 grid grid-cols-2 gap-3">
+						<div>
+							<label class="text-xs text-gray-500 mb-1 block">{{ __("Supplier") }}</label>
+							<select
+								v-model="row.supplier"
+								class="w-full border border-gray-300 rounded-md px-2 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+								:class="{ 'border-amber-400 bg-amber-50': isFieldDirty(row, 'supplier') }"
+								:data-testid="`supplier-select-${idx}`"
+							>
+								<option :value="null">{{ __("— none —") }}</option>
+								<option v-for="s in suppliers.data || []" :key="s.name" :value="s.name">
+									{{ s.name }}
+								</option>
+							</select>
+						</div>
+						<div>
+							<label class="text-xs text-gray-500 mb-1 block">{{ __("On hand") }}</label>
+							<button
+								class="w-full flex items-center justify-between px-3 py-2 rounded-md border border-gray-200 hover:border-blue-400 hover:bg-blue-50 text-gray-700 text-sm"
+								:data-testid="`qty-btn-${idx}`"
+								@click="openQty(row)"
+							>
+								<span class="font-medium tabular-nums">{{ formatQty(row.qty) }}</span>
+								<svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+								</svg>
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Data table (desktop) -->
+			<div class="hidden sm:block">
+				<table v-if="rows.length" class="w-full text-sm" data-testid="item-table">
+					<thead class="bg-gray-50 border-b border-gray-200 sticky top-0 z-10">
+						<tr class="text-left text-gray-500 uppercase tracking-wider text-xs">
+							<th class="px-4 py-3 w-12">#</th>
+							<th class="px-4 py-3">{{ __("Item") }}</th>
+							<th class="px-4 py-3 w-32 text-right">{{ __("Buying") }}</th>
+							<th class="px-4 py-3 w-32 text-right">{{ __("Selling") }}</th>
+							<th class="px-4 py-3 w-28 text-right">{{ __("On hand") }}</th>
+							<th class="px-4 py-3 w-48">{{ __("Supplier") }}</th>
+							<th class="px-4 py-3 w-28 text-center">{{ __("Save") }}</th>
+						</tr>
+					</thead>
+					<tbody class="divide-y divide-gray-100 bg-white">
+						<tr
+							v-for="(row, idx) in rows"
+							:key="row.item_code"
+							class="hover:bg-gray-50 transition-colors"
+							:class="{ 'bg-amber-50': isRowDirty(row) }"
+							:data-testid="`item-row-${idx}`"
+						>
+							<td class="px-4 py-3 text-gray-400">{{ offset + idx + 1 }}</td>
+
+							<!-- Item: image + code + name -->
+							<td class="px-4 py-3">
+								<div class="flex items-center gap-3">
+									<img
+										v-if="row.image"
+										:src="row.image"
+										:alt="row.item_name"
+										class="w-9 h-9 rounded object-cover flex-shrink-0 border border-gray-200"
+									/>
+									<div
+										v-else
+										class="w-9 h-9 rounded bg-gray-100 flex items-center justify-center flex-shrink-0"
+									>
+										<svg
+											class="w-4 h-4 text-gray-400"
+											fill="none"
+											stroke="currentColor"
+											viewBox="0 0 24 24"
+										>
+											<path
+												stroke-linecap="round"
+												stroke-linejoin="round"
+												stroke-width="2"
+												d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+											/>
+										</svg>
+									</div>
+									<div class="min-w-0 flex-1">
+										<input
+											v-model="row.item_name"
+											type="text"
+											:placeholder="__('Item name')"
+											class="w-full font-medium text-gray-900 bg-transparent border border-transparent rounded px-1.5 py-1 hover:border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
+											:class="{ 'border-amber-400 bg-amber-50': isFieldDirty(row, 'item_name') }"
+											:data-testid="`name-input-${idx}`"
+										/>
+										<button
+											class="text-xs text-gray-400 hover:text-blue-600 flex items-center gap-1 px-1.5"
+											:data-testid="`rename-btn-${idx}`"
+											@click="openRename(row)"
+										>
+											{{ row.item_code }}
+											<svg
+												class="w-3 h-3"
+												fill="none"
+												stroke="currentColor"
+												viewBox="0 0 24 24"
+											>
+												<path
+													stroke-linecap="round"
+													stroke-linejoin="round"
+													stroke-width="2"
+													d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+												/>
+											</svg>
+										</button>
+										<select
+											v-model="row.item_group"
+											class="mt-0.5 w-full border border-transparent rounded px-1.5 py-0.5 text-xs text-gray-500 hover:border-gray-200 focus:outline-none focus:ring-1 focus:ring-blue-500 bg-transparent"
+											:class="{ 'border-amber-400 bg-amber-50': isFieldDirty(row, 'item_group') }"
+											:data-testid="`group-input-${idx}`"
+										>
+											<option v-for="g in itemGroups.data || []" :key="g.name" :value="g.name">{{ g.name }}</option>
+										</select>
+									</div>
+								</div>
+							</td>
+
+							<!-- Buying price -->
+							<td class="px-4 py-3">
+								<input
+									v-model="row.buying_price"
+									type="number"
+									min="0"
+									step="0.01"
+									:placeholder="__('—')"
+									class="w-24 text-right border border-gray-300 rounded-md px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+									:class="{ 'border-amber-400 bg-amber-50': isFieldDirty(row, 'buying_price') }"
+									:data-testid="`buying-input-${idx}`"
+								/>
+							</td>
+
+							<!-- Selling price -->
+							<td class="px-4 py-3">
+								<input
+									v-model="row.selling_price"
+									type="number"
+									min="0"
+									step="0.01"
+									:placeholder="__('—')"
+									class="w-24 text-right border border-gray-300 rounded-md px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+									:class="{ 'border-amber-400 bg-amber-50': isFieldDirty(row, 'selling_price') }"
+									:data-testid="`selling-input-${idx}`"
+								/>
+							</td>
+
+							<!-- Quantity -->
+							<td class="px-4 py-3 text-right">
+								<button
+									class="inline-flex items-center gap-1.5 px-2 py-1 rounded-md border border-gray-200 hover:border-blue-400 hover:bg-blue-50 text-gray-700"
+									:data-testid="`qty-btn-${idx}`"
+									@click="openQty(row)"
+								>
+									<span class="font-medium tabular-nums">{{ formatQty(row.qty) }}</span>
+									<svg
+										class="w-3.5 h-3.5 text-gray-400"
+										fill="none"
+										stroke="currentColor"
+										viewBox="0 0 24 24"
+									>
+										<path
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											stroke-width="2"
+											d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+										/>
+									</svg>
+								</button>
+							</td>
+
+							<!-- Supplier -->
+							<td class="px-4 py-3">
+								<select
+									v-model="row.supplier"
+									class="w-full border border-gray-300 rounded-md px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+									:class="{ 'border-amber-400 bg-amber-50': isFieldDirty(row, 'supplier') }"
+									:data-testid="`supplier-select-${idx}`"
+								>
+									<option :value="null">{{ __("— none —") }}</option>
+									<option v-for="s in suppliers.data || []" :key="s.name" :value="s.name">
+										{{ s.name }}
+									</option>
+								</select>
+							</td>
+
+							<!-- Save -->
+							<td class="px-4 py-3 text-center">
+								<button
+									v-if="isRowDirty(row)"
+									class="text-xs px-2.5 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
+									:disabled="saving[row.item_code]"
+									:data-testid="`save-btn-${idx}`"
+									@click="saveRow(row)"
+								>
+									{{ saving[row.item_code] ? __("Saving...") : __("Save") }}
+								</button>
+								<span
+									v-else-if="savedFlash[row.item_code]"
+									class="inline-flex items-center gap-1 text-xs text-green-600 font-medium"
+								>
+									<svg
+										class="w-3.5 h-3.5"
+										fill="none"
+										stroke="currentColor"
+										viewBox="0 0 24 24"
+									>
+										<path
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											stroke-width="2.5"
+											d="M5 13l4 4L19 7"
+										/>
+									</svg>
+									{{ __("Saved") }}
+								</span>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
 		</div>
 
 		<!-- Pagination -->
 		<div
 			v-if="(items.data?.total ?? 0) > pageSize"
-			class="bg-white border-t border-gray-200 px-6 py-3 flex items-center justify-between"
+			class="bg-white border-t border-gray-200 px-4 sm:px-6 py-3 flex items-center justify-between"
 		>
 			<span class="text-sm text-gray-500">
 				{{
@@ -603,6 +897,8 @@ const supplierFilter = ref("");
 const stockFilter = ref("");
 const priceFilter = ref("");
 const currentPage = ref(0);
+const showFilters = ref(false);
+const barcodeMode = ref(false);
 const searchInputEl = ref(null);
 let searchTimer = null;
 
@@ -659,6 +955,7 @@ function snapshot(row) {
 	return {
 		item_name: row.item_name,
 		supplier: row.supplier,
+		item_group: row.item_group,
 		buying_price: normalizePrice(row.buying_price),
 		selling_price: normalizePrice(row.selling_price),
 	};
@@ -673,7 +970,7 @@ function formatQty(qty) {
 	return Number(qty || 0).toLocaleString();
 }
 
-const EDITABLE_FIELDS = ["item_name", "supplier", "buying_price", "selling_price"];
+const EDITABLE_FIELDS = ["item_name", "supplier", "item_group", "buying_price", "selling_price"];
 
 function isFieldDirty(row, field) {
 	const base = original[row.item_code];
@@ -697,6 +994,32 @@ function onSearchInput() {
 	searchTimer = setTimeout(reloadFirstPage, 300);
 }
 
+async function onBarcodeScan() {
+	const code = searchQuery.value.trim();
+	if (!code) return;
+	try {
+		const res = await call(`${API}.get_items`, {
+			search: code,
+			limit: 2,
+			offset: 0,
+		});
+		const found = res?.rows ?? [];
+		if (found.length === 0) {
+			showError(__("No item found for: {0}", [code]));
+		} else if (found.length > 1) {
+			showInfo(__('Multiple items match "{0}" — be more specific.', [code]));
+		} else {
+			// Exactly one match → open qty modal.
+			const row = found[0];
+			// Merge into current rows or use the raw result directly.
+			searchQuery.value = "";
+			openQty(row);
+		}
+	} catch (e) {
+		showError(errorMessage(e) || __("Barcode lookup failed"));
+	}
+}
+
 function reloadFirstPage() {
 	currentPage.value = 0;
 	items.reload();
@@ -704,6 +1027,12 @@ function reloadFirstPage() {
 
 const hasActiveFilters = computed(
 	() => !!(itemGroupFilter.value || supplierFilter.value || stockFilter.value || priceFilter.value),
+);
+
+const activeFilterCount = computed(
+	() =>
+		[itemGroupFilter.value, supplierFilter.value, stockFilter.value, priceFilter.value].filter(Boolean)
+			.length,
 );
 
 function clearFilters() {
@@ -741,10 +1070,11 @@ async function saveRow(row) {
 	try {
 		const base = original[row.item_code];
 
-		// 1. Name and/or supplier in a single update_item call.
+		// 1. Name, supplier and/or item_group in a single update_item call.
 		const fields = {};
 		if (isFieldDirty(row, "item_name")) fields.item_name = row.item_name;
 		if (isFieldDirty(row, "supplier")) fields.supplier = row.supplier;
+		if (isFieldDirty(row, "item_group")) fields.item_group = row.item_group;
 		if (Object.keys(fields).length) {
 			await call(`${API}.update_item`, { item_code: row.item_code, fields });
 		}

@@ -189,6 +189,15 @@ def update_item(item_code, fields):
 			doc.append("supplier_items", {"supplier": supplier})
 		changed.append("supplier")
 
+	if "item_group" in fields:
+		item_group = (fields["item_group"] or "").strip()
+		if not item_group:
+			frappe.throw(_("Item Group cannot be empty."))
+		if not frappe.db.exists("Item Group", item_group):
+			frappe.throw(_("Item Group {0} does not exist.").format(item_group))
+		doc.item_group = item_group
+		changed.append("item_group")
+
 	if not changed:
 		return {"ok": True, "changed": []}
 
