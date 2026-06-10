@@ -487,6 +487,25 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-05-21"
+    },
+    {
+      "id": "bug-031",
+      "timestamp": "2026-06-10T17:35:33.798752",
+      "error_message": "Supplier code (ee_supplier_code) not appearing on printed item labels; user also found 6-char codes like JHNQFT too complex",
+      "file": "easy_entry/fixtures/print_format.json, easy_entry/utils/supplier_code.py, easy_entry/hooks.py",
+      "root_cause": "Code traveled ONLY as ?supplier_code= URL param appended by label_printer.js buttons; every other print path (standard Item Print, printview 'Get PDF' button which rebuilds the URL, Easy Entry SPA) silently dropped it. Additionally .sup-code was 6pt color #555 — 1-bit thermal printers dither mid-gray to near-invisible dots.",
+      "fix": "Added item_supplier_code(item_code) jinja method (first Item Supplier row -> ee_supplier_code) as template fallback: form_dict param still wins; styled .sup-code black + font-weight 600; simplified scheme to 3 letters (A-Z minus I/O) and regenerated all codes via patch regenerate_short_supplier_codes; fixtures filter now exports both 50*25 and 38*25.",
+      "tags": [
+        "print-format",
+        "supplier-code",
+        "labels",
+        "thermal-printer",
+        "form_dict",
+        "jinja"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-10T17:35:33.798767"
     }
   ]
 }

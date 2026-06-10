@@ -163,6 +163,8 @@
 
 - `__init__.py` (~0 tok)
 - `set_default_print_formats.py` — execute (~74 tok)
+- `v1/backfill_supplier_codes.py` — adds ee_supplier_code column if missing, backfills empty codes (~80 tok)
+- `v1/regenerate_short_supplier_codes.py` — regenerates ALL supplier codes with the 3-letter scheme (force backfill) (~40 tok)
 
 ## easy_entry/public/
 
@@ -240,3 +242,4 @@
 - `StockCountSession.vue` — Vue: StockCount, setup (~4980 tok)
 - `easy_entry/utils/__init__.py` — empty package init (~1 tok)
 - `easy_entry/utils/barcode.py` — pure-Python Code128B SVG generator; Jinja global `code128_svg(value, width_mm, height_mm)` (~120 tok)
+- `easy_entry/utils/supplier_code.py` — 3-letter supplier code generation (after_insert hook), force-capable backfill, and `item_supplier_code` jinja fallback for label print formats (~250 tok)

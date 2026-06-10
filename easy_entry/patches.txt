@@ -6,3 +6,4 @@
 # Patches added in this section will be executed after doctypes are migrated
 easy_entry.patches.set_default_print_formats
 easy_entry.patches.v1.backfill_supplier_codes
+easy_entry.patches.v1.regenerate_short_supplier_codes

@@ -396,3 +396,7 @@ Session summary: Fixed `50 * 25` label (barcode was completely invisible due to 
 | — | Ran bench migrate — all existing suppliers backfilled with unique codes | DB | Done | ~50 |
 
 Session summary: Implemented ee_supplier_code feature. Each supplier gets a unique 6-char alphanumeric code on create (after_insert hook). All existing suppliers backfilled via patch. Code shown in "Bill From" section of Easy Entry Purchase Invoice print format.
+
+| $(date +%H:%M) | Created Accounts Receivable Items report | easy_entry/easy_entry/report/accounts_receivable_items/ | 4 files, migrated, email sent to bedoelsayed785@gmail.com | ~800 |
+
+| 17:35 | Fixed+simplified supplier code on labels: 3-letter scheme (A-Z minus I/O), item_supplier_code jinja fallback in both label formats, black bold 6pt, fixtures filter now exports 38*25 too; regenerated all 27 codes via patch; verified console render matrix + HTTP printview + Playwright e2e click on PI | supplier_code.py, hooks.py, print_format.json, patches/v1/regenerate_short_supplier_codes.py | All checks pass | ~2000 |

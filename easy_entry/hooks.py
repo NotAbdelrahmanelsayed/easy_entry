@@ -89,7 +89,10 @@ doctype_js = {
 
 # add methods and filters to jinja environment
 jinja = {
-	"methods": ["easy_entry.utils.barcode.code128_svg"],
+	"methods": [
+		"easy_entry.utils.barcode.code128_svg",
+		"easy_entry.utils.supplier_code.item_supplier_code",
+	],
 }
 
 # Installation
@@ -167,7 +170,7 @@ scheduler_events = {"daily": ["easy_entry.tasks.daily_owner_report.send_daily_ow
 fixtures = [
 	{"dt": "Role", "filters": [["role_name", "in", ["Store Owner"]]]},
 	{"dt": "Custom Field", "filters": [["name", "like", "%-ee_%"]]},
-	{"dt": "Print Format", "filters": [["name", "in", ["50 * 25"]]]},
+	{"dt": "Print Format", "filters": [["name", "in", ["50 * 25", "38 * 25"]]]},
 ]
 
 # Testing
