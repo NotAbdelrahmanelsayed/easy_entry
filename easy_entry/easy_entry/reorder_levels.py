@@ -71,12 +71,7 @@ def set_missing_reorder_levels():
 			continue
 
 		try:
-			doc = frappe.get_doc("Item", item_code)
-			for row in rows_to_add:
-				doc.append("reorder_levels", row)
-			doc.flags.ignore_permissions = True
-			doc.flags.ignore_mandatory = True
-			doc.save()
+			_insert_reorder_rows(item_code, rows_to_add)
 			frappe.db.commit()
 			stats["processed"] += 1
 			stats["warehouses_set"] += len(rows_to_add)

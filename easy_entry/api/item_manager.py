@@ -19,8 +19,8 @@ MAX_LIMIT = 200
 
 # The FROM + JOIN block shared by the list query, the COUNT query and the
 # export. Aliases used by filter conditions: `i` (Item), `bp`/`sp` (buying/
-# selling Item Price), `b` (summed on-hand qty from Bin), `sup` (first
-# Item Supplier row).
+# selling Item Price), `b` (summed on-hand qty from Bin), `sup` (most recent
+# supplier from submitted Purchase Invoices).
 _ITEMS_FROM = """
 	FROM `tabItem` i
 	LEFT JOIN `tabItem Price` bp
@@ -32,10 +32,18 @@ _ITEMS_FROM = """
 		FROM `tabBin`
 		GROUP BY item_code
 	) b ON b.item_code = i.name
-	LEFT JOIN `tabItem Supplier` sup ON sup.name = (
-		SELECT name FROM `tabItem Supplier`
-		WHERE parent = i.name ORDER BY idx ASC LIMIT 1
-	)
+	LEFT JOIN (
+		SELECT pii.item_code, pi.supplier
+		FROM `tabPurchase Invoice Item` pii
+		JOIN `tabPurchase Invoice` pi ON pi.name = pii.parent AND pi.docstatus = 1
+		JOIN (
+			SELECT pii2.item_code, MAX(pi2.posting_date) AS max_date
+			FROM `tabPurchase Invoice Item` pii2
+			JOIN `tabPurchase Invoice` pi2 ON pi2.name = pii2.parent AND pi2.docstatus = 1
+			GROUP BY pii2.item_code
+		) latest ON latest.item_code = pii.item_code AND pi.posting_date = latest.max_date
+		GROUP BY pii.item_code
+	) sup ON sup.item_code = i.name
 """
 
 

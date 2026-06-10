@@ -67,9 +67,7 @@
 			<!-- Search row (always visible) -->
 			<div class="flex items-center gap-2">
 				<div class="relative flex-1 min-w-0 sm:max-w-sm">
-					<!-- barcode mode: blue scanner icon; normal: magnifier -->
 					<svg
-						v-if="!barcodeMode"
 						class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
 						fill="none"
 						stroke="currentColor"
@@ -82,46 +80,17 @@
 							d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0"
 						/>
 					</svg>
-					<svg
-						v-else
-						class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-blue-500"
-						fill="none"
-						stroke="currentColor"
-						viewBox="0 0 24 24"
-					>
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9V7a2 2 0 012-2h2M17 5h2a2 2 0 012 2v2M21 15v2a2 2 0 01-2 2h-2M7 19H5a2 2 0 01-2-2v-2M7 12h10" />
-					</svg>
 					<input
 						ref="searchInputEl"
 						v-model="searchQuery"
 						type="text"
-						:placeholder="barcodeMode ? __('Scan barcode or type item code...') : __('Search by code or name...')"
-						class="w-full pl-9 pr-4 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:border-transparent"
-						:class="barcodeMode ? 'border-blue-400 focus:ring-blue-500' : 'border-gray-300 focus:ring-blue-500'"
+						:placeholder="__('Search or scan barcode...')"
+						class="w-full pl-9 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
 						data-testid="search-input"
-						@input="barcodeMode ? null : onSearchInput()"
-						@keydown.enter.prevent="barcodeMode ? onBarcodeScan() : null"
+						@input="onSearchInput()"
+						@keydown.enter.prevent="onBarcodeScan()"
 					/>
 				</div>
-
-				<!-- Barcode mode toggle -->
-				<label
-					class="flex items-center gap-1.5 flex-shrink-0 cursor-pointer select-none"
-					:title="__('Barcode mode: scan a barcode to open qty modal')"
-				>
-					<input
-						v-model="barcodeMode"
-						type="checkbox"
-						class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-						data-testid="barcode-mode-toggle"
-					/>
-					<svg class="w-4 h-4" :class="barcodeMode ? 'text-blue-600' : 'text-gray-400'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9V7a2 2 0 012-2h2M17 5h2a2 2 0 012 2v2M21 15v2a2 2 0 01-2 2h-2M7 19H5a2 2 0 01-2-2v-2M7 12h10" />
-					</svg>
-					<span class="text-xs" :class="barcodeMode ? 'text-blue-600 font-medium' : 'text-gray-500'">
-						{{ __("Barcode") }}
-					</span>
-				</label>
 
 				<!-- Mobile: filter toggle button -->
 				<button
@@ -162,17 +131,17 @@
 					</option>
 				</select>
 
-				<!-- Supplier filter: a native datalist makes the input type-to-search
-				     without pulling in an extra component. -->
-				<input
+				<select
 					v-model="supplierFilter"
-					list="supplier-options"
-					type="text"
-					:placeholder="__('All suppliers')"
-					class="border border-gray-300 rounded-lg px-3 py-2 text-sm min-w-[160px] focus:outline-none focus:ring-2 focus:ring-blue-500"
+					class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
 					data-testid="supplier-filter"
 					@change="reloadFirstPage"
-				/>
+				>
+					<option value="">{{ __("All suppliers") }}</option>
+					<option v-for="s in suppliers.data || []" :key="s.name" :value="s.name">
+						{{ s.name }}
+					</option>
+				</select>
 
 				<select
 					v-model="stockFilter"
@@ -227,15 +196,17 @@
 					</option>
 				</select>
 
-				<input
+				<select
 					v-model="supplierFilter"
-					list="supplier-options"
-					type="text"
-					:placeholder="__('All suppliers')"
 					class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
 					data-testid="supplier-filter-mobile"
 					@change="reloadFirstPage"
-				/>
+				>
+					<option value="">{{ __("All suppliers") }}</option>
+					<option v-for="s in suppliers.data || []" :key="s.name" :value="s.name">
+						{{ s.name }}
+					</option>
+				</select>
 
 				<select
 					v-model="stockFilter"
@@ -275,11 +246,7 @@
 				</div>
 			</div>
 		</div>
-		<datalist id="supplier-options">
-			<option v-for="s in suppliers.data || []" :key="s.name" :value="s.name" />
-		</datalist>
-
-		<!-- Table / Cards -->
+<!-- Table / Cards -->
 		<div class="flex-1 overflow-auto">
 			<!-- Loading skeleton — desktop -->
 			<table v-if="items.loading" class="hidden sm:table w-full text-sm">
@@ -898,7 +865,6 @@ const stockFilter = ref("");
 const priceFilter = ref("");
 const currentPage = ref(0);
 const showFilters = ref(false);
-const barcodeMode = ref(false);
 const searchInputEl = ref(null);
 let searchTimer = null;
 
