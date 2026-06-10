@@ -165,7 +165,12 @@ doc_events = {
 # Scheduled Tasks
 # ---------------
 
-scheduler_events = {"daily": ["easy_entry.tasks.daily_owner_report.send_daily_owner_report"]}
+scheduler_events = {
+	"daily": [
+		"easy_entry.tasks.daily_owner_report.send_daily_owner_report",
+		"easy_entry.tasks.ar_summary_email.send_ar_summary_email",
+	]
+}
 
 fixtures = [
 	{"dt": "Role", "filters": [["role_name", "in", ["Store Owner"]]]},

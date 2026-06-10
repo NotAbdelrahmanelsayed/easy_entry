@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="margin:0;padding:0;background:#f5f5f5;font-family:'Segoe UI',Tahoma,Arial,sans-serif;">
+
+<div style="max-width:600px;margin:0 auto;padding:20px 16px;">
+
+  <!-- Card wrapper -->
+  <div style="background:#ffffff;border-radius:10px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.08);">
+
+    <!-- Header -->
+    <div style="background:#b45309;padding:24px 28px;">
+      <h2 style="margin:0;color:#ffffff;font-size:20px;font-weight:700;letter-spacing:-0.01em;">
+        الذمم المدينة
+      </h2>
+      <p style="margin:6px 0 0;color:#fde68a;font-size:13px;">
+        حتى تاريخ {{ as_of }} &nbsp;·&nbsp; {{ customer_count }} عميل
+      </p>
+    </div>
+
+    <!-- Summary table -->
+    <div style="padding:0 0 4px;">
+      <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;font-size:14px;">
+        <thead>
+          <tr style="background:#fffbeb;border-bottom:2px solid #fde68a;">
+            <th style="text-align:right;padding:12px 20px;color:#78350f;font-weight:700;font-size:12px;letter-spacing:0.04em;">
+              العميل
+            </th>
+            <th style="text-align:left;padding:12px 20px;color:#78350f;font-weight:700;font-size:12px;letter-spacing:0.04em;white-space:nowrap;">
+              المبلغ المستحق
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for c in customers %}
+          <tr style="border-bottom:1px solid #f3f4f6;{% if loop.index is odd %}background:#fafafa;{% else %}background:#ffffff;{% endif %}">
+            <td style="padding:11px 20px;color:#1c1917;font-weight:500;">
+              {{ c.customer_name or c.customer }}
+            </td>
+            <td style="padding:11px 20px;color:#b45309;font-weight:700;text-align:left;white-space:nowrap;">
+              {{ "{:,.2f}".format(c.total_outstanding | float) }}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+        <tfoot>
+          <tr style="background:#fff7ed;border-top:2px solid #fbbf24;">
+            <td style="padding:13px 20px;font-weight:800;color:#78350f;font-size:15px;">
+              الإجمالي
+            </td>
+            <td style="padding:13px 20px;font-weight:800;color:#b45309;font-size:15px;text-align:left;white-space:nowrap;">
+              {{ "{:,.2f}".format(total | float) }}
+            </td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <!-- CTA -->
+    <div style="padding:24px 28px;text-align:center;border-top:1px solid #f3f4f6;">
+      <a href="{{ report_url }}"
+         style="display:inline-block;background:#b45309;color:#ffffff;text-decoration:none;padding:12px 32px;border-radius:7px;font-weight:700;font-size:14px;letter-spacing:0.01em;">
+        عرض التقرير الكامل بالتفاصيل
+      </a>
+      <p style="margin:14px 0 0;color:#9ca3af;font-size:12px;">
+        يحتوي التقرير الكامل على تفصيل كل فاتورة وصنف لكل عميل.
+      </p>
+    </div>
+
+    <!-- Footer -->
+    <div style="background:#f9fafb;padding:14px 28px;border-top:1px solid #e5e7eb;">
+      <p style="margin:0;color:#9ca3af;font-size:11px;text-align:center;">
+        رسالة تلقائية من النظام — يُرجى عدم الرد مباشرةً
+      </p>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>
