@@ -1,511 +1,587 @@
-{
-  "version": 1,
-  "bugs": [
-    {
-      "id": "bug-001",
-      "timestamp": "2026-05-18",
-      "error_message": "OpeningEntryAccountError: Difference Account must be a Asset/Liability type account, since this Stock Reconciliation is an Opening Entry",
-      "file": "easy_entry/api/item_manager.py",
-      "root_cause": "set_item_qty set sr.difference_account, but the Stock Reconciliation field is named expense_account (label 'Difference Account'). The account was therefore never applied and validation failed on opening-stock items.",
-      "fix": "Set sr.expense_account (not sr.difference_account) to the company's 'Temporary Opening' account (an Asset account, valid for both opening and non-opening reconciliations).",
-      "tags": [
-        "stock-reconciliation",
-        "erpnext",
-        "fieldname",
-        "item-manager"
-      ],
-      "related_bugs": [],
-      "occurrences": 1,
-      "last_seen": "2026-05-18"
-    },
-    {
-      "id": "bug-002",
-      "timestamp": "2026-05-18T15:12:18.619Z",
-      "error_message": "CSS fix: name",
-      "file": "frontend/src/pages/ItemPriceEditor.vue",
-      "root_cause": "name: 'POSSale' → 'ItemManager'",
-      "fix": "Changed name: 'POSSale' → 'ItemManager'",
-      "tags": [
-        "auto-detected",
-        "style-fix",
-        "vue"
-      ],
-      "related_bugs": [],
-      "occurrences": 1,
-      "last_seen": "2026-05-18T15:12:18.619Z"
-    },
-    {
-      "id": "bug-003",
-      "timestamp": "2026-05-18T15:29:58.517Z",
-      "error_message": "Significant refactor of ",
-      "file": "frontend/src/pages/ItemManager.vue",
-      "root_cause": "8 lines replaced/restructured",
-      "fix": "Rewrote 14→19 lines (8 removed)",
-      "tags": [
-        "auto-detected",
-        "refactor",
-        "vue"
-      ],
-      "related_bugs": [],
-      "occurrences": 1,
-      "last_seen": "2026-05-18T15:29:58.517Z"
-    },
-    {
-      "id": "bug-004",
-      "timestamp": "2026-05-18T15:36:50.084Z",
-      "error_message": "Incorrect value in code",
-      "file": "CLAUDE.md",
-      "root_cause": "Had `frontend/src/`",
-      "fix": "Changed to `frontend/`",
-      "tags": [
-        "auto-detected",
-        "wrong-value",
-        "md"
-      ],
-      "related_bugs": [],
-      "occurrences": 1,
-      "last_seen": "2026-05-18T15:36:50.084Z"
-    },
-    {
-      "id": "bug-005",
-      "timestamp": "2026-05-18T15:37:34.373Z",
-      "error_message": "Significant refactor of ",
-      "file": "CLAUDE.md",
-      "root_cause": "5 lines replaced/restructured",
-      "fix": "Rewrote 6→12 lines (5 removed)",
-      "tags": [
-        "auto-detected",
-        "refactor",
-        "md"
-      ],
-      "related_bugs": [],
-      "occurrences": 1,
-      "last_seen": "2026-05-18T15:37:34.374Z"
-    },
-    {
-      "id": "bug-003",
-      "timestamp": "2026-05-19",
-      "error_message": "Item Manager SPA shows 'Failed to load items' with a Retry button",
-      "file": "frontend/src/pages/ItemManager.vue",
-      "root_cause": "The /item-manager www page is public (not auth-gated) so a logged-out visitor can open it, but every whitelisted API call (get_items) then returns PermissionError. The SPA rendered a dead-end error state instead of routing to login.",
-      "fix": "Added isAuthError() + redirectToLogin() helpers; items resource onError redirects to /login?redirect-to=<path> on a PermissionError/AuthenticationError, and the error state shows a 'Log in' button for auth errors.",
-      "tags": [
-        "auth",
-        "permission-error",
-        "item-manager",
-        "spa",
-        "ux"
-      ],
-      "related_bugs": [],
-      "occurrences": 1,
-      "last_seen": "2026-05-19"
-    },
-    {
-      "id": "bug-006",
-      "timestamp": "2026-05-19T07:00:00",
-      "error_message": "Item Manager SPA shows \"Failed to load items\" for logged-in users",
-      "file": "easy_entry/www/item_manager.py",
-      "root_cause": "No www page controller existed, so window.csrf_token was never injected; frappe-ui frappeRequest sent no X-Frappe-CSRF-Token header and POST to get_items failed with CSRFTokenError (HTTP 400) for desk-logged-in users who have a saved csrf_token.",
-      "fix": "Added www controller item_manager.py (basename scrubbed: hyphen->underscore) with get_context that sets context.boot.csrf_token via frappe.sessions.get_csrf_token(), and redirects Guest sessions to /login.",
-      "tags": [
-        "csrf",
-        "www",
-        "spa",
-        "item-manager",
-        "frappe-ui"
-      ],
-      "related_bugs": [],
-      "occurrences": 1,
-      "last_seen": "2026-05-19"
-    },
-    {
-      "id": "bug-008",
-      "timestamp": "2026-05-19T06:59:40.706Z",
-      "error_message": "Significant refactor of ",
-      "file": "easy_entry/api/item_manager.py",
-      "root_cause": "6 lines replaced/restructured",
-      "fix": "Rewrote 13→27 lines (6 removed)",
-      "tags": [
-        "auto-detected",
-        "refactor",
-        "py"
-      ],
-      "related_bugs": [],
-      "occurrences": 1,
-      "last_seen": "2026-05-19T06:59:40.706Z"
-    },
-    {
-      "id": "bug-009",
-      "timestamp": "2026-05-19T12:14:20.063Z",
-      "error_message": "Incorrect value in code",
-      "file": "easy_entry/www/easy.py",
-      "root_cause": "Had \"/login?redirect-to=/item-manager\"",
-      "fix": "Changed to \"/login?redirect-to=/easy\"",
-      "tags": [
-        "auto-detected",
-        "wrong-value",
-        "py"
-      ],
-      "related_bugs": [],
-      "occurrences": 1,
-      "last_seen": "2026-05-19T12:14:20.063Z"
-    },
-    {
-      "id": "bug-010",
-      "timestamp": "2026-05-19T12:14:31.319Z",
-      "error_message": "Incorrect value in code",
-      "file": "frontend/vite.config.js",
-      "root_cause": "Had \"../easy_entry/www/item-manager.html\"",
-      "fix": "Changed to \"../easy_entry/www/easy.html\"",
-      "tags": [
-        "auto-detected",
-        "wrong-value",
-        "js"
-      ],
-      "related_bugs": [],
-      "occurrences": 1,
-      "last_seen": "2026-05-19T12:14:31.319Z"
-    },
-    {
-      "id": "bug-011",
-      "timestamp": "2026-05-19T12:15:48.504Z",
-      "error_message": "Incorrect value in code",
-      "file": "frontend/src/App.vue",
-      "root_cause": "Had \"@/composables/useToast\"",
-      "fix": "Changed to \"@/components/AppShell.vue\"",
-      "tags": [
-        "auto-detected",
-        "wrong-value",
-        "vue"
-      ],
-      "related_bugs": [],
-      "occurrences": 1,
-      "last_seen": "2026-05-19T12:15:48.504Z"
-    },
-    {
-      "id": "bug-012",
-      "timestamp": "2026-05-19T12:15:57.971Z",
-      "error_message": "Incorrect value in code",
-      "file": "frontend/src/pages/ItemManager.vue",
-      "root_cause": "Had \"min-h-screen bg-gray-50 flex flex-col\"",
-      "fix": "Changed to \"flex-1 min-h-0 bg-gray-50 flex flex-col\"",
-      "tags": [
-        "auto-detected",
-        "wrong-value",
-        "vue"
-      ],
-      "related_bugs": [],
-      "occurrences": 1,
-      "last_seen": "2026-05-19T12:15:57.971Z"
-    },
-    {
-      "id": "bug-013",
-      "timestamp": "2026-05-19T12:15:59.050Z",
-      "error_message": "Incorrect value in code",
-      "file": "frontend/src/pages/ItemPriceEditor.vue",
-      "root_cause": "Had \"min-h-screen bg-gray-50 flex flex-col\"",
-      "fix": "Changed to \"flex-1 min-h-0 bg-gray-50 flex flex-col\"",
-      "tags": [
-        "auto-detected",
-        "wrong-value",
-        "vue"
-      ],
-      "related_bugs": [],
-      "occurrences": 1,
-      "last_seen": "2026-05-19T12:15:59.050Z"
-    },
-    {
-      "id": "bug-014",
-      "timestamp": "2026-05-19T12:16:57.830Z",
-      "error_message": "Incorrect value in code",
-      "file": "CLAUDE.md",
-      "root_cause": "Had `/item-manager`",
-      "fix": "Changed to `/easy`",
-      "tags": [
-        "auto-detected",
-        "wrong-value",
-        "md"
-      ],
-      "related_bugs": [],
-      "occurrences": 3,
-      "last_seen": "2026-05-19T12:17:09.336Z"
-    },
-    {
-      "id": "bug-015",
-      "timestamp": "2026-05-19T12:17:07.689Z",
-      "error_message": "Significant refactor of ",
-      "file": "CLAUDE.md",
-      "root_cause": "4 lines replaced/restructured",
-      "fix": "Rewrote 5→9 lines (4 removed)",
-      "tags": [
-        "auto-detected",
-        "refactor",
-        "md"
-      ],
-      "related_bugs": [],
-      "occurrences": 1,
-      "last_seen": "2026-05-19T12:17:07.689Z"
-    },
-    {
-      "id": "bug-016",
-      "timestamp": "2026-05-19T12:38:28.483Z",
-      "error_message": "Significant refactor of ",
-      "file": "frontend/src/router.js",
-      "root_cause": "3 lines replaced/restructured",
-      "fix": "Rewrote 11→6 lines (3 removed)",
-      "tags": [
-        "auto-detected",
-        "refactor",
-        "js"
-      ],
-      "related_bugs": [],
-      "occurrences": 1,
-      "last_seen": "2026-05-19T12:38:28.483Z"
-    },
-    {
-      "id": "bug-017",
-      "timestamp": "2026-05-19T12:38:31.056Z",
-      "error_message": "Significant refactor of ",
-      "file": "frontend/src/features.js",
-      "root_cause": "6 lines replaced/restructured",
-      "fix": "Rewrote 10→3 lines (6 removed)",
-      "tags": [
-        "auto-detected",
-        "refactor",
-        "js"
-      ],
-      "related_bugs": [],
-      "occurrences": 1,
-      "last_seen": "2026-05-19T12:38:31.056Z"
-    },
-    {
-      "id": "bug-018",
-      "timestamp": "2026-05-19T12:38:49.004Z",
-      "error_message": "Incorrect value in code",
-      "file": "frontend/design.md",
-      "root_cause": "Had `/price-editor`",
-      "fix": "Changed to `src/pages/`",
-      "tags": [
-        "auto-detected",
-        "wrong-value",
-        "md"
-      ],
-      "related_bugs": [],
-      "occurrences": 1,
-      "last_seen": "2026-05-19T12:38:49.004Z"
-    },
-    {
-      "id": "bug-019",
-      "timestamp": "2026-05-19T12:49:41.469Z",
-      "error_message": "Significant refactor of ",
-      "file": "easy_entry/api/item_manager.py",
-      "root_cause": "23 lines replaced/restructured",
-      "fix": "Rewrote 26→7 lines (23 removed)",
-      "tags": [
-        "auto-detected",
-        "refactor",
-        "py"
-      ],
-      "related_bugs": [],
-      "occurrences": 1,
-      "last_seen": "2026-05-19T12:49:41.469Z"
-    },
-    {
-      "id": "bug-020",
-      "timestamp": "2026-05-19T17:50:00.000Z",
-      "error_message": "EmptyStockReconciliationItemsError / no-change SR lines pruned",
-      "file": "easy_entry/easy_entry/doctype/ee_stock_count/ee_stock_count.py",
-      "root_cause": "ERPNext Stock Reconciliation.validate() unconditionally calls remove_items_with_no_change(), which drops lines where counted_qty == system_qty and raises EmptyStockReconciliationItemsError on an empty SR. The original plan used a draft SR as the live counting session, so counted-but-unchanged lines would silently vanish on each save.",
-      "fix": "Redesigned to a dedicated EE Stock Count / EE Stock Count Line DocType pair as the session store. The SR is built only at finish_session from lines where counted_qty != system_qty; build_reconciliation catches EmptyStockReconciliationItemsError and returns None.",
-      "tags": [
-        "erpnext",
-        "stock-reconciliation",
-        "architecture",
-        "doctype"
-      ],
-      "related_bugs": [],
-      "occurrences": 1,
-      "last_seen": "2026-05-19T17:50:00.000Z"
-    },
-    {
-      "id": "bug-021",
-      "timestamp": "2026-05-19T16:43:13.259Z",
-      "error_message": "Significant refactor of ",
-      "file": "easy_entry/api/item_manager.py",
-      "root_cause": "4 lines replaced/restructured",
-      "fix": "Rewrote 7→9 lines (4 removed)",
-      "tags": [
-        "auto-detected",
-        "refactor",
-        "py"
-      ],
-      "related_bugs": [],
-      "occurrences": 1,
-      "last_seen": "2026-05-19T16:43:13.259Z"
-    },
-    {
-      "id": "bug-022",
-      "timestamp": "2026-05-19T16:43:19.691Z",
-      "error_message": "Wrong reference: flt should be cint",
-      "file": "easy_entry/api/stock_count.py",
-      "root_cause": "Used \"flt\" instead of \"cint\"",
-      "fix": "Changed flt → cint",
-      "tags": [
-        "auto-detected",
-        "wrong-reference",
-        "py"
-      ],
-      "related_bugs": [],
-      "occurrences": 1,
-      "last_seen": "2026-05-19T16:43:19.691Z"
-    },
-    {
-      "id": "bug-023",
-      "timestamp": "2026-05-19T17:30:56.892Z",
-      "error_message": "Missing guard clause",
-      "file": "frontend/src/components/AppShell.vue",
-      "root_cause": "No early return/throw for edge case: !target",
-      "fix": "Added guard clause: if (!target)",
-      "tags": [
-        "auto-detected",
-        "guard-clause",
-        "vue"
-      ],
-      "related_bugs": [],
-      "occurrences": 1,
-      "last_seen": "2026-05-19T17:30:56.892Z"
-    },
-    {
-      "id": "bug-024",
-      "timestamp": "2026-05-19T17:31:16.516Z",
-      "error_message": "CSS fix: focus",
-      "file": "frontend/src/pages/ItemManager.vue",
-      "root_cause": "focus: outline-none focus:ring-2 focus:ring-blue-500\" → ring-blue-500\"",
-      "fix": "Changed focus: outline-none focus:ring-2 focus:ring-blue-500\" → ring-blue-500\"",
-      "tags": [
-        "auto-detected",
-        "style-fix",
-        "vue"
-      ],
-      "related_bugs": [],
-      "occurrences": 2,
-      "last_seen": "2026-05-19T17:32:00.036Z"
-    },
-    {
-      "id": "bug-025",
-      "timestamp": "2026-05-19T17:32:14.323Z",
-      "error_message": "Null/undefined access in ",
-      "file": "frontend/src/pages/ItemManager.vue",
-      "root_cause": "Property access on potentially null/undefined value",
-      "fix": "Added null safety (optional chaining or null check)",
-      "tags": [
-        "auto-detected",
-        "null-safety",
-        "vue"
-      ],
-      "related_bugs": [],
-      "occurrences": 1,
-      "last_seen": "2026-05-19T17:32:14.323Z"
-    },
-    {
-      "id": "bug-026",
-      "timestamp": "2026-05-19T17:32:38.787Z",
-      "error_message": "CSS fix: open",
-      "file": "frontend/src/pages/StockCountSession.vue",
-      "root_cause": "open: false, busy: false → false, matches: []",
-      "fix": "Changed open: false, busy: false → false, matches: []",
-      "tags": [
-        "auto-detected",
-        "style-fix",
-        "vue"
-      ],
-      "related_bugs": [],
-      "occurrences": 1,
-      "last_seen": "2026-05-19T17:32:38.787Z"
-    },
-    {
-      "id": "bug-027",
-      "timestamp": "2026-05-19T17:32:49.714Z",
-      "error_message": "Significant refactor of ",
-      "file": "frontend/src/pages/StockCountSession.vue",
-      "root_cause": "3 lines replaced/restructured",
-      "fix": "Rewrote 22→51 lines (3 removed)",
-      "tags": [
-        "auto-detected",
-        "refactor",
-        "vue"
-      ],
-      "related_bugs": [],
-      "occurrences": 1,
-      "last_seen": "2026-05-19T17:32:49.714Z"
-    },
-    {
-      "id": "bug-028",
-      "timestamp": "2026-05-19T17:49:03.918Z",
-      "error_message": "Missing guard clause",
-      "file": "frontend/src/pages/ItemManager.vue",
-      "root_cause": "No early return/throw for edge case: dirtyRows.value.length",
-      "fix": "Added guard clause: if (dirtyRows.value.length)",
-      "tags": [
-        "auto-detected",
-        "guard-clause",
-        "vue"
-      ],
-      "related_bugs": [],
-      "occurrences": 1,
-      "last_seen": "2026-05-19T17:49:03.918Z"
-    },
-    {
-      "id": "bug-029",
-      "timestamp": "2026-05-19T17:57:35.878Z",
-      "error_message": "Incorrect value in code",
-      "file": "frontend/src/pages/ItemManager.vue",
-      "root_cause": "Had \"Press ? for shortcuts\"",
-      "fix": "Changed to \"Shortcuts: F4 search · F5 refresh · Ctrl+S save a",
-      "tags": [
-        "auto-detected",
-        "wrong-value",
-        "vue"
-      ],
-      "related_bugs": [],
-      "occurrences": 1,
-      "last_seen": "2026-05-19T17:57:35.879Z"
-    },
-    {
-      "id": "bug-030",
-      "timestamp": "2026-05-21",
-      "error_message": "Per-row 🖨️ button in child table grid is visible but not clickable in inline (non-popup) mode",
-      "file": "easy_entry/public/js/label_printer.js",
-      "root_cause": "frappe.ui.form.on(childDoctype, \"fieldname\", fn) only fires through the child form script_manager, which is only active when the row is open as a popup dialog. The static inline grid renders the button element but clicking it never reaches that handler.",
-      "fix": "Added jQuery delegation via grid.wrapper.on(\"click.ee_print\", \"[data-fieldname=ee_print_label]\", fn) in bindGridPrintClick(). Delegation fires at the DOM level regardless of Frappe form state, catching clicks in both inline and popup modes. Popup mode also retains frappe.ui.form.on handler (no conflict as popup dialog is outside grid wrapper DOM).",
-      "tags": [
-        "frappe-grid",
-        "event-delegation",
-        "child-table",
-        "button-field"
-      ],
-      "related_bugs": [],
-      "occurrences": 1,
-      "last_seen": "2026-05-21"
-    },
-    {
-      "id": "bug-031",
-      "timestamp": "2026-06-10T17:35:33.798752",
-      "error_message": "Supplier code (ee_supplier_code) not appearing on printed item labels; user also found 6-char codes like JHNQFT too complex",
-      "file": "easy_entry/fixtures/print_format.json, easy_entry/utils/supplier_code.py, easy_entry/hooks.py",
-      "root_cause": "Code traveled ONLY as ?supplier_code= URL param appended by label_printer.js buttons; every other print path (standard Item Print, printview 'Get PDF' button which rebuilds the URL, Easy Entry SPA) silently dropped it. Additionally .sup-code was 6pt color #555 — 1-bit thermal printers dither mid-gray to near-invisible dots.",
-      "fix": "Added item_supplier_code(item_code) jinja method (first Item Supplier row -> ee_supplier_code) as template fallback: form_dict param still wins; styled .sup-code black + font-weight 600; simplified scheme to 3 letters (A-Z minus I/O) and regenerated all codes via patch regenerate_short_supplier_codes; fixtures filter now exports both 50*25 and 38*25.",
-      "tags": [
-        "print-format",
-        "supplier-code",
-        "labels",
-        "thermal-printer",
-        "form_dict",
-        "jinja"
-      ],
-      "related_bugs": [],
-      "occurrences": 1,
-      "last_seen": "2026-06-10T17:35:33.798767"
-    }
-  ]
-}
+[
+ {
+  "id": "bug-001",
+  "timestamp": "2026-05-18",
+  "error_message": "OpeningEntryAccountError: Difference Account must be a Asset/Liability type account, since this Stock Reconciliation is an Opening Entry",
+  "file": "easy_entry/api/item_manager.py",
+  "root_cause": "set_item_qty set sr.difference_account, but the Stock Reconciliation field is named expense_account (label 'Difference Account'). The account was therefore never applied and validation failed on opening-stock items.",
+  "fix": "Set sr.expense_account (not sr.difference_account) to the company's 'Temporary Opening' account (an Asset account, valid for both opening and non-opening reconciliations).",
+  "tags": [
+   "stock-reconciliation",
+   "erpnext",
+   "fieldname",
+   "item-manager"
+  ],
+  "related_bugs": [],
+  "occurrences": 1,
+  "last_seen": "2026-05-18"
+ },
+ {
+  "id": "bug-002",
+  "timestamp": "2026-05-18T15:12:18.619Z",
+  "error_message": "CSS fix: name",
+  "file": "frontend/src/pages/ItemPriceEditor.vue",
+  "root_cause": "name: 'POSSale' → 'ItemManager'",
+  "fix": "Changed name: 'POSSale' → 'ItemManager'",
+  "tags": [
+   "auto-detected",
+   "style-fix",
+   "vue"
+  ],
+  "related_bugs": [],
+  "occurrences": 1,
+  "last_seen": "2026-05-18T15:12:18.619Z"
+ },
+ {
+  "id": "bug-003",
+  "timestamp": "2026-05-18T15:29:58.517Z",
+  "error_message": "Significant refactor of ",
+  "file": "frontend/src/pages/ItemManager.vue",
+  "root_cause": "8 lines replaced/restructured",
+  "fix": "Rewrote 14→19 lines (8 removed)",
+  "tags": [
+   "auto-detected",
+   "refactor",
+   "vue"
+  ],
+  "related_bugs": [],
+  "occurrences": 1,
+  "last_seen": "2026-05-18T15:29:58.517Z"
+ },
+ {
+  "id": "bug-004",
+  "timestamp": "2026-05-18T15:36:50.084Z",
+  "error_message": "Incorrect value in code",
+  "file": "CLAUDE.md",
+  "root_cause": "Had `frontend/src/`",
+  "fix": "Changed to `frontend/`",
+  "tags": [
+   "auto-detected",
+   "wrong-value",
+   "md"
+  ],
+  "related_bugs": [],
+  "occurrences": 1,
+  "last_seen": "2026-05-18T15:36:50.084Z"
+ },
+ {
+  "id": "bug-005",
+  "timestamp": "2026-05-18T15:37:34.373Z",
+  "error_message": "Significant refactor of ",
+  "file": "CLAUDE.md",
+  "root_cause": "5 lines replaced/restructured",
+  "fix": "Rewrote 6→12 lines (5 removed)",
+  "tags": [
+   "auto-detected",
+   "refactor",
+   "md"
+  ],
+  "related_bugs": [],
+  "occurrences": 1,
+  "last_seen": "2026-05-18T15:37:34.374Z"
+ },
+ {
+  "id": "bug-003",
+  "timestamp": "2026-05-19",
+  "error_message": "Item Manager SPA shows 'Failed to load items' with a Retry button",
+  "file": "frontend/src/pages/ItemManager.vue",
+  "root_cause": "The /item-manager www page is public (not auth-gated) so a logged-out visitor can open it, but every whitelisted API call (get_items) then returns PermissionError. The SPA rendered a dead-end error state instead of routing to login.",
+  "fix": "Added isAuthError() + redirectToLogin() helpers; items resource onError redirects to /login?redirect-to=<path> on a PermissionError/AuthenticationError, and the error state shows a 'Log in' button for auth errors.",
+  "tags": [
+   "auth",
+   "permission-error",
+   "item-manager",
+   "spa",
+   "ux"
+  ],
+  "related_bugs": [],
+  "occurrences": 1,
+  "last_seen": "2026-05-19"
+ },
+ {
+  "id": "bug-006",
+  "timestamp": "2026-05-19T07:00:00",
+  "error_message": "Item Manager SPA shows \"Failed to load items\" for logged-in users",
+  "file": "easy_entry/www/item_manager.py",
+  "root_cause": "No www page controller existed, so window.csrf_token was never injected; frappe-ui frappeRequest sent no X-Frappe-CSRF-Token header and POST to get_items failed with CSRFTokenError (HTTP 400) for desk-logged-in users who have a saved csrf_token.",
+  "fix": "Added www controller item_manager.py (basename scrubbed: hyphen->underscore) with get_context that sets context.boot.csrf_token via frappe.sessions.get_csrf_token(), and redirects Guest sessions to /login.",
+  "tags": [
+   "csrf",
+   "www",
+   "spa",
+   "item-manager",
+   "frappe-ui"
+  ],
+  "related_bugs": [],
+  "occurrences": 1,
+  "last_seen": "2026-05-19"
+ },
+ {
+  "id": "bug-008",
+  "timestamp": "2026-05-19T06:59:40.706Z",
+  "error_message": "Significant refactor of ",
+  "file": "easy_entry/api/item_manager.py",
+  "root_cause": "6 lines replaced/restructured",
+  "fix": "Rewrote 13→27 lines (6 removed)",
+  "tags": [
+   "auto-detected",
+   "refactor",
+   "py"
+  ],
+  "related_bugs": [],
+  "occurrences": 1,
+  "last_seen": "2026-05-19T06:59:40.706Z"
+ },
+ {
+  "id": "bug-009",
+  "timestamp": "2026-05-19T12:14:20.063Z",
+  "error_message": "Incorrect value in code",
+  "file": "easy_entry/www/easy.py",
+  "root_cause": "Had \"/login?redirect-to=/item-manager\"",
+  "fix": "Changed to \"/login?redirect-to=/easy\"",
+  "tags": [
+   "auto-detected",
+   "wrong-value",
+   "py"
+  ],
+  "related_bugs": [],
+  "occurrences": 1,
+  "last_seen": "2026-05-19T12:14:20.063Z"
+ },
+ {
+  "id": "bug-010",
+  "timestamp": "2026-05-19T12:14:31.319Z",
+  "error_message": "Incorrect value in code",
+  "file": "frontend/vite.config.js",
+  "root_cause": "Had \"../easy_entry/www/item-manager.html\"",
+  "fix": "Changed to \"../easy_entry/www/easy.html\"",
+  "tags": [
+   "auto-detected",
+   "wrong-value",
+   "js"
+  ],
+  "related_bugs": [],
+  "occurrences": 1,
+  "last_seen": "2026-05-19T12:14:31.319Z"
+ },
+ {
+  "id": "bug-011",
+  "timestamp": "2026-05-19T12:15:48.504Z",
+  "error_message": "Incorrect value in code",
+  "file": "frontend/src/App.vue",
+  "root_cause": "Had \"@/composables/useToast\"",
+  "fix": "Changed to \"@/components/AppShell.vue\"",
+  "tags": [
+   "auto-detected",
+   "wrong-value",
+   "vue"
+  ],
+  "related_bugs": [],
+  "occurrences": 1,
+  "last_seen": "2026-05-19T12:15:48.504Z"
+ },
+ {
+  "id": "bug-012",
+  "timestamp": "2026-05-19T12:15:57.971Z",
+  "error_message": "Incorrect value in code",
+  "file": "frontend/src/pages/ItemManager.vue",
+  "root_cause": "Had \"min-h-screen bg-gray-50 flex flex-col\"",
+  "fix": "Changed to \"flex-1 min-h-0 bg-gray-50 flex flex-col\"",
+  "tags": [
+   "auto-detected",
+   "wrong-value",
+   "vue"
+  ],
+  "related_bugs": [],
+  "occurrences": 1,
+  "last_seen": "2026-05-19T12:15:57.971Z"
+ },
+ {
+  "id": "bug-013",
+  "timestamp": "2026-05-19T12:15:59.050Z",
+  "error_message": "Incorrect value in code",
+  "file": "frontend/src/pages/ItemPriceEditor.vue",
+  "root_cause": "Had \"min-h-screen bg-gray-50 flex flex-col\"",
+  "fix": "Changed to \"flex-1 min-h-0 bg-gray-50 flex flex-col\"",
+  "tags": [
+   "auto-detected",
+   "wrong-value",
+   "vue"
+  ],
+  "related_bugs": [],
+  "occurrences": 1,
+  "last_seen": "2026-05-19T12:15:59.050Z"
+ },
+ {
+  "id": "bug-014",
+  "timestamp": "2026-05-19T12:16:57.830Z",
+  "error_message": "Incorrect value in code",
+  "file": "CLAUDE.md",
+  "root_cause": "Had `/item-manager`",
+  "fix": "Changed to `/easy`",
+  "tags": [
+   "auto-detected",
+   "wrong-value",
+   "md"
+  ],
+  "related_bugs": [],
+  "occurrences": 3,
+  "last_seen": "2026-05-19T12:17:09.336Z"
+ },
+ {
+  "id": "bug-015",
+  "timestamp": "2026-05-19T12:17:07.689Z",
+  "error_message": "Significant refactor of ",
+  "file": "CLAUDE.md",
+  "root_cause": "4 lines replaced/restructured",
+  "fix": "Rewrote 5→9 lines (4 removed)",
+  "tags": [
+   "auto-detected",
+   "refactor",
+   "md"
+  ],
+  "related_bugs": [],
+  "occurrences": 1,
+  "last_seen": "2026-05-19T12:17:07.689Z"
+ },
+ {
+  "id": "bug-016",
+  "timestamp": "2026-05-19T12:38:28.483Z",
+  "error_message": "Significant refactor of ",
+  "file": "frontend/src/router.js",
+  "root_cause": "3 lines replaced/restructured",
+  "fix": "Rewrote 11→6 lines (3 removed)",
+  "tags": [
+   "auto-detected",
+   "refactor",
+   "js"
+  ],
+  "related_bugs": [],
+  "occurrences": 1,
+  "last_seen": "2026-05-19T12:38:28.483Z"
+ },
+ {
+  "id": "bug-017",
+  "timestamp": "2026-05-19T12:38:31.056Z",
+  "error_message": "Significant refactor of ",
+  "file": "frontend/src/features.js",
+  "root_cause": "6 lines replaced/restructured",
+  "fix": "Rewrote 10→3 lines (6 removed)",
+  "tags": [
+   "auto-detected",
+   "refactor",
+   "js"
+  ],
+  "related_bugs": [],
+  "occurrences": 1,
+  "last_seen": "2026-05-19T12:38:31.056Z"
+ },
+ {
+  "id": "bug-018",
+  "timestamp": "2026-05-19T12:38:49.004Z",
+  "error_message": "Incorrect value in code",
+  "file": "frontend/design.md",
+  "root_cause": "Had `/price-editor`",
+  "fix": "Changed to `src/pages/`",
+  "tags": [
+   "auto-detected",
+   "wrong-value",
+   "md"
+  ],
+  "related_bugs": [],
+  "occurrences": 1,
+  "last_seen": "2026-05-19T12:38:49.004Z"
+ },
+ {
+  "id": "bug-019",
+  "timestamp": "2026-05-19T12:49:41.469Z",
+  "error_message": "Significant refactor of ",
+  "file": "easy_entry/api/item_manager.py",
+  "root_cause": "23 lines replaced/restructured",
+  "fix": "Rewrote 26→7 lines (23 removed)",
+  "tags": [
+   "auto-detected",
+   "refactor",
+   "py"
+  ],
+  "related_bugs": [],
+  "occurrences": 1,
+  "last_seen": "2026-05-19T12:49:41.469Z"
+ },
+ {
+  "id": "bug-020",
+  "timestamp": "2026-05-19T17:50:00.000Z",
+  "error_message": "EmptyStockReconciliationItemsError / no-change SR lines pruned",
+  "file": "easy_entry/easy_entry/doctype/ee_stock_count/ee_stock_count.py",
+  "root_cause": "ERPNext Stock Reconciliation.validate() unconditionally calls remove_items_with_no_change(), which drops lines where counted_qty == system_qty and raises EmptyStockReconciliationItemsError on an empty SR. The original plan used a draft SR as the live counting session, so counted-but-unchanged lines would silently vanish on each save.",
+  "fix": "Redesigned to a dedicated EE Stock Count / EE Stock Count Line DocType pair as the session store. The SR is built only at finish_session from lines where counted_qty != system_qty; build_reconciliation catches EmptyStockReconciliationItemsError and returns None.",
+  "tags": [
+   "erpnext",
+   "stock-reconciliation",
+   "architecture",
+   "doctype"
+  ],
+  "related_bugs": [],
+  "occurrences": 1,
+  "last_seen": "2026-05-19T17:50:00.000Z"
+ },
+ {
+  "id": "bug-021",
+  "timestamp": "2026-05-19T16:43:13.259Z",
+  "error_message": "Significant refactor of ",
+  "file": "easy_entry/api/item_manager.py",
+  "root_cause": "4 lines replaced/restructured",
+  "fix": "Rewrote 7→9 lines (4 removed)",
+  "tags": [
+   "auto-detected",
+   "refactor",
+   "py"
+  ],
+  "related_bugs": [],
+  "occurrences": 1,
+  "last_seen": "2026-05-19T16:43:13.259Z"
+ },
+ {
+  "id": "bug-022",
+  "timestamp": "2026-05-19T16:43:19.691Z",
+  "error_message": "Wrong reference: flt should be cint",
+  "file": "easy_entry/api/stock_count.py",
+  "root_cause": "Used \"flt\" instead of \"cint\"",
+  "fix": "Changed flt → cint",
+  "tags": [
+   "auto-detected",
+   "wrong-reference",
+   "py"
+  ],
+  "related_bugs": [],
+  "occurrences": 1,
+  "last_seen": "2026-05-19T16:43:19.691Z"
+ },
+ {
+  "id": "bug-023",
+  "timestamp": "2026-05-19T17:30:56.892Z",
+  "error_message": "Missing guard clause",
+  "file": "frontend/src/components/AppShell.vue",
+  "root_cause": "No early return/throw for edge case: !target",
+  "fix": "Added guard clause: if (!target)",
+  "tags": [
+   "auto-detected",
+   "guard-clause",
+   "vue"
+  ],
+  "related_bugs": [],
+  "occurrences": 1,
+  "last_seen": "2026-05-19T17:30:56.892Z"
+ },
+ {
+  "id": "bug-024",
+  "timestamp": "2026-05-19T17:31:16.516Z",
+  "error_message": "CSS fix: focus",
+  "file": "frontend/src/pages/ItemManager.vue",
+  "root_cause": "focus: outline-none focus:ring-2 focus:ring-blue-500\" → ring-blue-500\"",
+  "fix": "Changed focus: outline-none focus:ring-2 focus:ring-blue-500\" → ring-blue-500\"",
+  "tags": [
+   "auto-detected",
+   "style-fix",
+   "vue"
+  ],
+  "related_bugs": [],
+  "occurrences": 2,
+  "last_seen": "2026-05-19T17:32:00.036Z"
+ },
+ {
+  "id": "bug-025",
+  "timestamp": "2026-05-19T17:32:14.323Z",
+  "error_message": "Null/undefined access in ",
+  "file": "frontend/src/pages/ItemManager.vue",
+  "root_cause": "Property access on potentially null/undefined value",
+  "fix": "Added null safety (optional chaining or null check)",
+  "tags": [
+   "auto-detected",
+   "null-safety",
+   "vue"
+  ],
+  "related_bugs": [],
+  "occurrences": 1,
+  "last_seen": "2026-05-19T17:32:14.323Z"
+ },
+ {
+  "id": "bug-026",
+  "timestamp": "2026-05-19T17:32:38.787Z",
+  "error_message": "CSS fix: open",
+  "file": "frontend/src/pages/StockCountSession.vue",
+  "root_cause": "open: false, busy: false → false, matches: []",
+  "fix": "Changed open: false, busy: false → false, matches: []",
+  "tags": [
+   "auto-detected",
+   "style-fix",
+   "vue"
+  ],
+  "related_bugs": [],
+  "occurrences": 1,
+  "last_seen": "2026-05-19T17:32:38.787Z"
+ },
+ {
+  "id": "bug-027",
+  "timestamp": "2026-05-19T17:32:49.714Z",
+  "error_message": "Significant refactor of ",
+  "file": "frontend/src/pages/StockCountSession.vue",
+  "root_cause": "3 lines replaced/restructured",
+  "fix": "Rewrote 22→51 lines (3 removed)",
+  "tags": [
+   "auto-detected",
+   "refactor",
+   "vue"
+  ],
+  "related_bugs": [],
+  "occurrences": 1,
+  "last_seen": "2026-05-19T17:32:49.714Z"
+ },
+ {
+  "id": "bug-028",
+  "timestamp": "2026-05-19T17:49:03.918Z",
+  "error_message": "Missing guard clause",
+  "file": "frontend/src/pages/ItemManager.vue",
+  "root_cause": "No early return/throw for edge case: dirtyRows.value.length",
+  "fix": "Added guard clause: if (dirtyRows.value.length)",
+  "tags": [
+   "auto-detected",
+   "guard-clause",
+   "vue"
+  ],
+  "related_bugs": [],
+  "occurrences": 1,
+  "last_seen": "2026-05-19T17:49:03.918Z"
+ },
+ {
+  "id": "bug-029",
+  "timestamp": "2026-05-19T17:57:35.878Z",
+  "error_message": "Incorrect value in code",
+  "file": "frontend/src/pages/ItemManager.vue",
+  "root_cause": "Had \"Press ? for shortcuts\"",
+  "fix": "Changed to \"Shortcuts: F4 search · F5 refresh · Ctrl+S save a",
+  "tags": [
+   "auto-detected",
+   "wrong-value",
+   "vue"
+  ],
+  "related_bugs": [],
+  "occurrences": 1,
+  "last_seen": "2026-05-19T17:57:35.879Z"
+ },
+ {
+  "id": "bug-030",
+  "timestamp": "2026-05-21",
+  "error_message": "Per-row 🖨️ button in child table grid is visible but not clickable in inline (non-popup) mode",
+  "file": "easy_entry/public/js/label_printer.js",
+  "root_cause": "frappe.ui.form.on(childDoctype, \"fieldname\", fn) only fires through the child form script_manager, which is only active when the row is open as a popup dialog. The static inline grid renders the button element but clicking it never reaches that handler.",
+  "fix": "Added jQuery delegation via grid.wrapper.on(\"click.ee_print\", \"[data-fieldname=ee_print_label]\", fn) in bindGridPrintClick(). Delegation fires at the DOM level regardless of Frappe form state, catching clicks in both inline and popup modes. Popup mode also retains frappe.ui.form.on handler (no conflict as popup dialog is outside grid wrapper DOM).",
+  "tags": [
+   "frappe-grid",
+   "event-delegation",
+   "child-table",
+   "button-field"
+  ],
+  "related_bugs": [],
+  "occurrences": 1,
+  "last_seen": "2026-05-21"
+ },
+ {
+  "id": "bug-031",
+  "timestamp": "2026-06-10T17:35:33.798752",
+  "error_message": "Supplier code (ee_supplier_code) not appearing on printed item labels; user also found 6-char codes like JHNQFT too complex",
+  "file": "easy_entry/fixtures/print_format.json, easy_entry/utils/supplier_code.py, easy_entry/hooks.py",
+  "root_cause": "Code traveled ONLY as ?supplier_code= URL param appended by label_printer.js buttons; every other print path (standard Item Print, printview 'Get PDF' button which rebuilds the URL, Easy Entry SPA) silently dropped it. Additionally .sup-code was 6pt color #555 — 1-bit thermal printers dither mid-gray to near-invisible dots.",
+  "fix": "Added item_supplier_code(item_code) jinja method (first Item Supplier row -> ee_supplier_code) as template fallback: form_dict param still wins; styled .sup-code black + font-weight 600; simplified scheme to 3 letters (A-Z minus I/O) and regenerated all codes via patch regenerate_short_supplier_codes; fixtures filter now exports both 50*25 and 38*25.",
+  "tags": [
+   "print-format",
+   "supplier-code",
+   "labels",
+   "thermal-printer",
+   "form_dict",
+   "jinja"
+  ],
+  "related_bugs": [],
+  "occurrences": 1,
+  "last_seen": "2026-06-10T17:35:33.798767"
+ },
+ {
+  "id": "bug-032",
+  "timestamp": "2026-06-11",
+  "error_message": "POS customer search closes mid-use: after ~3s pause focus jumps to item search and the customer dropdown closes",
+  "file": "easy_entry/public/js/pos_guard.js",
+  "root_cause": "Idle-refocus timer reclaimed focus whenever activeElement wasn't the item search, including while the user was inside another input (customer search) or a dialog",
+  "fix": "Added userIsBusy() guard: skip refocus when activeElement is INPUT/TEXTAREA/SELECT/contenteditable or any [data-dialog]/.modal.show/[role=dialog] is open; timer re-arms instead",
+  "tags": [
+   "pos_guard",
+   "focus",
+   "pos_next",
+   "customer-search"
+  ],
+  "related_bugs": [],
+  "occurrences": 1,
+  "last_seen": "2026-06-11"
+ },
+ {
+  "id": "bug-033",
+  "timestamp": "2026-06-13",
+  "error_message": "NameError: name 'TEST' is not defined inside patched frappe.sendmail when running test script via exec(open(...).read()) in bench console",
+  "file": "/tmp/ee_test_emails.py (test harness, not app code)",
+  "root_cause": "bench console (IPython) runs exec() with separate globals/locals dicts. Module-level assignments land in locals, but nested function __globals__ points at the globals dict, so free variables (TEST, real_sendmail) referenced inside the callback are not found.",
+  "fix": "Avoid free globals in callbacks run via exec: bind values as default arguments, e.g. def patched_sendmail(*a, _test='x', _real=frappe.sendmail, **k). Also feed multi-line scripts via exec(open(path).read()) rather than piping raw blank-line-containing heredocs into the REPL.",
+  "tags": [
+   "bench-console",
+   "ipython",
+   "exec",
+   "scope",
+   "test-harness",
+   "sendmail"
+  ],
+  "related_bugs": [],
+  "occurrences": 1,
+  "last_seen": "2026-06-13"
+ },
+ {
+  "id": "bug-034",
+  "timestamp": "2026-06-13",
+  "error_message": "Cumulative reorder email lists items that are already well-stocked (e.g. مزيل صدأ صيني وسط: 24 on hand vs reorder level 1; كلاكس جنير: 5 vs 1).",
+  "file": "easy_entry/overrides/reorder_item.py",
+  "root_cause": "Email filtered open auto-reorder MRs by received_qty < qty. But this shop restocks via Stock Reconciliation / Stock Count, never via Purchase Receipt, so auto-reorder MRs never get received_qty filled and stay status=Pending forever. received_qty < qty is therefore permanently true even after the shelf is refilled, so restocked items keep showing. Also produced duplicate rows (one MR per day the item was short).",
+  "fix": "Gate the cumulative query on LIVE stock instead of MR receipt: JOIN tabBin (on item+warehouse) and tabItem Reorder (parent+warehouse), keep only rows where COALESCE(actual_qty,0) <= warehouse_reorder_level. Dedupe to one row per item+warehouse via ROW_NUMBER() OVER (PARTITION BY item_code,warehouse ORDER BY transaction_date DESC, name DESC) and WHERE rn=1. Template now shows on_hand / reorder_level / reorder_qty instead of qty / remaining_qty. Verified: 139 line rows -> 41 genuinely-short items; the two reported items excluded.",
+  "tags": [
+   "reorder",
+   "material-request",
+   "received_qty",
+   "stock-reconciliation",
+   "false-positive",
+   "email",
+   "erpnext"
+  ],
+  "related_bugs": [],
+  "occurrences": 1,
+  "last_seen": "2026-06-13"
+ },
+ {
+  "id": "bug-035",
+  "timestamp": "2026-06-14",
+  "error_message": "User: the reorder ('material') email sent to mohamedelsayedbaba@gmail.com at the 00:00 scheduled run is corrupted/empty. Decoded subject was ERPNext's DEFAULT 'طلبات الشراء التلقائية - تم الإنشاء' (Auto Material Requests Generated), with no PDF attachment and the bare default reorder_item.html body.",
+  "file": "easy_entry/__init__.py (wiring) / supervisor workers",
+  "root_cause": "easy_entry/__init__.py monkeypatches erpnext.stock.reorder_item.send_email_notification with the Arabic+PDF override. The patch only applies when the current easy_entry package is (re)imported. The supervisor-managed scheduler+worker processes (group frappe-bench-workers) were started ~June 10 and held a STALE in-memory copy of the easy_entry modules from before the override code was finalized (override file last edited June 13, still uncommitted on disk). Long-lived RQ workers do not re-import changed .py files, so the 00:00 job ran ERPNext's unpatched default send_email_notification. Verified: in a FRESH process, importing easy_entry correctly repoints the function and the override yields subject 'أصناف تحتاج إعادة طلب (43)' with a 48KB PDF.",
+  "fix": "Operational, not code: restart the worker+scheduler so they re-import current code -> `sudo supervisorctl restart frappe-bench-workers:` (or `bench restart`). After ANY Python change under easy_entry/, workers MUST be restarted or scheduled jobs keep running the old code. Immediate user request handled by re-rendering + resending the corrected email (PDF previewed via wkhtmltoimage first) to the test inbox with now=True. NOTE: the supervisorctl restart was blocked by the Claude permission classifier as out-of-scope; user must run it (or grant permission) for future 00:00 runs to use the override.",
+  "tags": [
+   "reorder",
+   "email",
+   "monkeypatch",
+   "stale-worker",
+   "supervisor",
+   "scheduler",
+   "bench-restart",
+   "erpnext"
+  ],
+  "related_bugs": [
+   "bug-034"
+  ],
+  "occurrences": 1,
+  "last_seen": "2026-06-14"
+ }
+]

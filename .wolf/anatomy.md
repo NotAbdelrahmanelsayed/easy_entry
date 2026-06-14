@@ -1,7 +1,21 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-05-21T07:38:08.787Z
-> Files: 118 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-06-14T10:52:14.308Z
+> Files: 137 tracked | Anatomy hits: 0 | Misses: 0
+
+## ../../../../../tmp/
+
+- `ee_check_mail.py` (~383 tok)
+- `ee_check_mail2.py` (~234 tok)
+- `ee_check_queue.py` (~212 tok)
+- `ee_diag.py` (~635 tok)
+- `ee_patch_test.py` — 1) Is the patch applied (does importing easy_entry replace the function)? (~376 tok)
+- `ee_pdf_html.py` (~474 tok)
+- `ee_pdf.py` (~430 tok)
+- `ee_render_preview.py` (~549 tok)
+- `ee_resend.py` (~570 tok)
+- `ee_send_pdf.py` — patched_sendmail (~207 tok)
+- `ee_test_emails.py` — patched_sendmail (~279 tok)
 
 ## ../../../../../tmp/ee-shot/
 
@@ -25,6 +39,7 @@
 - `item-price-editor-is-unified-pixel.md` — Remove the Item Price Editor feature (~717 tok)
 - `plan-for-better-experience-wild-orbit.md` — Plan — Better UX & Keyboard Shortcuts for Easy Entry SPA (~2216 tok)
 - `there-is-a-report-bright-castle.md` — Plan: Item Manager SPA — first page of the easy_entry second interface (~1889 tok)
+- `we-have-a-daily-enumerated-cat.md` — Daily Email Improvements: Sales Financial Analysis + Cumulative Reorder Request (~1918 tok)
 - `we-need-to-create-tingly-scott.md` — Stock Count — mobile-first stock reconciliation for Easy Entry (~2119 tok)
 
 ## ../../../.claude/projects/-home-frappe-frappe-bench-16-apps-easy-entry/memory/
@@ -157,7 +172,7 @@
 ## easy_entry/overrides/
 
 - `__init__.py` (~0 tok)
-- `reorder_item.py` — send_email_notification (~154 tok)
+- `reorder_item.py` — send_email_notification (~810 tok)
 
 ## easy_entry/patches/
 
@@ -181,7 +196,7 @@
 ## easy_entry/tasks/
 
 - `__init__.py` (~0 tok)
-- `daily_owner_report.py` — send_daily_owner_report (~455 tok)
+- `daily_owner_report.py` — send_daily_owner_report: sold-items + financial analysis (total sales/credit/collected + payments-by-mode) (~900 tok)
 
 ## easy_entry/templates/
 
@@ -189,8 +204,9 @@
 
 ## easy_entry/templates/emails/
 
-- `daily_owner_report_ar.html` (~1052 tok)
-- `reorder_item_ar.html` (~926 tok)
+- `daily_owner_report_ar.html` — RTL sales email; financial-analysis summary card above items table (~1850 tok)
+- `reorder_item_ar.html` — RTL reorder email body; yellow 📎 PDF-attached banner + flat items table (date, MR link, item, warehouse, on_hand, reorder_level, suggested qty, uom) (~1125 tok)
+- `reorder_item_pdf.html` — standalone RTL printable PDF (full HTML doc w/ meta charset utf-8) of reorder items; rendered via get_pdf and attached to the reorder email (~627 tok)
 
 ## easy_entry/templates/pages/
 
@@ -237,9 +253,9 @@
 ## frontend/src/pages/
 
 - `Dashboard.vue` — Vue: setup (~356 tok)
-- `ItemManager.vue` — Vue component (~8082 tok)
-- `StockCount.vue` — Vue: StockCountSession, setup (~1573 tok)
-- `StockCountSession.vue` — Vue: StockCount, setup (~4980 tok)
 - `easy_entry/utils/__init__.py` — empty package init (~1 tok)
 - `easy_entry/utils/barcode.py` — pure-Python Code128B SVG generator; Jinja global `code128_svg(value, width_mm, height_mm)` (~120 tok)
 - `easy_entry/utils/supplier_code.py` — 3-letter supplier code generation (after_insert hook), force-capable backfill, and `item_supplier_code` jinja fallback for label print formats (~250 tok)
+- `ItemManager.vue` — Vue component (~8082 tok)
+- `StockCount.vue` — Vue: StockCountSession, setup (~1573 tok)
+- `StockCountSession.vue` — Vue: StockCount, setup (~4980 tok)

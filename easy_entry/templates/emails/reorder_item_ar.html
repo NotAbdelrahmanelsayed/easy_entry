@@ -8,60 +8,57 @@
 				طلبات الشراء التلقائية
 			</h2>
 			<p style="margin: 6px 0 0; color: #d0e4ff; font-size: 13px;">
-				تم إنشاء هذه الطلبات تلقائياً بناءً على مستوى إعادة الطلب
+				أصناف وصلت إلى حد إعادة الطلب وتحتاج إلى شراء
 			</p>
 		</div>
 
 		<!-- Body -->
 		<div style="padding: 24px;">
 
-			<p style="margin: 0 0 20px; line-height: 1.7; color: #444;">
+			<p style="margin: 0 0 16px; line-height: 1.7; color: #444;">
 				تحية طيبة،<br>
-				نُعلمكم بأنه تم إنشاء طلبات الشراء التالية تلقائياً نتيجة وصول مستوى المخزون إلى حدّ إعادة الطلب المحدد.
-				يُرجى مراجعتها واتخاذ الإجراء المناسب.
+				فيما يلي الأصناف التي وصل مخزونها الحالي إلى حدّ إعادة الطلب أو أقل وما زالت بحاجة إلى شراء،
+				مرتبة حسب تاريخ آخر طلب تلقائي (الأحدث أولاً). يُرجى مراجعتها واتخاذ الإجراء المناسب.
 			</p>
 
-			{% for mr in mr_list %}
-			<div style="margin-bottom: 28px; border: 1px solid #e0e4ea; border-radius: 5px; overflow: hidden;">
-
-				<!-- MR title bar -->
-				<div style="background-color: #f0f4ff; padding: 10px 14px; border-bottom: 1px solid #dce2ef;">
-					<strong style="font-size: 14px; color: #1a73e8;">
-						{{ frappe.utils.get_link_to_form("Material Request", mr.name) }}
-					</strong>
-				</div>
-
-				<!-- Items table -->
-				<table style="width: 100%; border-collapse: collapse; font-size: 13px;">
-					<thead>
-						<tr style="background-color: #f7f9fc;">
-							<th style="border: 1px solid #dce2ef; text-align: right; padding: 8px 12px; color: #555; font-weight: 600;">الصنف</th>
-							<th style="border: 1px solid #dce2ef; text-align: right; padding: 8px 12px; color: #555; font-weight: 600;">المستودع</th>
-							<th style="border: 1px solid #dce2ef; text-align: center; padding: 8px 12px; color: #555; font-weight: 600;">الكمية المطلوبة</th>
-							<th style="border: 1px solid #dce2ef; text-align: right; padding: 8px 12px; color: #555; font-weight: 600;">وحدة القياس</th>
-							<th style="border: 1px solid #dce2ef; text-align: center; padding: 8px 12px; color: #555; font-weight: 600;">الكمية المتوقعة</th>
-						</tr>
-					</thead>
-					<tbody>
-						{% for item in mr.get("items") %}
-						<tr style="{% if loop.index is odd %}background-color: #fafbfd;{% endif %}">
-							<td style="border: 1px solid #dce2ef; text-align: right; padding: 8px 12px;">
-								<strong>{{ item.item_code }}</strong>
-								{% if item.item_code != item.item_name %}
-								<br><span style="color: #666; font-size: 12px;">{{ item.item_name }}</span>
-								{% endif %}
-							</td>
-							<td style="border: 1px solid #dce2ef; text-align: right; padding: 8px 12px;">{{ item.warehouse }}</td>
-							<td style="border: 1px solid #dce2ef; text-align: center; padding: 8px 12px; font-weight: 600; color: #c0392b;">{{ item.qty }}</td>
-							<td style="border: 1px solid #dce2ef; text-align: right; padding: 8px 12px;">{{ item.uom }}</td>
-							<td style="border: 1px solid #dce2ef; text-align: center; padding: 8px 12px; color: #888;">{{ frappe.utils.flt(item.projected_qty) + frappe.utils.flt(item.qty) }}</td>
-						</tr>
-						{% endfor %}
-					</tbody>
-				</table>
-
+			<!-- PDF attachment notice -->
+			<div style="margin: 0 0 20px; padding: 12px 14px; background-color: #fff8e1; border: 1px solid #f0d58a; border-radius: 6px; color: #7a5b00; font-size: 13px;">
+				📎 <strong>مرفق مع هذه الرسالة ملف PDF</strong> يحتوي على قائمة الأصناف المطلوبة كاملة وجاهزة للطباعة.
 			</div>
-			{% endfor %}
+
+			<table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+				<thead>
+					<tr style="background-color: #1a73e8;">
+						<th style="border: 1px solid #1558b0; text-align: center; padding: 8px 10px; color: #ffffff; font-weight: 600;">التاريخ</th>
+						<th style="border: 1px solid #1558b0; text-align: right; padding: 8px 10px; color: #ffffff; font-weight: 600;">طلب الشراء</th>
+						<th style="border: 1px solid #1558b0; text-align: right; padding: 8px 10px; color: #ffffff; font-weight: 600;">الصنف</th>
+						<th style="border: 1px solid #1558b0; text-align: right; padding: 8px 10px; color: #ffffff; font-weight: 600;">المستودع</th>
+						<th style="border: 1px solid #1558b0; text-align: center; padding: 8px 10px; color: #ffffff; font-weight: 600;">المتوفر حالياً</th>
+						<th style="border: 1px solid #1558b0; text-align: center; padding: 8px 10px; color: #ffffff; font-weight: 600;">حد إعادة الطلب</th>
+						<th style="border: 1px solid #1558b0; text-align: center; padding: 8px 10px; color: #ffffff; font-weight: 600;">الكمية المقترحة للشراء</th>
+						<th style="border: 1px solid #1558b0; text-align: right; padding: 8px 10px; color: #ffffff; font-weight: 600;">وحدة القياس</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for row in rows %}
+					<tr style="{% if loop.index is odd %}background-color: #fafbfd;{% else %}background-color: #ffffff;{% endif %}">
+						<td style="border: 1px solid #dce2ef; text-align: center; padding: 8px 10px; white-space: nowrap;">{{ row.transaction_date }}</td>
+						<td style="border: 1px solid #dce2ef; text-align: right; padding: 8px 10px;">{{ frappe.utils.get_link_to_form("Material Request", row.mr_name) }}</td>
+						<td style="border: 1px solid #dce2ef; text-align: right; padding: 8px 10px;">
+							<strong>{{ row.item_code }}</strong>
+							{% if row.item_code != row.item_name %}
+							<br><span style="color: #666; font-size: 12px;">{{ row.item_name }}</span>
+							{% endif %}
+						</td>
+						<td style="border: 1px solid #dce2ef; text-align: right; padding: 8px 10px;">{{ row.warehouse }}</td>
+						<td style="border: 1px solid #dce2ef; text-align: center; padding: 8px 10px; font-weight: 600; color: #c0392b;">{{ frappe.utils.flt(row.on_hand, 2) }}</td>
+						<td style="border: 1px solid #dce2ef; text-align: center; padding: 8px 10px; color: #888;">{{ frappe.utils.flt(row.reorder_level, 2) }}</td>
+						<td style="border: 1px solid #dce2ef; text-align: center; padding: 8px 10px; font-weight: 600; color: #1a73e8;">{{ frappe.utils.flt(row.reorder_qty, 2) }}</td>
+						<td style="border: 1px solid #dce2ef; text-align: right; padding: 8px 10px;">{{ row.uom }}</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
 
 			<p style="margin: 20px 0 0; color: #888; font-size: 12px; border-top: 1px solid #eee; padding-top: 14px;">
 				هذه الرسالة مُرسَلة تلقائياً من النظام. يُرجى عدم الرد عليها مباشرةً.

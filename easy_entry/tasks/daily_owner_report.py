@@ -31,6 +31,37 @@ def send_daily_owner_report(for_date=None):
 	if not sold_items:
 		return
 
+	# Financial analysis: totals for the day (sales / credit / collected)
+	totals = frappe.db.sql(
+		"""
+		SELECT
+			COALESCE(SUM(si.grand_total), 0)                  AS total_sales,
+			COALESCE(SUM(si.grand_total - si.paid_amount), 0) AS total_credit,
+			COALESCE(SUM(si.paid_amount), 0)                  AS total_collected
+		FROM `tabSales Invoice` si
+		WHERE si.docstatus = 1
+		  AND DATE(si.posting_date) = %(report_date)s
+		""",
+		{"report_date": report_date},
+		as_dict=True,
+	)[0]
+
+	# Expected cash split by payment method (cash on hand, InstaPay, visa, …)
+	payments = frappe.db.sql(
+		"""
+		SELECT sip.mode_of_payment          AS mode,
+		       COALESCE(SUM(sip.amount), 0) AS amount
+		FROM `tabSales Invoice Payment` sip
+		JOIN `tabSales Invoice` si ON si.name = sip.parent
+		WHERE si.docstatus = 1
+		  AND DATE(si.posting_date) = %(report_date)s
+		GROUP BY sip.mode_of_payment
+		ORDER BY amount DESC
+		""",
+		{"report_date": report_date},
+		as_dict=True,
+	)
+
 	recipients = frappe.db.sql(
 		"""
 		SELECT u.email
@@ -48,7 +79,14 @@ def send_daily_owner_report(for_date=None):
 
 	message = frappe.render_template(
 		"easy_entry/templates/emails/daily_owner_report_ar.html",
-		{"items": sold_items, "today": report_date},
+		{
+			"items": sold_items,
+			"today": report_date,
+			"total_sales": totals.total_sales,
+			"total_credit": totals.total_credit,
+			"total_collected": totals.total_collected,
+			"payments": payments,
+		},
 	)
 
 	frappe.sendmail(

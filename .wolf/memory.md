@@ -400,3 +400,80 @@ Session summary: Implemented ee_supplier_code feature. Each supplier gets a uniq
 | $(date +%H:%M) | Created Accounts Receivable Items report | easy_entry/easy_entry/report/accounts_receivable_items/ | 4 files, migrated, email sent to bedoelsayed785@gmail.com | ~800 |
 
 | 17:35 | Fixed+simplified supplier code on labels: 3-letter scheme (A-Z minus I/O), item_supplier_code jinja fallback in both label formats, black bold 6pt, fixtures filter now exports 38*25 too; regenerated all 27 codes via patch; verified console render matrix + HTTP printview + Playwright e2e click on PI | supplier_code.py, hooks.py, print_format.json, patches/v1/regenerate_short_supplier_codes.py | All checks pass | ~2000 |
+| 17:35 | Fixed pos_guard idle-refocus stealing focus from other inputs/dialogs (userIsBusy guard) | public/js/pos_guard.js | verified via Playwright on /pos | ~600 |
+
+## Session: 2026-06-13 19:31
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 19:41 | Created ../../../.claude/plans/we-have-a-daily-enumerated-cat.md | — | ~2046 |
+
+## Session: 2026-06-13 19:41
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 19:43 | Edited easy_entry/tasks/daily_owner_report.py | expanded (+31 lines) | ~293 |
+| 19:43 | Edited easy_entry/tasks/daily_owner_report.py | expanded (+7 lines) | ~77 |
+| 19:43 | Edited easy_entry/templates/emails/daily_owner_report_ar.html | expanded (+31 lines) | ~567 |
+| 19:44 | Edited easy_entry/overrides/reorder_item.py | modified send_email_notification() | ~441 |
+| 19:44 | Edited easy_entry/templates/emails/reorder_item_ar.html | reduced (-10 lines) | ~710 |
+| 19:44 | Edited easy_entry/templates/emails/reorder_item_ar.html | inline fix | ~15 |
+| 19:46 | Created ../../../../../tmp/ee_test_emails.py | — | ~274 |
+| 19:46 | Created ../../../../../tmp/ee_test_emails.py | — | ~279 |
+| 19:48 | Created ../../../../../tmp/ee_check_queue.py | — | ~118 |
+| 19:48 | Created ../../../../../tmp/ee_check_queue.py | — | ~212 |
+| 20:47 | daily report: add financial analysis (totals + payments-by-mode) | daily_owner_report.py, daily_owner_report_ar.html | sent OK | ~2k |
+| 20:47 | reorder email: cumulative all-open MR items, newest first, remaining-to-receive | reorder_item.py, reorder_item_ar.html | sent OK | ~2k |
+| 20:47 | sent both test emails to bedoelsyed785@gmail.com (now=True), Email Queue status=Sent | - | verified | ~1k |
+| 19:50 | Session end: 10 writes across 6 files (daily_owner_report.py, daily_owner_report_ar.html, reorder_item.py, reorder_item_ar.html, ee_test_emails.py) | 7 reads | ~5694 tok |
+
+## Session: 2026-06-13 19:50
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 19:55 | Created ../../../../../tmp/ee_diag.py | — | ~410 |
+| 19:56 | Created ../../../../../tmp/ee_diag.py | — | ~428 |
+| 19:57 | Created ../../../../../tmp/ee_diag.py | — | ~656 |
+| 19:59 | Created ../../../../../tmp/ee_diag.py | — | ~635 |
+| 20:00 | Edited easy_entry/overrides/reorder_item.py | expanded (+18 lines) | ~593 |
+| 20:00 | Edited easy_entry/overrides/reorder_item.py | "طلبات الشراء التلقائية - " → "أصناف تحتاج إعادة طلب ({l" | ~15 |
+| 20:00 | Edited easy_entry/templates/emails/reorder_item_ar.html | 5→5 lines | ~74 |
+| 20:00 | Edited easy_entry/templates/emails/reorder_item_ar.html | 3→4 lines | ~148 |
+| 20:00 | Edited easy_entry/templates/emails/reorder_item_ar.html | 4→5 lines | ~183 |
+| 20:00 | Edited easy_entry/templates/emails/reorder_item_ar.html | inline fix | ~14 |
+| 20:01 | Created ../../../../../tmp/ee_resend.py | — | ~482 |
+| 21:10 | reorder email false positives (well-stocked items shown) — root cause: MRs never marked received (restock via Stock Recon) | overrides/reorder_item.py | diagnosed | ~3k |
+| 21:15 | re-gate reorder query on live stock (Bin.actual_qty<=Item Reorder level) + dedupe per item/warehouse; template cols -> on_hand/reorder_level/order qty | reorder_item.py, reorder_item_ar.html | 139->41 items, 2 reported items excluded, resent OK | ~2k |
+| 20:03 | Session end: 11 writes across 4 files (ee_diag.py, reorder_item.py, reorder_item_ar.html, ee_resend.py) | 2 reads | ~5238 tok |
+| 20:10 | Created easy_entry/templates/emails/reorder_item_pdf.html | — | ~627 |
+| 20:11 | Edited easy_entry/overrides/reorder_item.py | expanded (+11 lines) | ~189 |
+| 20:11 | Edited easy_entry/overrides/reorder_item.py | added 1 import(s) | ~27 |
+| 20:11 | Edited easy_entry/templates/emails/reorder_item_ar.html | 5→10 lines | ~158 |
+| 20:11 | Created ../../../../../tmp/ee_pdf.py | — | ~430 |
+| 20:12 | Created ../../../../../tmp/ee_pdf_html.py | — | ~474 |
+| 20:13 | Created ../../../../../tmp/ee_send_pdf.py | — | ~231 |
+| 20:14 | Edited ../../../../../tmp/ee_send_pdf.py | modified patched_sendmail() | ~103 |
+| 21:30 | add PDF attachment of reorder items + visible 📎 banner in email body | overrides/reorder_item.py, templates/emails/reorder_item_pdf.html, reorder_item_ar.html | PDF verified visually (Arabic OK), test sent w/ attachment | ~3k |
+| 20:15 | Session end: 19 writes across 8 files (ee_diag.py, reorder_item.py, reorder_item_ar.html, ee_resend.py, reorder_item_pdf.html) | 6 reads | ~7696 tok |
+
+## Session: 2026-06-14 12:42
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-14 12:44
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 12:45 | Created ../../../../../tmp/ee_check_mail.py | — | ~383 |
+| 12:46 | Created ../../../../../tmp/ee_check_mail2.py | — | ~234 |
+| 12:48 | Created ../../../../../tmp/ee_patch_test.py | — | ~376 |
+| 12:50 | Created ../../../../../tmp/ee_render_preview.py | — | ~549 |
+| 12:52 | Created ../../../../../tmp/ee_resend.py | — | ~570 |
+| 12:56 | reorder email arrived empty (default ERPNext subj, no PDF) — diagnosed STALE supervisor workers caching pre-June-13 override code; re-rendered+previewed PDF, resent corrected email (43 rows, 48KB PDF) to test inbox now=True | __init__.py, overrides/reorder_item.py, buglog/cerebrum | resent OK; durable fix=restart frappe-bench-workers (blocked by perms, user must run) | ~9k |
+| 12:56 | Session end: 5 writes across 5 files (ee_check_mail.py, ee_check_mail2.py, ee_patch_test.py, ee_render_preview.py, ee_resend.py) | 6 reads | ~4110 tok |
+
+## Session: 2026-06-14 17:12
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
