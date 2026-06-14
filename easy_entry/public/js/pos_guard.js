@@ -80,9 +80,35 @@
 		return preferred || null;
 	}
 
+	function userIsBusy(input) {
+		const ae = document.activeElement;
+		// Never steal focus from another text field (e.g. customer search,
+		// quantity edit) — only reclaim it from buttons/body after idle.
+		if (
+			ae &&
+			ae !== input &&
+			(ae.tagName === "INPUT" ||
+				ae.tagName === "TEXTAREA" ||
+				ae.tagName === "SELECT" ||
+				ae.isContentEditable)
+		) {
+			return true;
+		}
+		// Don't fight open dialogs (frappe-ui renders [data-dialog] only while open)
+		if (document.querySelector('[data-dialog], .modal.show, [role="dialog"]')) {
+			return true;
+		}
+		return false;
+	}
+
 	function resetIdle(input) {
 		clearTimeout(idleTimer);
 		idleTimer = setTimeout(() => {
+			if (userIsBusy(input)) {
+				// Check again later instead of grabbing focus mid-task
+				resetIdle(input);
+				return;
+			}
 			if (document.activeElement !== input && isVisible(input)) {
 				input.focus({ preventScroll: true });
 			}
