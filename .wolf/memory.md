@@ -477,3 +477,308 @@ Session summary: Implemented ee_supplier_code feature. Each supplier gets a uniq
 
 | Time | Action | File(s) | Outcome | ~Tokens |
 |------|--------|---------|---------|--------|
+
+## Session: 2026-06-15 01:19
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-15 01:20
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 01:20 | Created ../../../../../tmp/ee_send_real.py | — | ~142 |
+| 01:21 | Created ../../../../../tmp/ee_verify_sent.py | — | ~185 |
+| 01:22 | Created ../../../../../tmp/ee_flush.py | — | ~157 |
+| 01:23 | Session end: 3 writes across 3 files (ee_send_real.py, ee_verify_sent.py, ee_flush.py) | 0 reads | ~484 tok |
+| 18:13 | Added per-row label print button + Settings modal (format picker) to Item Manager SPA; backend get_label_settings + set_label_print_format APIs | frontend/src/pages/ItemManager.vue, easy_entry/api/item_manager.py | built + verified via Playwright | ~9500 |
+
+## Session: 2026-06-17 19:48
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 19:51 | Edited easy_entry/api/item_manager.py | 24→25 lines | ~262 |
+| 19:51 | Edited easy_entry/api/item_manager.py | 3→5 lines | ~47 |
+| 19:51 | Edited easy_entry/api/item_manager.py | 4→5 lines | ~27 |
+| 19:52 | Edited easy_entry/api/item_manager.py | modified sql() | ~30 |
+| 19:52 | Edited frontend/src/pages/ItemManager.vue | expanded (+17 lines) | ~215 |
+| 19:52 | Edited frontend/src/pages/ItemManager.vue | expanded (+7 lines) | ~63 |
+| 19:52 | Edited frontend/src/pages/ItemManager.vue | added 1 import(s) | ~81 |
+| 19:52 | Edited frontend/src/pages/ItemManager.vue | modified onCameraScanned() | ~117 |
+| 17:55 | Fix barcode scan in Item Manager: join tabItem Barcode in get_items + add camera scanner button | item_manager.py, ItemManager.vue | fixed | ~800 |
+| 19:54 | Session end: 8 writes across 2 files (item_manager.py, ItemManager.vue) | 5 reads | ~22979 tok |
+| 20:11 | Session end: 8 writes across 2 files (item_manager.py, ItemManager.vue) | 6 reads | ~22979 tok |
+| 20:14 | Edited ../../../.claude/skills/frappe-visual-reviewer/scripts/review.mjs | modified for() | ~232 |
+| 20:14 | Edited ../../../.claude/skills/frappe-visual-reviewer/review.sh | expanded (+7 lines) | ~242 |
+| 20:15 | Edited ../../../.claude/skills/frappe-visual-reviewer/scripts/review.mjs | added 2 condition(s) | ~286 |
+| 20:16 | Edited ../../../.claude/skills/frappe-visual-reviewer/review.sh | expanded (+8 lines) | ~331 |
+| 20:17 | Session end: 12 writes across 4 files (item_manager.py, ItemManager.vue, review.mjs, review.sh) | 10 reads | ~24148 tok |
+
+## Session: 2026-06-18 10:10
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 10:32 | Created ../../../.claude/plans/all-of-our-prs-lazy-newell.md | — | ~1524 |
+
+## Session: 2026-06-18 10:33
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 10:37 | Edited ../pos_next/POS/src/stores/posSettings.js | reduced (-11 lines) | ~109 |
+| 10:38 | Edited ../pos_next/pos_next/translations/ar.csv | 12→9 lines | ~166 |
+| 10:39 | Edited ../pos_next/POS/src/components/ShiftClosingDialog.vue | 8→3 lines | ~9 |
+| 10:40 | Edited ../pos_next/POS/src/components/partials/PartialPayments.vue | reduced (-11 lines) | ~140 |
+| 10:40 | Edited ../pos_next/POS/src/components/partials/PartialPayments.vue | reduced (-6 lines) | ~34 |
+| 10:40 | Edited ../pos_next/POS/src/components/partials/PartialPayments.vue | 6→2 lines | ~15 |
+| 10:40 | Edited ../pos_next/POS/src/components/invoices/InvoiceManagement.vue | reduced (-17 lines) | ~202 |
+| 10:41 | Edited ../pos_next/POS/src/components/invoices/InvoiceManagement.vue | reduced (-6 lines) | ~54 |
+| 10:42 | Edited ../pos_next/POS/src/components/invoices/InvoiceManagement.vue | 6→2 lines | ~15 |
+| 10:42 | Edited ../pos_next/pos_next/api/partial_payments.py | modified create_payment_entry() | ~88 |
+| 10:42 | Edited ../pos_next/pos_next/api/partial_payments.py | reduced (-7 lines) | ~87 |
+| 10:42 | Edited ../pos_next/pos_next/api/partial_payments.py | modified add_payment_to_partial_invoice() | ~55 |
+| 10:42 | Edited ../pos_next/pos_next/api/partial_payments.py | reduced (-11 lines) | ~81 |
+| 10:43 | Edited ../pos_next/POS/src/components/sale/ItemSelectionDialog.vue | reduced (-14 lines) | ~137 |
+| 10:45 | Edited ../pos_next/POS/src/components/ShiftClosingDialog.vue | modified __() | ~1825 |
+| 10:45 | Edited ../pos_next/pos_next/pos_next/doctype/pos_closing_shift/pos_closing_shift.py | modified only() | ~707 |
+| 10:45 | Edited ../pos_next/pos_next/pos_next/doctype/pos_closing_shift/pos_closing_shift.py | reduced (-10 lines) | ~124 |
+| 10:46 | Edited ../pos_next/pos_next/pos_next/doctype/pos_closing_shift/test_pos_closing_shift.py | modified test_closing_total_reflects_collected_money() | ~1142 |
+| 10:46 | Edited ../pos_next/pos_next/translations/ar.csv | 9→6 lines | ~56 |
+| 10:47 | Edited ../pos_next/POS/src/composables/useCartSort.js | modified if() | ~82 |
+| 10:47 | Edited ../pos_next/POS/src/components/sale/InvoiceCart.vue | reduced (-6 lines) | ~56 |
+| 10:47 | Edited ../pos_next/POS/src/stores/posSettings.js | reduced (-11 lines) | ~90 |
+| 10:48 | Edited ../pos_next/POS/src/stores/posEvents.js | reduced (-10 lines) | ~61 |
+| 10:48 | Edited ../pos_next/POS/src/components/settings/POSSettings.vue | 6→2 lines | ~5 |
+| 10:49 | Edited ../pos_next/POS/src/stores/posSettings.js | reduced (-11 lines) | ~77 |
+| 10:49 | Edited ../pos_next/POS/src/stores/customerSearch.js | reduced (-9 lines) | ~64 |
+| 10:49 | Edited ../pos_next/POS/src/stores/customerSearch.js | 11→6 lines | ~43 |
+| 10:49 | Edited ../pos_next/POS/src/stores/customerSearch.js | reduced (-8 lines) | ~108 |
+| 10:49 | Edited ../pos_next/POS/src/components/sale/InvoiceCart.vue | reduced (-8 lines) | ~227 |
+| 10:50 | Edited ../pos_next/POS/src/components/sale/InvoiceCart.vue | 10→6 lines | ~58 |
+| 10:50 | Edited ../pos_next/POS/src/components/sale/InvoiceCart.vue | reduced (-7 lines) | ~68 |
+| 10:50 | Edited ../pos_next/pos_next/translations/ar.csv | 12→9 lines | ~131 |
+| 10:52 | Edited ../pos_next/POS/src/composables/useSearchInput.js | modified if() | ~175 |
+| 10:53 | Session end: 33 writes across 15 files (posSettings.js, ar.csv, ShiftClosingDialog.vue, PartialPayments.vue, InvoiceManagement.vue) | 16 reads | ~6518 tok |
+
+## Session: 2026-06-18 16:15
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 16:16 | Edited easy_entry/easy_entry/reorder_levels.py | modified _insert_reorder_rows() | ~71 |
+| 16:16 | Session end: 1 writes across 1 files (reorder_levels.py) | 1 reads | ~2232 tok |
+
+## Session: 2026-06-18 18:01
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 18:06 | Created ../../../.claude/plans/clever-seeking-eagle.md | — | ~976 |
+
+## Session: 2026-06-18 18:08
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 18:09 | Edited frontend/src/composables/useToast.js | modified push() | ~144 |
+| 18:09 | Edited frontend/src/App.vue | CSS: hover | ~82 |
+| 18:09 | Edited frontend/src/pages/ItemManager.vue | inline fix | ~19 |
+| 18:09 | Edited frontend/src/pages/ItemManager.vue | showInfo() → showInfoLink() | ~61 |
+| 18:10 | Session end: 4 writes across 3 files (useToast.js, App.vue, ItemManager.vue) | 5 reads | ~17418 tok |
+| 18:26 | Session end: 4 writes across 3 files (useToast.js, App.vue, ItemManager.vue) | 6 reads | ~17418 tok |
+
+## Session: 2026-07-09 17:44
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-14 12:37
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 13:00 | Created easy_entry/easy_entry/cash_loan_items.py | — | ~173 |
+| 13:01 | Edited easy_entry/hooks.py | 8→11 lines | ~97 |
+| 13:02 | Created easy_entry/_debug_test.py | — | ~166 |
+| 13:02 | Session end: 3 writes across 3 files (cash_loan_items.py, hooks.py, _debug_test.py) | 4 reads | ~5359 tok |
+| 13:04 | Session end: 3 writes across 3 files (cash_loan_items.py, hooks.py, _debug_test.py) | 4 reads | ~5359 tok |
+
+## Session: 2026-07-16 10:20
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 10:21 | Created easy_entry/tasks/recipients.py | — | ~207 |
+| 10:21 | Edited easy_entry/tasks/daily_owner_report.py | sql() → get_report_recipients() | ~24 |
+| 10:21 | Edited easy_entry/tasks/daily_owner_report.py | added 1 import(s) | ~35 |
+| 10:22 | Edited easy_entry/tasks/daily_owner_report.py | 3→3 lines | ~26 |
+| 10:22 | Edited easy_entry/tasks/ar_summary_email.py | added 1 import(s) | ~35 |
+| 10:22 | Edited easy_entry/tasks/ar_summary_email.py | sql() → get_report_recipients() | ~34 |
+| 10:22 | Edited easy_entry/tasks/ar_summary_email.py | 3→3 lines | ~23 |
+| 10:24 | Session end: 7 writes across 3 files (recipients.py, daily_owner_report.py, ar_summary_email.py) | 2 reads | ~1284 tok |
+
+## Session: 2026-07-16 10:26
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-16 10:26
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 10:41 | Created ../../../.claude/plans/i-need-a-dashboard-parallel-allen.md | — | ~2849 |
+
+## Session: 2026-07-16 10:41
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 10:43 | Created easy_entry/api/owner_dashboard.py | — | ~2106 |
+| 10:46 | Created easy_entry/api/test_owner_dashboard.py | — | ~1328 |
+| 10:48 | Created frontend/src/pages/OwnerDashboard.vue | — | ~3904 |
+| 10:48 | Edited frontend/src/pages/OwnerDashboard.vue | 27→22 lines | ~174 |
+| 10:48 | Created frontend/src/components/ErrorCard.vue | — | ~172 |
+| 10:48 | Edited frontend/src/pages/OwnerDashboard.vue | added 1 import(s) | ~47 |
+| 10:48 | Edited frontend/src/router.js | 7→12 lines | ~76 |
+| 10:48 | Edited frontend/src/features.js | expanded (+7 lines) | ~107 |
+| 10:48 | Edited frontend/src/components/AppShell.vue | 6→7 lines | ~77 |
+| 10:49 | Edited frontend/src/components/AppShell.vue | CSS: name | ~103 |
+| 10:49 | Edited frontend/src/components/ShortcutsModal.vue | 6→7 lines | ~56 |
+| 10:49 | Edited frontend/src/components/ShortcutsModal.vue | 8→12 lines | ~68 |
+| 10:51 | Created ../../../../../tmp/claude-1000/-home-frappe-frappe-bench-apps-easy-entry/18f2de2f-8426-42f9-9f2f-2aa5cab5672e/scratchpad/net_debug.mjs | — | ~377 |
+| 10:52 | Edited ../../../../../tmp/claude-1000/-home-frappe-frappe-bench-apps-easy-entry/18f2de2f-8426-42f9-9f2f-2aa5cab5672e/scratchpad/net_debug.mjs | 2→3 lines | ~51 |
+| 10:52 | Created ../../../../../tmp/claude-1000/-home-frappe-frappe-bench-apps-easy-entry/18f2de2f-8426-42f9-9f2f-2aa5cab5672e/scratchpad/net_debug.mjs | — | ~416 |
+| 10:53 | Created ../../../../../tmp/claude-1000/-home-frappe-frappe-bench-apps-easy-entry/18f2de2f-8426-42f9-9f2f-2aa5cab5672e/scratchpad/net_debug.mjs | — | ~415 |
+| 10:53 | Created ../../../../../tmp/claude-1000/-home-frappe-frappe-bench-apps-easy-entry/18f2de2f-8426-42f9-9f2f-2aa5cab5672e/scratchpad/period_shots.mjs | — | ~543 |
+| 10:56 | Shipped Store Owner Analytics Dashboard: owner_dashboard.py (get_dashboard, get_dashboard_static), test_owner_dashboard.py (12 tests pass), OwnerDashboard.vue, router/features/AppShell/ShortcutsModal registration, npm build, visual QC loop (period switches, sort toggle, mobile, permission lock) all clean | easy_entry/api/owner_dashboard.py, frontend/src/pages/OwnerDashboard.vue, +6 more | shipped | ~9000 |
+| 10:57 | Session end: 17 writes across 10 files (owner_dashboard.py, test_owner_dashboard.py, OwnerDashboard.vue, ErrorCard.vue, router.js) | 24 reads | ~37041 tok |
+| 11:06 | Edited easy_entry/api/owner_dashboard.py | 1→2 lines | ~30 |
+| 11:07 | Edited easy_entry/api/owner_dashboard.py | added 1 condition(s) | ~305 |
+| 11:07 | Edited easy_entry/api/owner_dashboard.py | modified get_dashboard() | ~164 |
+| 11:07 | Edited easy_entry/api/test_owner_dashboard.py | modified test_invalid_period() | ~293 |
+| 11:07 | Edited easy_entry/api/test_owner_dashboard.py | modified test_get_dashboard_invalid_sort_by() | ~184 |
+| 11:08 | Edited frontend/src/pages/OwnerDashboard.vue | expanded (+20 lines) | ~443 |
+| 11:09 | Edited frontend/src/pages/OwnerDashboard.vue | CSS: from_date, to_date | ~420 |
+| 11:09 | Edited frontend/src/pages/OwnerDashboard.vue | modified handlePageKeydown() | ~79 |
+| 11:09 | Created ../../../../../tmp/claude-1000/-home-frappe-frappe-bench-apps-easy-entry/18f2de2f-8426-42f9-9f2f-2aa5cab5672e/scratchpad/custom_range_shots.mjs | — | ~555 |
+| 11:10 | Created ../../../../../tmp/claude-1000/-home-frappe-frappe-bench-apps-easy-entry/18f2de2f-8426-42f9-9f2f-2aa5cab5672e/scratchpad/custom_debug.mjs | — | ~437 |
+| 11:19 | Edited easy_entry/api/owner_dashboard.py | 6→8 lines | ~86 |
+| 11:19 | Edited easy_entry/api/owner_dashboard.py | 2→6 lines | ~84 |
+| 11:19 | Edited easy_entry/api/owner_dashboard.py | modified get_dashboard() | ~390 |
+| 11:19 | Edited easy_entry/api/owner_dashboard.py | 19→21 lines | ~211 |
+| 11:19 | Edited easy_entry/api/owner_dashboard.py | 6→8 lines | ~51 |
+| 11:20 | Edited easy_entry/api/owner_dashboard.py | 6→7 lines | ~52 |
+| 11:20 | Edited easy_entry/api/owner_dashboard.py | modified _get_weekday_trend() | ~592 |
+| 11:21 | Edited easy_entry/api/test_owner_dashboard.py | modified test_trend_is_30_contiguous_days_ending_today() | ~1286 |
+| 11:22 | Edited easy_entry/api/test_owner_dashboard.py | 4→5 lines | ~73 |
+| 11:24 | Edited frontend/src/pages/OwnerDashboard.vue | CSS: sm, sm | ~223 |
+| 11:24 | Edited frontend/src/pages/OwnerDashboard.vue | expanded (+29 lines) | ~559 |
+| 11:24 | Edited frontend/src/pages/OwnerDashboard.vue | modified __() | ~56 |
+| 11:24 | Edited frontend/src/pages/OwnerDashboard.vue | added 1 condition(s) | ~490 |
+| 11:24 | Edited frontend/src/pages/OwnerDashboard.vue | added optional chaining | ~243 |
+| 11:25 | Edited frontend/src/pages/OwnerDashboard.vue | 8→8 lines | ~67 |
+| 11:25 | Edited frontend/src/pages/OwnerDashboard.vue | modified selectPeriod() | ~38 |
+| 11:26 | Session end: 43 writes across 12 files (owner_dashboard.py, test_owner_dashboard.py, OwnerDashboard.vue, ErrorCard.vue, router.js) | 27 reads | ~53141 tok |
+| 16:44 | Reviewed refresh-button plan, OpenWolf guidance, dashboard resources, and Item Manager refresh pattern | frontend/src/pages/OwnerDashboard.vue, frontend/src/pages/ItemManager.vue | implementation approach confirmed | ~3500 |
+| 16:46 | Added guarded Owner Dashboard refresh control that reloads dashboard and staticData without mutating filters | frontend/src/pages/OwnerDashboard.vue | source implementation complete | ~1200 |
+| 16:48 | Ran frontend production build and checked emitted refresh strings; live UI unavailable because port 8002 is not running | easy_entry/public/frontend/, easy_entry/www/easy.html | build passed; static verification passed | ~1200 |
+| 16:49 | Session end: Owner Dashboard refresh button implemented, production assets rebuilt, source/bundle/style/state/auth assertions passed | frontend/src/pages/OwnerDashboard.vue, easy_entry/public/frontend/, easy_entry/www/easy.html | complete; live browser check deferred because local server is offline | ~8500 |
+
+## Session: 2026-07-21 19:40
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 19:43 | Edited easy_entry/public/js/label_printer.js | "50 * 25" → "38 * 25" | ~10 |
+| 19:43 | Edited easy_entry/api/item_manager.py | 50 → 38 | ~29 |
+| 17:44 | Made "38 * 25" the system default item label print format (was "50 * 25") | easy_entry/public/js/label_printer.js, easy_entry/api/item_manager.py | done; JS rebuilt+cache cleared; Python fallback needs web worker restart (sudo) to fully apply | ~900 |
+| 19:44 | Session end: 2 writes across 2 files (label_printer.js, item_manager.py) | 7 reads | ~12872 tok |
+
+## Session: 2026-07-28 17:43
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-28 17:45
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 17:47 | Edited easy_entry/utils/barcode.py | expanded (+12 lines) | ~402 |
+| 17:47 | Created ../../../../../tmp/render_label2.py | — | ~113 |
+| 17:49 | Created ../../../../../tmp/svg_only_test.html | — | ~530 |
+| 17:53 | Created ../../../../../tmp/simple_mm_test.html | — | ~82 |
+
+## Session: 2026-07-28 17:55
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 17:57 | Created ../../../../../tmp/render_label_50.py | — | ~114 |
+| 17:58 | Created ../../../../../tmp/render_via_get_pdf.py | — | ~146 |
+| 18:05 | Fixed barcode left-gap bug in code128_svg() — viewBox now matches physical mm aspect ratio | easy_entry/utils/barcode.py | Confirmed symmetric via wkhtmltopdf+disable-smart-shrinking render (matches Frappe's real get_pdf flags) | ~800 |
+| 18:00 | Session end: 2 writes across 2 files (render_label_50.py, render_via_get_pdf.py) | 6 reads | ~260 tok |
+
+## Session: 2026-07-28 18:01
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 19:10 | Restarted frappe-bench-web (user provided sudo), verified barcode fix live via production download_pdf endpoint + user's physical printed-label photo | easy_entry/utils/barcode.py | Confirmed fixed — symmetric margins on real thermal print | ~600 |
+
+## Session: 2026-07-31 16:26
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-31 17:08
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-08-04 17:59
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 18:02 | Created ../../../../../tmp/claude-1000/-home-frappe-frappe-bench-apps-easy-entry/0186da5a-72ca-459f-979c-8f2a7575a0c5/scratchpad/roles.py | — | ~88 |
+| 18:04 | Edited easy_entry/hooks.py | 7→4 lines | ~27 |
+| 18:04 | Created easy_entry/easy_entry/doctype/cash_loan/__init__.py | — | ~0 |
+| 18:04 | Created easy_entry/easy_entry/doctype/cash_loan/cash_loan.json | — | ~1094 |
+| 18:04 | Created easy_entry/easy_entry/doctype/cash_loan/cash_loan.py | — | ~166 |
+| 18:05 | Created easy_entry/api/cash_loan.py | — | ~2010 |
+| 18:06 | Created ../../../../../tmp/claude-1000/-home-frappe-frappe-bench-apps-easy-entry/0186da5a-72ca-459f-979c-8f2a7575a0c5/scratchpad/test_cash_loan.py | — | ~357 |
+| 18:08 | Created frontend/src/pages/CashLoan.vue | — | ~4325 |
+| 18:08 | Edited frontend/src/router.js | 6→11 lines | ~63 |
+| 18:08 | Edited frontend/src/features.js | expanded (+7 lines) | ~184 |
+| 18:11 | Created ../../../.claude/skills/frappe-visual-reviewer/scripts/cash_loan_e2e.mjs | — | ~710 |
+| 18:11 | Edited ../../../.claude/skills/frappe-visual-reviewer/scripts/cash_loan_e2e.mjs | "/home/frappe/frappe-bench" → "/home/frappe/frappe-bench" | ~56 |
+| 18:13 | Created easy_entry/api/test_cash_loan.py | — | ~1005 |
+
+## Session: 2026-08-04 (Cash Loan feature)
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| - | Removed wrong POS-item cash-loan hack | easy_entry/easy_entry/cash_loan_items.py (deleted), hooks.py | Sales Invoice validate hook that faked GP=0 via incoming_rate removed | ~200 |
+| - | Created Cash Loan DocType | easy_entry/easy_entry/doctype/cash_loan/{cash_loan.json,cash_loan.py,test_product-style test} | Open→Repaid status, no submit workflow, JE links for audit | ~1200 |
+| - | Created Cash Loan API | easy_entry/api/cash_loan.py, test_cash_loan.py | give_loan/repay_loan/list_loans/get_modes_of_payment; posts Journal Entries directly (Dr/Cr Cash Loans Receivable vs MOP account), no Sales Invoice/Item touched | ~2400 |
+| - | Created CashLoan.vue SPA page | frontend/src/pages/CashLoan.vue, features.js, router.js | Give/Repay modals, list+search+status filter, registered at /easy/cash-loan | ~2600 |
+| - | bench migrate + npm run build | — | Cash Loan doctype synced, SPA assets rebuilt | ~100 |
+| - | End-to-end verified live | bench console (non-admin user) + Playwright click-through via frappe-visual-reviewer skill | Give+repay flow works via API and real browser UI; receivable account nets to 0; GL voucher_type is always "Journal Entry" so Gross Profit Simple never sees it | ~800 |
+| - | Ran integration tests, cleaned up | easy_entry/api/test_cash_loan.py (4 tests, all pass); cancelled test JEs, deleted test Cash Loan docs | Cash Loan table empty after cleanup | ~600 |
+| 18:15 | Edited CLAUDE.md | expanded (+11 lines) | ~463 |
+| 18:16 | Session end: 14 writes across 11 files (roles.py, hooks.py, __init__.py, cash_loan.json, cash_loan.py) | 18 reads | ~40474 tok |
+| 18:17 | Edited easy_entry/easy_entry/doctype/cash_loan/cash_loan.json | 3→4 lines | ~18 |
+| 18:17 | Edited easy_entry/easy_entry/doctype/cash_loan/cash_loan.json | expanded (+9 lines) | ~99 |
+| 18:18 | Edited easy_entry/api/cash_loan.py | 8→8 lines | ~120 |
+| 18:18 | Edited easy_entry/api/cash_loan.py | modified give_loan() | ~623 |
+| 18:18 | Edited easy_entry/api/cash_loan.py | modified in() | ~138 |
+| 18:18 | Edited frontend/src/pages/CashLoan.vue | 4→4 lines | ~58 |
+| 18:18 | Edited frontend/src/pages/CashLoan.vue | 10→14 lines | ~149 |
+| 18:18 | Edited frontend/src/pages/CashLoan.vue | 6→6 lines | ~62 |
+| 18:19 | Edited frontend/src/pages/CashLoan.vue | expanded (+11 lines) | ~83 |
+| 18:19 | Edited frontend/src/pages/CashLoan.vue | trim() → find() | ~322 |
+| 18:19 | Created easy_entry/api/test_cash_loan.py | — | ~1160 |
+| 18:23 | Edited easy_entry/api/test_cash_loan.py | modified exists() | ~82 |
+| 18:24 | Created ../../../.claude/skills/frappe-visual-reviewer/scripts/cash_loan_e2e.mjs | — | ~729 |
+| 18:25 | Edited ../../../.claude/skills/frappe-visual-reviewer/scripts/cash_loan_e2e.mjs | 2→4 lines | ~68 |
+| 18:26 | Created ../../../../../tmp/claude-1000/-home-frappe-frappe-bench-apps-easy-entry/0186da5a-72ca-459f-979c-8f2a7575a0c5/scratchpad/debug_give.py | — | ~78 |
+| 18:31 | Session end: 29 writes across 12 files (roles.py, hooks.py, __init__.py, cash_loan.json, cash_loan.py) | 23 reads | ~52802 tok |
+| 18:32 | Session end: 29 writes across 12 files (roles.py, hooks.py, __init__.py, cash_loan.json, cash_loan.py) | 23 reads | ~52802 tok |
+| 18:34 | Created ../../../../../tmp/claude-1000/-home-frappe-frappe-bench-apps-easy-entry/0186da5a-72ca-459f-979c-8f2a7575a0c5/scratchpad/debug_gl.py | — | ~378 |
+| 18:38 | Edited easy_entry/api/test_cash_loan.py | modified exists() | ~166 |
+| 18:39 | Edited easy_entry/api/test_cash_loan.py | expanded (+7 lines) | ~135 |
+| 18:40 | Session end: 32 writes across 13 files (roles.py, hooks.py, __init__.py, cash_loan.json, cash_loan.py) | 23 reads | ~53782 tok |
+
+## Session: 2026-08-04 18:41
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
