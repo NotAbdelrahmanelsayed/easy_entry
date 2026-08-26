@@ -246,6 +246,15 @@ def _get_consumption_by_warehouse(item_codes, from_date, to_date):
 	return result
 
 
+def _insert_reorder_rows(item_code, rows):
+	doc = frappe.get_doc("Item", item_code)
+	for row in rows:
+		doc.append("reorder_levels", row)
+	doc.flags.ignore_permissions = True
+	doc.flags.ignore_mandatory = True
+	doc.save()
+
+
 def _resolve_mr_type(t):
 	return {
 		"Purchase": "Purchase",

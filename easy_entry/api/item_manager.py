@@ -44,6 +44,7 @@ _ITEMS_FROM = """
 		) latest ON latest.item_code = pii.item_code AND pi.posting_date = latest.max_date
 		GROUP BY pii.item_code
 	) sup ON sup.item_code = i.name
+	LEFT JOIN `tabItem Barcode` bc ON bc.parent = i.name
 """
 
 
@@ -101,7 +102,9 @@ def _items_from_where(search="", item_group="", supplier="", stock_status="", pr
 	values = {"buying": BUYING_PRICE_LIST, "selling": SELLING_PRICE_LIST}
 
 	if search:
-		conditions.append("(i.name LIKE %(search)s OR i.item_name LIKE %(search)s)")
+		conditions.append(
+			"(i.name LIKE %(search)s OR i.item_name LIKE %(search)s OR bc.barcode LIKE %(search)s)"
+		)
 		values["search"] = f"%{search}%"
 
 	if item_group:
@@ -132,6 +135,7 @@ def _fetch_item_rows(from_block, where, values, limit=None, offset=0):
 			sup.supplier
 		{from_block}
 		WHERE {where}
+		GROUP BY i.name
 		ORDER BY i.item_name ASC
 		{limit_clause}
 		""",
@@ -154,7 +158,7 @@ def get_items(
 	rows = _fetch_item_rows(from_block, where, values, limit=limit, offset=offset)
 
 	total = frappe.db.sql(
-		f"SELECT COUNT(*) {from_block} WHERE {where}", values
+		f"SELECT COUNT(DISTINCT i.name) {from_block} WHERE {where}", values
 	)[0][0]
 
 	return {"rows": rows, "total": total}
@@ -307,6 +311,28 @@ def set_item_qty(item_code, qty, warehouse=None, submit=False):
 		sr.submit()  # raises if the user lacks submit permission
 	frappe.db.commit()
 	return {"ok": True, "stock_reconciliation": sr.name, "docstatus": sr.docstatus}
+
+
+@frappe.whitelist()
+def get_label_settings():
+	"""Return the active default label print format and all available Item print formats."""
+	default_format = frappe.db.get_single_value("Stock Settings", "ee_label_print_format") or "38 * 25"
+	formats = frappe.get_all("Print Format", filters={"doc_type": "Item", "disabled": 0}, pluck="name")
+	if "Standard" not in formats:
+		formats = ["Standard"] + formats
+	return {"default_format": default_format, "formats": formats}
+
+
+@frappe.whitelist()
+def set_label_print_format(fmt):
+	"""Persist the default label print format to Stock Settings."""
+	formats = frappe.get_all("Print Format", filters={"doc_type": "Item", "disabled": 0}, pluck="name")
+	valid = set(formats) | {"Standard"}
+	if fmt not in valid:
+		frappe.throw(_("Invalid print format: {0}").format(fmt))
+	frappe.db.set_single_value("Stock Settings", "ee_label_print_format", fmt)
+	frappe.db.commit()
+	return {"ok": True, "format": fmt}
 
 
 @frappe.whitelist()

@@ -60,7 +60,17 @@ def code128_svg(value, width_mm=50, height_mm=17):
     # Build the full bit-string for all symbols.
     bits = "".join(str(_BARS[s]) for s in symbols)
 
-    total_w = len(bits) + 2 * _QUIET  # viewBox width in modules
+    total_w = len(bits) + 2 * _QUIET  # barcode width in modules
+
+    # Scale module units directly to mm so the viewBox aspect ratio matches
+    # the physical output aspect ratio exactly.  wkhtmltopdf's WebKit does
+    # not reliably honor preserveAspectRatio="none" — when the viewBox
+    # aspect ratio differs from width_mm:height_mm, it falls back to
+    # aspect-preserving "meet" scaling and edge-aligns the result (observed
+    # as an empty gap on one side), the same class of bug as the SVG
+    # height:100% collapse documented in CLAUDE.md.  Matching the aspect
+    # ratios up front makes that fallback behavior a no-op.
+    scale = width_mm / total_w
 
     # RLE-encode bits into SVG <rect> elements (only black bars need rects).
     rects = []
@@ -73,14 +83,16 @@ def code128_svg(value, width_mm=50, height_mm=17):
         while j < n and bits[j] == b:
             j += 1
         if b == "1":
-            rects.append(f'<rect x="{x}" y="0" width="{j - i}" height="100"/>')
+            rects.append(
+                f'<rect x="{x * scale:.3f}" y="0" width="{(j - i) * scale:.3f}" height="{height_mm}"/>'
+            )
         x += j - i
         i = j
 
     return (
         f'<svg xmlns="http://www.w3.org/2000/svg"'
         f' width="{width_mm}mm" height="{height_mm}mm"'
-        f' viewBox="0 0 {total_w} 100"'
+        f' viewBox="0 0 {width_mm} {height_mm}"'
         f' preserveAspectRatio="none"'
         f' style="display:block">'
         + "".join(rects)

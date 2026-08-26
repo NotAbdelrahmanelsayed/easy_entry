@@ -26,8 +26,8 @@ app_license = "mit"
 
 # include js, css files in header of desk.html
 # app_include_css = "/assets/easy_entry/css/easy_entry.css"
-app_include_js = ["public/js/pos_guard.js"]
-website_include_js = ["public/js/pos_guard.js"]
+app_include_js = ["/assets/easy_entry/js/pos_guard.js"]
+website_include_js = ["/assets/easy_entry/js/pos_guard.js"]
 
 # Easy Entry SPA — let vue-router own every sub-path under /easy.
 website_route_rules = [
@@ -159,6 +159,9 @@ doc_events = {
 	},
 	"Supplier": {
 		"after_insert": "easy_entry.utils.supplier_code.assign_supplier_code"
+	},
+	"File": {
+		"before_insert": "easy_entry.utils.rehost_remote_image.rehost_if_remote_url"
 	},
 }
 

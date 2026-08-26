@@ -1,7 +1,7 @@
 // Per-row and bulk item label printing for Stock Reconciliation,
 // Purchase Invoice, Sales Invoice, and Stock Entry.
 
-const DEFAULT_FORMAT = "50 * 25";
+const DEFAULT_FORMAT = "38 * 25";
 let _format = null;
 
 async function getLabelFormat() {
