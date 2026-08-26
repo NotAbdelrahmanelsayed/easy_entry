@@ -59,6 +59,18 @@
 					</svg>
 					<span class="hidden sm:inline">{{ __("Export sheet") }}</span>
 				</button>
+				<button
+					class="px-3 py-2 rounded-lg text-sm font-medium border border-gray-300 text-gray-700 hover:bg-gray-50 flex items-center gap-1"
+					:title="__('Label print settings')"
+					data-testid="settings-btn"
+					@click="openSettings"
+				>
+					<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+					</svg>
+					<span class="hidden sm:inline">{{ __("Settings") }}</span>
+				</button>
 			</div>
 		</header>
 
@@ -91,6 +103,23 @@
 						@keydown.enter.prevent="onBarcodeScan()"
 					/>
 				</div>
+
+				<!-- Camera scan button -->
+				<button
+					class="flex-shrink-0 px-3 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50"
+					:aria-label="__('Scan with camera')"
+					data-testid="open-scanner"
+					@click="showScanner = true"
+				>
+					<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="1.8"
+							d="M3 9V7a2 2 0 012-2h2M17 5h2a2 2 0 012 2v2M21 15v2a2 2 0 01-2 2h-2M7 19H5a2 2 0 01-2-2v-2M7 12h10"
+						/>
+					</svg>
+				</button>
 
 				<!-- Mobile: filter toggle button -->
 				<button
@@ -378,7 +407,7 @@
 								</svg>
 							</button>
 						</div>
-						<div class="flex-shrink-0 mt-0.5">
+						<div class="flex-shrink-0 mt-0.5 flex items-center gap-1">
 							<button
 								v-if="isRowDirty(row)"
 								class="px-3 py-1.5 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 disabled:opacity-50"
@@ -396,6 +425,16 @@
 									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
 								</svg>
 							</span>
+							<button
+								class="p-1.5 rounded-lg text-gray-400 hover:text-blue-600 hover:bg-blue-50 border border-transparent hover:border-blue-200"
+								:title="__('Print label')"
+								:data-testid="`print-label-mobile-${idx}`"
+								@click.stop="printLabel(row)"
+							>
+								<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+								</svg>
+							</button>
 						</div>
 					</div>
 
@@ -634,36 +673,38 @@
 								</select>
 							</td>
 
-							<!-- Save -->
+							<!-- Save + Print -->
 							<td class="px-4 py-3 text-center">
-								<button
-									v-if="isRowDirty(row)"
-									class="text-xs px-2.5 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
-									:disabled="saving[row.item_code]"
-									:data-testid="`save-btn-${idx}`"
-									@click="saveRow(row)"
-								>
-									{{ saving[row.item_code] ? __("Saving...") : __("Save") }}
-								</button>
-								<span
-									v-else-if="savedFlash[row.item_code]"
-									class="inline-flex items-center gap-1 text-xs text-green-600 font-medium"
-								>
-									<svg
-										class="w-3.5 h-3.5"
-										fill="none"
-										stroke="currentColor"
-										viewBox="0 0 24 24"
+								<div class="flex items-center justify-center gap-1">
+									<button
+										v-if="isRowDirty(row)"
+										class="text-xs px-2.5 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
+										:disabled="saving[row.item_code]"
+										:data-testid="`save-btn-${idx}`"
+										@click="saveRow(row)"
 									>
-										<path
-											stroke-linecap="round"
-											stroke-linejoin="round"
-											stroke-width="2.5"
-											d="M5 13l4 4L19 7"
-										/>
-									</svg>
-									{{ __("Saved") }}
-								</span>
+										{{ saving[row.item_code] ? __("Saving...") : __("Save") }}
+									</button>
+									<span
+										v-else-if="savedFlash[row.item_code]"
+										class="inline-flex items-center gap-1 text-xs text-green-600 font-medium"
+									>
+										<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+										</svg>
+										{{ __("Saved") }}
+									</span>
+									<button
+										class="p-1 rounded text-gray-400 hover:text-blue-600 hover:bg-blue-50 border border-transparent hover:border-blue-200 flex-shrink-0"
+										:title="__('Print label')"
+										:data-testid="`print-label-${idx}`"
+										@click.stop="printLabel(row)"
+									>
+										<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+										</svg>
+									</button>
+								</div>
 							</td>
 						</tr>
 					</tbody>
@@ -844,7 +885,59 @@
 				</div>
 			</div>
 		</div>
+
+		<!-- Settings modal -->
+		<div
+			v-if="settingsModal.open"
+			class="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4"
+			@click.self="settingsModal.open = false"
+		>
+			<div class="bg-white rounded-xl shadow-xl w-full max-w-md p-6" data-testid="settings-modal">
+				<h2 class="text-base font-semibold text-gray-900">{{ __("Label print settings") }}</h2>
+				<p class="text-sm text-gray-500 mt-1">
+					{{ __("Choose the default print format used when printing barcode labels.") }}
+				</p>
+				<label class="block text-xs font-medium text-gray-500 mt-4 mb-1">
+					{{ __("Print format") }}
+				</label>
+				<select
+					v-model="settingsModal.selected"
+					class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+					data-testid="format-select"
+				>
+					<option v-for="fmt in settingsModal.formats" :key="fmt" :value="fmt">{{ fmt }}</option>
+				</select>
+				<div class="flex items-center justify-between gap-2 mt-5">
+					<span class="text-xs text-gray-400">
+						{{ __("Enter or Ctrl+S to save · Esc to cancel") }}
+					</span>
+					<div class="flex gap-2">
+						<button
+							class="px-3 py-2 rounded-lg text-sm border border-gray-300 hover:bg-gray-50"
+							@click="settingsModal.open = false"
+						>
+							{{ __("Cancel") }}
+						</button>
+						<button
+							class="px-3 py-2 rounded-lg text-sm bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50"
+							:disabled="settingsModal.busy"
+							data-testid="settings-save"
+							@click="saveSettings"
+						>
+							{{ settingsModal.busy ? __("Saving...") : __("Save") }}
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
+
+	<!-- Camera barcode scanner modal -->
+	<BarcodeScanner
+		v-if="showScanner"
+		@scanned="onCameraScanned"
+		@close="showScanner = false"
+	/>
 </template>
 
 <script setup>
@@ -852,11 +945,49 @@ import { call, createResource } from "frappe-ui";
 import { computed, onMounted, onUnmounted, reactive, ref } from "vue";
 import { useToast } from "@/composables/useToast";
 import { useModalShortcuts } from "@/composables/useModalShortcuts";
+import BarcodeScanner from "@/components/BarcodeScanner.vue";
 
-const { showSuccess, showError, showInfo } = useToast();
+const { showSuccess, showError, showInfo, showInfoLink } = useToast();
 
 const API = "easy_entry.api.item_manager";
 const pageSize = 20;
+
+// --- Label print -----------------------------------------------------------
+
+const labelFormat = ref("50 * 25");
+const settingsModal = reactive({ open: false, busy: false, formats: [], selected: "" });
+
+function printLabel(row) {
+	const params = new URLSearchParams({
+		doctype: "Item",
+		name: row.item_code,
+		trigger_print: "1",
+		format: labelFormat.value,
+		no_letterhead: "1",
+		pdf_generator: "wkhtmltopdf",
+	});
+	window.open(`/printview?${params.toString()}`, "_blank");
+}
+
+function openSettings() {
+	settingsModal.open = true;
+	settingsModal.selected = labelFormat.value;
+	settingsModal.busy = false;
+}
+
+async function saveSettings() {
+	if (settingsModal.busy) return;
+	settingsModal.busy = true;
+	try {
+		await call(`${API}.set_label_print_format`, { fmt: settingsModal.selected });
+		labelFormat.value = settingsModal.selected;
+		showSuccess(__("Default print format saved"));
+		settingsModal.open = false;
+	} catch (e) {
+		showError(errorMessage(e) || __("Failed to save settings"));
+		settingsModal.busy = false;
+	}
+}
 
 const searchQuery = ref("");
 const itemGroupFilter = ref("");
@@ -952,6 +1083,16 @@ function isRowDirty(row) {
 }
 
 const dirtyRows = computed(() => rows.value.filter(isRowDirty));
+
+// --- Camera scanner -------------------------------------------------------
+
+const showScanner = ref(false);
+
+function onCameraScanned(code) {
+	showScanner.value = false;
+	searchQuery.value = code;
+	onBarcodeScan();
+}
 
 // --- Search / pagination -------------------------------------------------
 
@@ -1156,10 +1297,12 @@ async function confirmQty() {
 				]),
 			);
 		} else {
-			showInfo(
-				__("Draft Stock Reconciliation {0} created — review it in the desk.", [
-					res.stock_reconciliation,
-				]),
+			showInfoLink(
+				__("Draft Stock Reconciliation {0} created.", [res.stock_reconciliation]),
+				{
+					url: `/app/stock-reconciliation/${res.stock_reconciliation}`,
+					label: __("Open in desk"),
+				},
 			);
 		}
 		qtyModal.row = null;
@@ -1178,6 +1321,10 @@ useModalShortcuts(() => !!qtyModal.row, {
 	onSave: confirmQty,
 	onCancel: () => (qtyModal.row = null),
 });
+useModalShortcuts(() => settingsModal.open, {
+	onSave: saveSettings,
+	onCancel: () => (settingsModal.open = false),
+});
 
 // --- Page-level shortcuts ------------------------------------------------
 
@@ -1189,7 +1336,7 @@ function isTyping(target) {
 
 function handlePageKeydown(event) {
 	// A popup owns the keyboard while open — let useModalShortcuts handle it.
-	if (renameModal.row || qtyModal.row) return;
+	if (renameModal.row || qtyModal.row || settingsModal.open) return;
 
 	// "/" jumps to the search box, unless the user is already typing.
 	if (event.key === "/" && !isTyping(event.target)) {
@@ -1221,7 +1368,16 @@ function handlePageKeydown(event) {
 	}
 }
 
-onMounted(() => window.addEventListener("keydown", handlePageKeydown));
+onMounted(async () => {
+	window.addEventListener("keydown", handlePageKeydown);
+	try {
+		const res = await call(`${API}.get_label_settings`);
+		labelFormat.value = res.default_format || "50 * 25";
+		settingsModal.formats = res.formats || [];
+	} catch {
+		settingsModal.formats = ["Standard", "50 * 25", "38 * 25"];
+	}
+});
 onUnmounted(() => window.removeEventListener("keydown", handlePageKeydown));
 
 // --- Export --------------------------------------------------------------

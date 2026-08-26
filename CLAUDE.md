@@ -46,7 +46,18 @@ cd frontend && npm run dev
 ### Custom DocType: `Product`
 `easy_entry/easy_entry/doctype/product/product.py` — the core shortcut. On `validate`, it creates an ERPNext `Item`, sets buying/selling `Item Price` records, and creates a `Stock Reconciliation` to set initial quantity. Also generates an auto-incremented barcode (`P0001`, `P0002`, …) via the `BarcodeGenerator` singleton.
 
+### Custom DocType: `Cash Loan`
+`easy_entry/easy_entry/doctype/cash_loan/` — informal, interest-free cash advances to people who are not necessarily Customer/Supplier records (plain `borrower_name` field). Not submittable; status is `Open` → `Repaid` (full repayment only, no partial, no schedule). All accounting happens in `easy_entry/api/cash_loan.py`, never through the Desk form directly: giving a loan posts a plain `Journal Entry` (Dr "Cash Loans Receivable" / Cr the chosen Mode of Payment's account), repaying posts the reverse. Nothing touches `Sales Invoice` or `Item`, so Gross Profit / sales reports never see these amounts — this replaced an earlier, wrong approach that sold a "سلف نقدية" item via POS and patched `incoming_rate` to fake zero profit (see `.wolf/buglog.json` bug-039).
+
 ### API endpoints (`easy_entry/api/`)
+`cash_loan.py` — `@frappe.whitelist()` functions for the Cash Loan SPA:
+- `give_loan(borrower_name, amount, mode_of_payment, company, remarks)` — resolves/re-enables the company's "Cash Loans Receivable" account (bilingual CoA — match by `account_name`, not exact `name`) and the Mode of Payment's account (via the `Mode of Payment Account` child table), posts a submitted Journal Entry, creates the `Cash Loan` record
+- `repay_loan(name, mode_of_payment)` — throws if already `Repaid`; posts the reversing Journal Entry, closes the loan
+- `list_loans(search, status, limit, offset)` — paginated list, plus running `open_total`
+- `get_modes_of_payment(company)` — Modes of Payment with their resolved account, for the SPA's dropdowns
+
+Tests: `easy_entry/api/test_cash_loan.py` (4 integration tests, self-cleaning).
+
 `item_manager.py` — six `@frappe.whitelist()` functions for the Item Manager SPA:
 - `get_items(search, item_group, limit, offset)` — paginated items joined with buying/selling `Item Price`, summed on-hand qty from `tabBin`, and the first `Item Supplier` row
 - `update_item(item_code, fields)` — updates `item_name` and/or `supplier` (first `supplier_items` row)

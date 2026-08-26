@@ -1,0 +1,203 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "autoname": "CL-.#####",
+ "creation": "2026-08-04 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "borrower",
+  "customer_name",
+  "amount",
+  "status",
+  "column_break_head",
+  "company",
+  "loan_date",
+  "give_section",
+  "loan_mode_of_payment",
+  "column_break_give",
+  "loan_account",
+  "receivable_account",
+  "journal_entry_give",
+  "repay_section",
+  "repay_mode_of_payment",
+  "column_break_repay",
+  "repay_account",
+  "repaid_date",
+  "journal_entry_repay",
+  "remarks"
+ ],
+ "fields": [
+  {
+   "fieldname": "borrower",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Borrower",
+   "options": "Customer",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "borrower.customer_name",
+   "fieldname": "customer_name",
+   "fieldtype": "Data",
+   "label": "Customer Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Amount",
+   "non_negative": 1,
+   "reqd": 1
+  },
+  {
+   "default": "Open",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Status",
+   "options": "Open\nRepaid",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_head",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Company",
+   "options": "Company",
+   "reqd": 1
+  },
+  {
+   "default": "Today",
+   "fieldname": "loan_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Loan Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "give_section",
+   "fieldtype": "Section Break",
+   "label": "Giving the Loan"
+  },
+  {
+   "fieldname": "loan_mode_of_payment",
+   "fieldtype": "Link",
+   "label": "Mode of Payment (Given From)",
+   "options": "Mode of Payment",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_give",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "loan_account",
+   "fieldtype": "Link",
+   "label": "Cash/Bank Account (Given From)",
+   "options": "Account",
+   "read_only": 1
+  },
+  {
+   "fieldname": "receivable_account",
+   "fieldtype": "Link",
+   "label": "Receivable Account",
+   "options": "Account",
+   "read_only": 1
+  },
+  {
+   "fieldname": "journal_entry_give",
+   "fieldtype": "Link",
+   "label": "Journal Entry (Loan Given)",
+   "options": "Journal Entry",
+   "read_only": 1
+  },
+  {
+   "fieldname": "repay_section",
+   "fieldtype": "Section Break",
+   "label": "Repayment"
+  },
+  {
+   "depends_on": "eval:doc.status==\"Repaid\"",
+   "fieldname": "repay_mode_of_payment",
+   "fieldtype": "Link",
+   "label": "Mode of Payment (Repaid Into)",
+   "options": "Mode of Payment",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_repay",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval:doc.status==\"Repaid\"",
+   "fieldname": "repay_account",
+   "fieldtype": "Link",
+   "label": "Cash/Bank Account (Repaid Into)",
+   "options": "Account",
+   "read_only": 1
+  },
+  {
+   "fieldname": "repaid_date",
+   "fieldtype": "Date",
+   "label": "Repaid Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "journal_entry_repay",
+   "fieldtype": "Link",
+   "label": "Journal Entry (Loan Repaid)",
+   "options": "Journal Entry",
+   "read_only": 1
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Remarks"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-08-04 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Easy Entry",
+ "name": "Cash Loan",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "All",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}
