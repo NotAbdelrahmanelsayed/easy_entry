@@ -1,5 +1,7 @@
 import frappe
 
+from easy_entry.tasks.recipients import get_report_recipients
+
 
 def send_daily_owner_report(for_date=None):
 	"""Send daily sales report (sold items only) to all Store Owner users."""
@@ -62,17 +64,7 @@ def send_daily_owner_report(for_date=None):
 		as_dict=True,
 	)
 
-	recipients = frappe.db.sql(
-		"""
-		SELECT u.email
-		FROM `tabUser` u
-		JOIN `tabHas Role` hr ON hr.parent = u.name
-		WHERE hr.role = 'Store Owner'
-		  AND u.enabled = 1
-		  AND u.email != ''
-		""",
-		as_dict=True,
-	)
+	recipients = get_report_recipients(["Store Owner"])
 
 	if not recipients:
 		return
@@ -90,7 +82,7 @@ def send_daily_owner_report(for_date=None):
 	)
 
 	frappe.sendmail(
-		recipients=[r.email for r in recipients],
+		recipients=recipients,
 		subject=f"تقرير مبيعات اليوم - {report_date}",
 		message=message,
 	)

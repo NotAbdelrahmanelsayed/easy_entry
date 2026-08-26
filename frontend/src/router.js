@@ -22,6 +22,16 @@ const routes = [
 		component: () => import("@/pages/StockCountSession.vue"),
 		props: true,
 	},
+	{
+		name: "OwnerDashboard",
+		path: "/owner-dashboard",
+		component: () => import("@/pages/OwnerDashboard.vue"),
+	},
+	{
+		name: "CashLoan",
+		path: "/cash-loan",
+		component: () => import("@/pages/CashLoan.vue"),
+	},
 ];
 
 const router = createRouter({

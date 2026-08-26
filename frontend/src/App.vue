@@ -18,7 +18,16 @@
 					}"
 					@click="removeToast(t.id)"
 				>
-					<span class="flex-1">{{ t.message }}</span>
+					<span class="flex-1">
+						{{ t.message }}
+						<a
+							v-if="t.link"
+							:href="t.link.url"
+							target="_blank"
+							class="ml-2 underline font-semibold opacity-90 hover:opacity-100"
+							@click.stop
+						>{{ t.link.label }}</a>
+					</span>
 					<span class="opacity-70">&times;</span>
 				</div>
 			</transition-group>

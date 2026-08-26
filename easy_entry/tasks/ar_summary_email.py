@@ -1,6 +1,8 @@
 import frappe
 from frappe.utils import flt, today, get_url
 
+from easy_entry.tasks.recipients import get_report_recipients
+
 
 def send_ar_summary_email(for_date=None):
 	"""Send daily Accounts Receivable summary (customer totals only) to Store Owners."""
@@ -28,17 +30,7 @@ def send_ar_summary_email(for_date=None):
 	if not rows:
 		return
 
-	recipients = frappe.db.sql(
-		"""
-		SELECT DISTINCT u.email
-		FROM `tabUser` u
-		JOIN `tabHas Role` hr ON hr.parent = u.name
-		WHERE hr.role IN ('Store Owner', 'Accounts Manager', 'Accounts User')
-		  AND u.enabled = 1
-		  AND u.email != ''
-		""",
-		as_dict=True,
-	)
+	recipients = get_report_recipients(["Store Owner", "Accounts Manager", "Accounts User"])
 
 	if not recipients:
 		return
@@ -58,7 +50,7 @@ def send_ar_summary_email(for_date=None):
 	)
 
 	frappe.sendmail(
-		recipients=[r.email for r in recipients],
+		recipients=recipients,
 		subject=f"الذمم المدينة — {as_of}",
 		message=message,
 	)

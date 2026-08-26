@@ -59,6 +59,7 @@ const groups = [
 		title: "Global",
 		items: [
 			{ label: "Show this help", keys: "?" },
+			{ label: "Open Owner Dashboard", keys: "O" },
 			{ label: "Close a popup", keys: "Esc" },
 			{ label: "Save inside a popup", keys: "Ctrl+S" },
 		],
@@ -77,6 +78,10 @@ const groups = [
 			{ label: "Search / resolve the scan box", keys: "Enter" },
 			{ label: "Save a counted quantity", keys: "Enter" },
 		],
+	},
+	{
+		title: "Owner Dashboard",
+		items: [{ label: "Switch period", keys: "1-4" }],
 	},
 ];
 </script>

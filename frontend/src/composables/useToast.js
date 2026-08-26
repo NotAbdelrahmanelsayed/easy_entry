@@ -10,9 +10,9 @@ function remove(id) {
 	if (index !== -1) toasts.splice(index, 1);
 }
 
-function push(type, message, timeout) {
+function push(type, message, timeout, link = null) {
 	const id = ++seq;
-	toasts.push({ id, type, message });
+	toasts.push({ id, type, message, link });
 	if (timeout) {
 		setTimeout(() => remove(id), timeout);
 	}
@@ -26,5 +26,6 @@ export function useToast() {
 		showSuccess: (message) => push("success", message, 3000),
 		showError: (message) => push("error", message, 6000),
 		showInfo: (message) => push("info", message, 4000),
+		showInfoLink: (message, link) => push("info", message, 0, link),
 	};
 }

@@ -56,10 +56,11 @@
 
 <script setup>
 import { computed, onMounted, onUnmounted, ref } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import ShortcutsModal from "@/components/ShortcutsModal.vue";
 
 const route = useRoute();
+const router = useRouter();
 const isHome = computed(() => route.name === "Dashboard");
 
 const shortcutsOpen = ref(false);
@@ -80,6 +81,12 @@ function handleKeydown(event) {
 	if (event.key === "?" && !isTyping(event.target)) {
 		event.preventDefault();
 		shortcutsOpen.value = true;
+		return;
+	}
+	// "o" jumps to the Owner Dashboard from anywhere, unless typing.
+	if (event.key === "o" && !isTyping(event.target)) {
+		event.preventDefault();
+		router.push({ name: "OwnerDashboard" });
 	}
 }
 
