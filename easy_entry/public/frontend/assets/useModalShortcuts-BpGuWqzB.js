@@ -1,2 +1,0 @@
-import{k as u,l as i}from"./index-Ci5DNNhl.js";function f(o,{onSave:r,onCancel:e}={}){function d(t){if(o()){if(t.key==="Escape"){t.preventDefault(),e==null||e();return}(t.ctrlKey||t.metaKey)&&t.key.toLowerCase()==="s"&&(t.preventDefault(),r==null||r())}}u(()=>window.addEventListener("keydown",d)),i(()=>window.removeEventListener("keydown",d))}export{f as u};
-//# sourceMappingURL=useModalShortcuts-BpGuWqzB.js.map
